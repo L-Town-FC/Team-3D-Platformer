@@ -4,13 +4,14 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
-    //TODO: Fix quaternion bullshit
     Rigidbody rb;
     PlayerInput input;
 
-    private Vector3 appliedMovement;
-    private Quaternion appliedRotation;
+    private Vector3 appliedMovement = Vector3.zero;
+    private Quaternion appliedRotation = Quaternion.identity;
     private PlayerCamera playerCamera;
+    [SerializeField]
+    float speed = 10f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -23,12 +24,14 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        appliedMovement = transform.InverseTransformDirection(input.movementInput);
-        appliedRotation = Quaternion.Euler(playerCamera.cameraPanAmount);
+        //calculates the players movement for the next physics step using values from the player input script
+        appliedMovement = transform.TransformDirection(input.movementInput);
+        appliedRotation = Quaternion.FromToRotation(transform.forward, Vector3.ProjectOnPlane(Camera.main.transform.forward, transform.up));
     }
 
     private void FixedUpdate()
     {
-        rb.Move(rb.position + appliedMovement, Quaternion.identity);
+        //moves the player
+        rb.Move(rb.position + appliedMovement * speed * Time.fixedDeltaTime, rb.rotation * appliedRotation);
     }
 }

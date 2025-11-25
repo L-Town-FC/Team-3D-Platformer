@@ -3,10 +3,12 @@ using UnityEngine.InputSystem;
 
 public class PlayerInput : MonoBehaviour
 {
-    private PlayerControls playerControls;
-    private InputAction movementActions;
-    private InputAction cameraActions;
 
+    private PlayerControls playerControls; //Basic player control action map
+    private InputAction movementActions; //input actions for horizontal movement
+    private InputAction cameraActions; //input actions for camera panning and tilting
+
+    //vectors holding players inputs for horizontal and camera movement
     public Vector3 movementInput = Vector3.zero;
     public Vector2 cameraInput = Vector2.zero;
 
@@ -33,6 +35,7 @@ public class PlayerInput : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Gets the mouse and keyboard inputs for basic movement to be used for the player controller
         movementInput = new Vector3(movementActions.ReadValue<Vector2>().x, 0f, movementActions.ReadValue<Vector2>().y).normalized;
         cameraInput = new Vector2(cameraActions.ReadValue<Vector2>().x, cameraActions.ReadValue<Vector2>().y);
     }
