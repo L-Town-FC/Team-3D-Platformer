@@ -12,7 +12,7 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField]
     Vector2 minAndMaxCameraTilt = new Vector2(-60f, 75f); //angle from horizontal that the player can look up or down
     [SerializeField]
-    Vector2 horizontalAndVerticalCameraSensitivity = new Vector2(100f, 100f);
+    Vector2 horizontalAndVerticalCameraSensitivity = new Vector2(100f, 100f); //need to test what are good values for this
 
     public Vector3 cameraPanAmount = Vector3.zero;
     
