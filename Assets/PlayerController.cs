@@ -9,7 +9,6 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 appliedMovement = Vector3.zero;
     private Quaternion appliedRotation = Quaternion.identity;
-    private PlayerCamera playerCamera;
     [SerializeField]
     float speed = 10f;
 
@@ -18,7 +17,6 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         input = GetComponent<PlayerInput>();
-        playerCamera = GetComponent<PlayerCamera>();
     }
 
     // Update is called once per frame
@@ -26,6 +24,10 @@ public class PlayerController : MonoBehaviour
     {
         //calculates the players movement for the next physics step using values from the player input script
         appliedMovement = transform.TransformDirection(input.movementInput);
+
+        //to make camera movement smoother, the FPS camera rotates independently of the player
+        //the player rigidbody then rotates to match the new camera forward position
+        //may need to extend this to RB movement as well
         appliedRotation = Quaternion.FromToRotation(transform.forward, Vector3.ProjectOnPlane(Camera.main.transform.forward, transform.up));
     }
 
