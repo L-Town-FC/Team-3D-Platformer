@@ -23,6 +23,11 @@ public class MovingPlatform : MonoBehaviour
     //loop 0->1->2->0, etc
     //snake 0->1->2->1->0, etc
 
+    bool isHalted = false; //used to stop platform from moving when it reaches a waypoint
+    [SerializeField]
+    float haltLength = 1f; //length of time platform is stopped at a waypoint
+    float haltStartTime = 0f; //holds the time when the platform starts halting
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -32,11 +37,28 @@ public class MovingPlatform : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb.MovePosition(Vector3.SmoothDamp(rb.position, PlatformWaypoints[nextWaypoint].position, ref velocity, timeBetweenWaypoints));
-        //0.01f value is arbitrary
-        //just needed a small value in order to check that the platform has reached the waypoint position and avoid floating point precision comparison issues
-        if ((rb.position - PlatformWaypoints[nextWaypoint].position).sqrMagnitude < 0.01f)
+        //halts the platform for set amount of time
+        if (isHalted)
         {
+            if (Time.time >= haltStartTime + haltLength)
+            {
+                isHalted = false;
+                return;
+            }
+
+            return;
+        }
+
+        //smoothly increases the speed from stop then decerases to a stop when it reaches the next waypoint
+        rb.MovePosition(Vector3.SmoothDamp(rb.position, PlatformWaypoints[nextWaypoint].position, ref velocity, timeBetweenWaypoints));
+
+        //0.001f value is arbitrary
+        //just needed a small value in order to check that the platform has reached the waypoint position and avoid floating point precision comparison issues
+        if ((rb.position - PlatformWaypoints[nextWaypoint].position).sqrMagnitude < 0.001f)
+        {
+            //halts the movement of the platform when it reaches a waypoint
+            isHalted = true;
+            haltStartTime = Time.time;
             SetWaypoints();
         }
     }

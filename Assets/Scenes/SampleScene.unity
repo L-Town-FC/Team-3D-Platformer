@@ -671,6 +671,7 @@ MonoBehaviour:
   nextWaypoint: 1
   timeBetweenWaypoints: 1
   snakeMovement: 0
+  haltLength: 1
 --- !u!4 &520383664
 Transform:
   m_ObjectHideFlags: 0
