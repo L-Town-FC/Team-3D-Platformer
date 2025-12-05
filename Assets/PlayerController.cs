@@ -4,6 +4,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
+    //TODO: Drag force doesnt work at all
+    //Currently zeroing out vertical movement because it was making it annoying to test
+
     Rigidbody rb;
     PlayerInput input;
 
@@ -26,16 +29,28 @@ public class PlayerController : MonoBehaviour
     //all inputs and calculations to movement and rotation should be done here
     void Update()
     {
+        rb.linearVelocity = Vector3.zero; //stops residual velocity from collisions from affecting player movement
+
         isGrounded = GroundCheck();
 
-        //calculates the players movement for the next physics step using values from the player input script
-        appliedMovement = transform.TransformDirection(input.movementInput);
+        Vector3 horizontalMovement = transform.TransformDirection(input.movementInput);
+        Vector3 verticalMovement = Vector3.zero;
 
         if (!isGrounded)
         {
-            ApplyGravity();
+            verticalMovement = ApplyGravity();
         }
 
+        if (input.isJump)
+        {
+            verticalMovement += Vector3.up * 10f;
+        }
+
+
+        verticalMovement = Vector3.zero;
+
+        //calculates the players movement for the next physics step using values from the player input script
+        appliedMovement = horizontalMovement + verticalMovement;
 
         //to make camera movement smoother, the FPS camera rotates independently of the player
         //the player rigidbody then rotates to match the new camera forward position
@@ -50,16 +65,29 @@ public class PlayerController : MonoBehaviour
         rb.Move(rb.position + appliedMovement * speed * Time.fixedDeltaTime, rb.rotation * appliedRotation);
     }
 
-    void ApplyGravity()
+    Vector3 ApplyGravity()
     {
-        appliedMovement += Vector3.down * gravityForce;
+        return Vector3.down * gravityForce;
+    }
+
+    Vector3 DragForce(Vector3 _startingMovement)
+    {
+        float dragAmount = 0.01f;
+        Vector3 dragAdjustedMovement = _startingMovement - _startingMovement.normalized * dragAmount;
+        if(Vector3.Dot(appliedMovement.normalized, dragAdjustedMovement.normalized) < 0f)
+        {
+            dragAdjustedMovement = _startingMovement;
+        }
+
+        return dragAdjustedMovement;
     }
 
     bool GroundCheck()
     {
         RaycastHit hitInfo;
 
-        if(rb.SweepTest(-transform.up, out hitInfo, groundCheckDst)){
+        if(rb.SweepTest(-transform.up, out hitInfo,  gravityForce * groundCheckDst)){
+            print(hitInfo.transform.name);
             return true;
         }
         return false;
