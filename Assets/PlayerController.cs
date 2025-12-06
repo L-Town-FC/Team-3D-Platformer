@@ -4,8 +4,11 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
-    //TODO: Drag force doesnt work at all
-    //Currently zeroing out vertical movement because it was making it annoying to test
+    //TODO: Add the following to jumping
+        //variable jump height dependednt on how long jump is held
+        //only can only initiate jump when grounded
+    //TODO: Make GroundCheck better so normal of contact point is returned
+    //TODO: Create slope handling
 
     Rigidbody rb;
     PlayerInput input;
@@ -13,10 +16,12 @@ public class PlayerController : MonoBehaviour
     private Vector3 appliedMovement = Vector3.zero;
     private Quaternion appliedRotation = Quaternion.identity;
     [SerializeField]
-    float speed = 10f;
+    float speed = 4f;
     float gravityForce = 1f;
     float groundCheckDst = 0.05f;
-    bool isGrounded = false;
+    public bool isGrounded = false;
+    [SerializeField]
+    LayerMask groundLayerMask;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -33,24 +38,36 @@ public class PlayerController : MonoBehaviour
 
         isGrounded = GroundCheck();
 
-        Vector3 horizontalMovement = transform.TransformDirection(input.movementInput);
-        Vector3 verticalMovement = Vector3.zero;
+        //splits movement into horizontal and vertical parts to make dealing with
+        //gravity and inputs easier
+        //does NOT handle slopes right now
+        Vector3 horizontalMovement = transform.TransformDirection(input.movementInput) + Vector3.ProjectOnPlane(appliedMovement, Vector3.up);
+        Vector3 verticalMovement = Vector3.up * appliedMovement.y;
 
+        //need to figure out how to properly cancel gravity while still letting players slide down slopes
         if (!isGrounded)
         {
-            verticalMovement = ApplyGravity();
+            verticalMovement += ApplyGravity();
+        }
+        else
+        {
+            verticalMovement = Vector3.zero;
         }
 
         if (input.isJump)
         {
-            verticalMovement += Vector3.up * 10f;
+            verticalMovement += Vector3.up * 10f; //arbitrary number just to test
         }
 
+        horizontalMovement = ClampMovement(horizontalMovement, -speed, speed);
+        verticalMovement = ClampMovement(verticalMovement, -8f, 10f); //arbitray numbers just to test
 
-        verticalMovement = Vector3.zero;
+        horizontalMovement = DragForce(horizontalMovement);
+        verticalMovement = DragForce(verticalMovement);
 
         //calculates the players movement for the next physics step using values from the player input script
         appliedMovement = horizontalMovement + verticalMovement;
+
 
         //to make camera movement smoother, the FPS camera rotates independently of the player
         //the player rigidbody then rotates to match the new camera forward position
@@ -65,6 +82,13 @@ public class PlayerController : MonoBehaviour
         rb.Move(rb.position + appliedMovement * speed * Time.fixedDeltaTime, rb.rotation * appliedRotation);
     }
 
+    Vector3 ClampMovement(Vector3 _movement, float lowerLimit, float upperLimit)
+    {
+        float finalSpeed = Mathf.Clamp(_movement.magnitude, lowerLimit, upperLimit);
+
+        return _movement.normalized * finalSpeed;
+    }
+
     Vector3 ApplyGravity()
     {
         return Vector3.down * gravityForce;
@@ -72,11 +96,15 @@ public class PlayerController : MonoBehaviour
 
     Vector3 DragForce(Vector3 _startingMovement)
     {
-        float dragAmount = 0.01f;
+        //will potentially have to move to handle separate script since this can get complicated
+        //when dealing with grounded vs ungrounded and moving on different materials
+
+        float dragAmount = 0.35f; //arbitrary number just to test
         Vector3 dragAdjustedMovement = _startingMovement - _startingMovement.normalized * dragAmount;
-        if(Vector3.Dot(appliedMovement.normalized, dragAdjustedMovement.normalized) < 0f)
+        
+        if(Vector3.Dot(_startingMovement.normalized, dragAdjustedMovement.normalized) < 0f)
         {
-            dragAdjustedMovement = _startingMovement;
+            dragAdjustedMovement = Vector3.zero;
         }
 
         return dragAdjustedMovement;
@@ -84,12 +112,17 @@ public class PlayerController : MonoBehaviour
 
     bool GroundCheck()
     {
-        RaycastHit hitInfo;
+        //Checks if capsule matching player is touching the ground
+        //adds a tiny extra amount at bottom to stop precision issues
 
-        if(rb.SweepTest(-transform.up, out hitInfo,  gravityForce * groundCheckDst)){
-            print(hitInfo.transform.name);
+        //currently this will ground players who touch walls marked as ground
+        //this can be fixed later by checking if the collision normal vector from
+        //this check is NOT horizontal or angled downard
+        if(Physics.CheckCapsule(transform.position - Vector3.up * (0.5f + groundCheckDst), transform.position + Vector3.up * 0.5f, 0.5f, groundLayerMask))
+        {
             return true;
         }
+
         return false;
     }
 }
