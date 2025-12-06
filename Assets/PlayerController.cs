@@ -11,15 +11,20 @@ public class PlayerController : MonoBehaviour
     //TODO: Create slope handling
 
     Rigidbody rb;
-    PlayerInput input;
+    PlayerInput input; //player input script
 
-    private Vector3 appliedMovement = Vector3.zero;
-    private Quaternion appliedRotation = Quaternion.identity;
+    private Vector3 appliedMovement = Vector3.zero; //holds the movement vector that is eventually applied to the player
+    private Quaternion appliedRotation = Quaternion.identity; //holds the rotation quaternion that is eventually applied to the player
     [SerializeField]
     float speed = 4f;
     float gravityForce = 1f;
-    float groundCheckDst = 0.05f;
-    public bool isGrounded = false;
+    float groundCheckDst = 0.05f; //small distance so player doesnt accidentally just brute force through ground when falling
+    [SerializeField]
+    float jumpForce = 7f;
+    [SerializeField]
+    Vector2 minAndMaxVerticalMovementSpeed = new Vector2(-8f, 10f);
+
+    bool isGrounded = false;
     [SerializeField]
     LayerMask groundLayerMask;
 
@@ -56,12 +61,14 @@ public class PlayerController : MonoBehaviour
 
         if (input.isJump)
         {
-            verticalMovement += Vector3.up * 10f; //arbitrary number just to test
+            verticalMovement += Vector3.up * jumpForce; 
         }
 
+        //clamps movement vectors so player speed doesnt increase without bound
         horizontalMovement = ClampMovement(horizontalMovement, -speed, speed);
-        verticalMovement = ClampMovement(verticalMovement, -8f, 10f); //arbitray numbers just to test
+        verticalMovement = ClampMovement(verticalMovement, minAndMaxVerticalMovementSpeed.x, minAndMaxVerticalMovementSpeed.y);
 
+        //applies drag force to object, slowing them down
         horizontalMovement = DragForce(horizontalMovement);
         verticalMovement = DragForce(verticalMovement);
 

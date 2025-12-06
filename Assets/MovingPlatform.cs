@@ -86,4 +86,14 @@ public class MovingPlatform : MonoBehaviour
         nextWaypoint += snakeDir;
         return;
     }
+
+    //used to visualize
+    //does not affect gameplay
+    private void OnDrawGizmos()
+    {
+        foreach(Transform platformWaypoint in PlatformWaypoints)
+        {
+            Gizmos.DrawSphere(platformWaypoint.position, 0.5f);
+        }
+    }
 }
