@@ -4,29 +4,35 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
-    //TODO: Add the following to jumping
-        //variable jump height dependednt on how long jump is held
-        //only can only initiate jump when grounded
-    //TODO: Make GroundCheck better so normal of contact point is returned
     //TODO: Create slope handling
+    //TODO: Add extra variable called "outside movement" that is added to appliedMovement and make it public. Allows other scripts on objects (like moving platforms, grav lifts, etc)
+    //to add movement to player but keeps physics consistent
 
     Rigidbody rb;
     PlayerInput input; //player input script
-
+    [SerializeField]
     private Vector3 appliedMovement = Vector3.zero; //holds the movement vector that is eventually applied to the player
     private Quaternion appliedRotation = Quaternion.identity; //holds the rotation quaternion that is eventually applied to the player
     [SerializeField]
-    float speed = 4f;
-    float gravityForce = 1f;
+    float speed = 12f;
+    [SerializeField]
+    float gravityForce = 5f;
     float groundCheckDst = 0.05f; //small distance so player doesnt accidentally just brute force through ground when falling
     [SerializeField]
-    float jumpForce = 7f;
+    float jumpForce = 30f;
     [SerializeField]
-    Vector2 minAndMaxVerticalMovementSpeed = new Vector2(-8f, 10f);
+    Vector2 minAndMaxVerticalMovementSpeed = new Vector2(-30f, 30f);
 
+    //Variables used for variable jump height
+    bool isJumping = false;
+    float jumpStartTime = 0f;
+    [SerializeField]
+    float maxJumpHoldTime = 0.2f;
+    
+    [SerializeField]
     bool isGrounded = false;
     [SerializeField]
-    LayerMask groundLayerMask;
+    LayerMask groundLayerMask; //masks out player layer so groundcheck checks all colliders except the players
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -59,9 +65,11 @@ public class PlayerController : MonoBehaviour
             verticalMovement = Vector3.zero;
         }
 
-        if (input.isJump)
+        if (input.isJump && isJumping)
         {
-            verticalMovement += Vector3.up * jumpForce; 
+            //gives player upward velocity when pressing jump
+            //holding jump increases height of jump, but the effect decreases until the max jump hold time is reached
+            verticalMovement += Vector3.up * jumpForce * (1f - Mathf.InverseLerp(jumpStartTime, jumpStartTime + maxJumpHoldTime, Time.time)); 
         }
 
         //clamps movement vectors so player speed doesnt increase without bound
@@ -86,7 +94,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         //moves the player
-        rb.Move(rb.position + appliedMovement * speed * Time.fixedDeltaTime, rb.rotation * appliedRotation);
+        rb.Move(rb.position + appliedMovement * Time.fixedDeltaTime, rb.rotation * appliedRotation);
     }
 
     Vector3 ClampMovement(Vector3 _movement, float lowerLimit, float upperLimit)
@@ -104,11 +112,22 @@ public class PlayerController : MonoBehaviour
     Vector3 DragForce(Vector3 _startingMovement)
     {
         //will potentially have to move to handle separate script since this can get complicated
-        //when dealing with grounded vs ungrounded and moving on different materials
+        //when dealing with moving on different materials
 
-        float dragAmount = 0.35f; //arbitrary number just to test
+        float dragAmount; //player experiences more drag when grounded than when in the air
+        if (isGrounded)
+        {
+            dragAmount = 0.5f;
+        }
+        else
+        {
+            dragAmount = 0.15f;
+        }
+
+        //creates a vector in the opposite direction of the inputted movement to create a drag force
         Vector3 dragAdjustedMovement = _startingMovement - _startingMovement.normalized * dragAmount;
         
+        //if the drag force is so much that is causes the player to switch directions, the movement amound is just set to 0
         if(Vector3.Dot(_startingMovement.normalized, dragAdjustedMovement.normalized) < 0f)
         {
             dragAdjustedMovement = Vector3.zero;
@@ -119,17 +138,53 @@ public class PlayerController : MonoBehaviour
 
     bool GroundCheck()
     {
-        //Checks if capsule matching player is touching the ground
-        //adds a tiny extra amount at bottom to stop precision issues
+        /*
+         * Checks if capsule matching player is touching the ground
+         * adds a tiny extra amount at bottom to stop precision issues
+         * the CheckSphere Radius is slightly smaller and lower down than the actual bottom of the player
+         *      this stops the player from being able to move into an object, phasing into it, and setting the Ground Check to true when
+         *      the player is just clipped into a wall. This also helps with slope detection
+         *      this setup may lead to situations where the player is standing on the very edge of a platform but is technically not grounded
+         */
 
-        //currently this will ground players who touch walls marked as ground
-        //this can be fixed later by checking if the collision normal vector from
-        //this check is NOT horizontal or angled downard
-        if(Physics.CheckCapsule(transform.position - Vector3.up * (0.5f + groundCheckDst), transform.position + Vector3.up * 0.5f, 0.5f, groundLayerMask))
+        //slopt detection still needs work tho
+
+        RaycastHit[] contacts = Physics.SphereCastAll(transform.position + Vector3.down * 0.55f, 0.45f, Vector3.down, groundCheckDst, groundLayerMask);
+        if(contacts.Length == 0)
         {
-            return true;
+            return false;
         }
 
-        return false;
+        float maxSlope = 45f;
+        bool initialGroundCheck = false;
+
+        foreach(RaycastHit hit in contacts)
+        {
+            //the closer the dot product is to 1 the more vertical the normal is or how level the ground is
+            float dotProduct = Vector3.Dot(hit.normal.normalized, Vector3.up);
+
+            //compates the dot product to the pre-determined max slope angle
+            //if slope is too steep, the player will not be considered grounded
+            if (dotProduct > Mathf.Cos(maxSlope * Mathf.Deg2Rad))
+            {
+                initialGroundCheck = true;
+            }
+        }
+
+        //lets the player jump when grounded and sets the variables to allow for variable jump height
+        if (initialGroundCheck)
+        {
+            if (input.isJump)
+            {
+                isJumping = true;
+                jumpStartTime = Time.time;
+            }
+            else
+            {
+                isJumping = false;
+            }
+        }
+
+        return initialGroundCheck;
     }
 }
