@@ -80,6 +80,8 @@ public class PlayerController : MonoBehaviour
         horizontalMovement = DragForce(horizontalMovement);
         verticalMovement = DragForce(verticalMovement);
 
+        verticalMovement = CheckAbovePlayer(verticalMovement);
+
         //calculates the players movement for the next physics step using values from the player input script
         appliedMovement = horizontalMovement + verticalMovement;
 
@@ -135,7 +137,6 @@ public class PlayerController : MonoBehaviour
 
         return dragAdjustedMovement;
     }
-
     bool GroundCheck()
     {
         /*
@@ -186,5 +187,13 @@ public class PlayerController : MonoBehaviour
         }
 
         return initialGroundCheck;
+    }
+
+    Vector3 CheckAbovePlayer(Vector3 _inputVector)
+    {
+        //do rb sweeptest all to get collision point
+        //if no collision point, return original vector
+        //if there is a collision point, recalculate vertical movement vector to stop player at that point and disable "is jumping"
+        return _inputVector;
     }
 }
