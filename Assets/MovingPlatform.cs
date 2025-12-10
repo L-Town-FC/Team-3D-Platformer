@@ -35,6 +35,11 @@ public class MovingPlatform : MonoBehaviour
         rb = Platform.GetComponent<Rigidbody>();
     }
 
+    private void Update()
+    {
+
+    }
+
     private void FixedUpdate()
     {
         //halts the platform for set amount of time

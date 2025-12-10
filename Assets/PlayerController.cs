@@ -5,8 +5,6 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     //TODO: Create slope handling
-    //TODO: Add extra variable called "outside movement" that is added to appliedMovement and make it public. Allows other scripts on objects (like moving platforms, grav lifts, etc)
-    //to add movement to player but keeps physics consistent
 
     Rigidbody rb;
     PlayerInput input; //player input script
@@ -84,7 +82,6 @@ public class PlayerController : MonoBehaviour
 
         //calculates the players movement for the next physics step using values from the player input script
         appliedMovement = horizontalMovement + verticalMovement;
-
 
         //to make camera movement smoother, the FPS camera rotates independently of the player
         //the player rigidbody then rotates to match the new camera forward position
@@ -194,6 +191,13 @@ public class PlayerController : MonoBehaviour
         //do rb sweeptest all to get collision point
         //if no collision point, return original vector
         //if there is a collision point, recalculate vertical movement vector to stop player at that point and disable "is jumping"
+
+        if(Physics.SphereCast(transform.position + Vector3.up * 0.5f, 0.5f, Vector3.up, out RaycastHit hitInfo, groundLayerMask))
+        {
+            _inputVector.y = Mathf.Clamp(_inputVector.y, -Mathf.Infinity, 0f);
+        }
+
         return _inputVector;
     }
+
 }
