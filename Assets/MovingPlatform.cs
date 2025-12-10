@@ -28,16 +28,30 @@ public class MovingPlatform : MonoBehaviour
     float haltLength = 1f; //length of time platform is stopped at a waypoint
     float haltStartTime = 0f; //holds the time when the platform starts halting
 
+    Vector3 lastPosition = Vector3.zero;
+    BoxCollider boxCollider;
+    [SerializeField]
+    LayerMask playerMask;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Platform = transform.GetChild(0).gameObject;
         rb = Platform.GetComponent<Rigidbody>();
+        boxCollider = Platform.GetComponent<BoxCollider>();
+        lastPosition = rb.position;
     }
 
     private void Update()
     {
-
+        //checks if the player is touching the platform, if they are add the platforms movements to the player
+        //ISSUE: the player will stick to the platform even when player is touching side opposite the direction it is moving
+        //1.05f values are just arbitrary values to create a small buffer that guarentees the platform touches the player
+        RaycastHit[] hits = Physics.BoxCastAll(rb.position, boxCollider.bounds.extents * 1.05f, rb.position - lastPosition, rb.rotation, 1.05f, playerMask);
+        foreach(RaycastHit hit in hits)
+        {
+            hit.transform.GetComponent<PlayerController>().externalMovement = rb.position - lastPosition;
+        }
     }
 
     private void FixedUpdate()
@@ -56,6 +70,7 @@ public class MovingPlatform : MonoBehaviour
 
         //smoothly increases the speed from stop then decerases to a stop when it reaches the next waypoint
         rb.MovePosition(Vector3.SmoothDamp(rb.position, PlatformWaypoints[nextWaypoint].position, ref velocity, timeBetweenWaypoints));
+        lastPosition = rb.position;
 
         //0.001f value is arbitrary
         //just needed a small value in order to check that the platform has reached the waypoint position and avoid floating point precision comparison issues

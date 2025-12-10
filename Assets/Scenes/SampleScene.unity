@@ -820,12 +820,12 @@ MonoBehaviour:
   gravityForce: 5
   jumpForce: 30
   minAndMaxVerticalMovementSpeed: {x: -30, y: 30}
-  externalMovement: {x: 0, y: 0, z: 0}
   maxJumpHoldTime: 0.2
   isGrounded: 0
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 63
+  externalMovement: {x: 0, y: 0, z: 0}
 --- !u!114 &519342559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1016,6 +1016,9 @@ MonoBehaviour:
   timeBetweenWaypoints: 1
   snakeMovement: 0
   haltLength: 1
+  playerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!4 &520383664
 Transform:
   m_ObjectHideFlags: 0

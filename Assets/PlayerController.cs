@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviour
     bool isGrounded = false;
     [SerializeField]
     LayerMask groundLayerMask; //masks out player layer so groundcheck checks all colliders except the players
+    public Vector3 externalMovement = Vector3.zero;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -93,7 +94,9 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         //moves the player
-        rb.Move(rb.position + appliedMovement * Time.fixedDeltaTime, rb.rotation * appliedRotation);
+        //ISSUE: if multiple scripts are trying to edit external movement only one of them will be used
+        //possible fix is to have the external movement be added to not set by other scripts and then zeroed out by player script after movement is applied
+        rb.Move(rb.position + appliedMovement * Time.fixedDeltaTime + externalMovement, rb.rotation * appliedRotation);
     }
 
     Vector3 ClampMovement(Vector3 _movement, float lowerLimit, float upperLimit)
