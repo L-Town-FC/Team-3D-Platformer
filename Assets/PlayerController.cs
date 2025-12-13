@@ -97,6 +97,11 @@ public class PlayerController : MonoBehaviour
         //ISSUE: if multiple scripts are trying to edit external movement only one of them will be used
         //possible fix is to have the external movement be added to not set by other scripts and then zeroed out by player script after movement is applied
         rb.Move(rb.position + appliedMovement * Time.fixedDeltaTime + externalMovement, rb.rotation * appliedRotation);
+
+        if (isGrounded)
+        {
+            externalMovement = Vector3.zero;
+        }
     }
 
     Vector3 ClampMovement(Vector3 _movement, float lowerLimit, float upperLimit)
