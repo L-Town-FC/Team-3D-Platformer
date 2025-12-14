@@ -4,8 +4,6 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
-    //TODO: Create slope handling
-
     Rigidbody rb;
     PlayerInput input; //player input script
     [SerializeField]
@@ -15,6 +13,7 @@ public class PlayerController : MonoBehaviour
     float speed = 12f;
     [SerializeField]
     float gravityForce = 5f;
+    [SerializeField, Range(0f, 0.5f)]
     float groundCheckDst = 0.05f; //small distance so player doesnt accidentally just brute force through ground when falling
     [SerializeField]
     float jumpForce = 30f;
@@ -29,6 +28,8 @@ public class PlayerController : MonoBehaviour
     
     [SerializeField]
     bool isGrounded = false;
+    Vector3 groundNormal = Vector3.zero; //used to calculate the slope the player is on
+    float maxSlopeAngle = 45; //degrees
     [SerializeField]
     LayerMask groundLayerMask; //masks out player layer so groundcheck checks all colliders except the players
     public Vector3 externalMovement = Vector3.zero;
@@ -46,11 +47,8 @@ public class PlayerController : MonoBehaviour
     {
         rb.linearVelocity = Vector3.zero; //stops residual velocity from collisions from affecting player movement
 
-        isGrounded = GroundCheck();
-
         //splits movement into horizontal and vertical parts to make dealing with
         //gravity and inputs easier
-        //does NOT handle slopes right now
         Vector3 horizontalMovement = transform.TransformDirection(input.movementInput) + Vector3.ProjectOnPlane(appliedMovement, Vector3.up);
         Vector3 verticalMovement = Vector3.up * appliedMovement.y;
 
@@ -61,8 +59,11 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            verticalMovement = Vector3.zero;
+            verticalMovement = Vector3.down * 0.5f;
         }
+
+        //sets variables for jumping
+        JumpCheck();
 
         if (input.isJump && isJumping)
         {
@@ -88,6 +89,7 @@ public class PlayerController : MonoBehaviour
         //the player rigidbody then rotates to match the new camera forward position
         //may need to extend this to RB movement as well
         appliedRotation = Quaternion.FromToRotation(transform.forward, Vector3.ProjectOnPlane(Camera.main.transform.forward, transform.up));
+
     }
 
     //forces and movements are actually exerted here
@@ -96,7 +98,19 @@ public class PlayerController : MonoBehaviour
         //moves the player
         //ISSUE: if multiple scripts are trying to edit external movement only one of them will be used
         //possible fix is to have the external movement be added to not set by other scripts and then zeroed out by player script after movement is applied
+
+        appliedMovement = ApplySlopeMovement(appliedMovement);
+
         rb.Move(rb.position + appliedMovement * Time.fixedDeltaTime + externalMovement, rb.rotation * appliedRotation);
+
+        if (isGrounded)
+        {
+            externalMovement = Vector3.zero;
+        }
+
+        //sets isGrounded to false every fixed update call because OnCollisionEnter will always determine if its true or not before fixed update is called
+        isGrounded = false;
+        groundNormal = Vector3.zero;
     }
 
     Vector3 ClampMovement(Vector3 _movement, float lowerLimit, float upperLimit)
@@ -137,43 +151,11 @@ public class PlayerController : MonoBehaviour
 
         return dragAdjustedMovement;
     }
-    bool GroundCheck()
+
+    void JumpCheck()
     {
-        /*
-         * Checks if capsule matching player is touching the ground
-         * adds a tiny extra amount at bottom to stop precision issues
-         * the CheckSphere Radius is slightly smaller and lower down than the actual bottom of the player
-         *      this stops the player from being able to move into an object, phasing into it, and setting the Ground Check to true when
-         *      the player is just clipped into a wall. This also helps with slope detection
-         *      this setup may lead to situations where the player is standing on the very edge of a platform but is technically not grounded
-         */
-
-        //slopt detection still needs work tho
-
-        RaycastHit[] contacts = Physics.SphereCastAll(transform.position + Vector3.down * 0.55f, 0.45f, Vector3.down, groundCheckDst, groundLayerMask);
-        if(contacts.Length == 0)
-        {
-            return false;
-        }
-
-        float maxSlope = 45f;
-        bool initialGroundCheck = false;
-
-        foreach(RaycastHit hit in contacts)
-        {
-            //the closer the dot product is to 1 the more vertical the normal is or how level the ground is
-            float dotProduct = Vector3.Dot(hit.normal.normalized, Vector3.up);
-
-            //compates the dot product to the pre-determined max slope angle
-            //if slope is too steep, the player will not be considered grounded
-            if (dotProduct > Mathf.Cos(maxSlope * Mathf.Deg2Rad))
-            {
-                initialGroundCheck = true;
-            }
-        }
-
-        //lets the player jump when grounded and sets the variables to allow for variable jump height
-        if (initialGroundCheck)
+        //checks if the player can start a jump and what time the jump started
+        if (isGrounded)
         {
             if (input.isJump)
             {
@@ -185,8 +167,6 @@ public class PlayerController : MonoBehaviour
                 isJumping = false;
             }
         }
-
-        return initialGroundCheck;
     }
 
     Vector3 CheckAbovePlayer(Vector3 _inputVector)
@@ -203,4 +183,40 @@ public class PlayerController : MonoBehaviour
         return _inputVector;
     }
 
+    Vector3 ApplySlopeMovement(Vector3 _inputVector)
+    {
+        //calculate slope angle
+
+        //if the slope is too steep, cancel movement in that direction and possible add downward movement to player so they slide
+
+        //take ground normal and use it to project horizontal components of input vector onto sloped plane
+        
+        //use sin and cosine to convert horizontal components of _input vector and turn them into partial horizontal and partial vertical
+
+        //return the new vector
+
+        return _inputVector;
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        /*
+         * function triggers every fixedUpdate frame that a collision is occurring with the players collider
+         * Vector3.down * (0.5f) sets the collision check point exactly at the place in the player capsule collider where it transitions from
+         * a cylinder to a sphere. to avoid issue where player becomes grounded when just touching a wall, a small bufferDst was added to lower the point onto the sphere
+         * this point can only be hit on a steep slope and not a flat wall
+         */
+
+        float bufferDst = 0.01f; //small distance to help false positive grounding
+        
+        foreach(ContactPoint contact in collision.contacts)
+        {
+            if(contact.point.y > transform.TransformPoint(Vector3.down * (0.5f + bufferDst)).y){
+                continue;
+            }
+
+            isGrounded = true;
+            groundNormal = contact.normal;
+        }
+    }
 }
