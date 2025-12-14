@@ -4,27 +4,24 @@ using UnityEngine.InputSystem;
 
 public class MainMenuController : MonoBehaviour
 {
-    [SerializeField] private string sceneToLoad = "SampleScene";
+    [SerializeField] private string levelSelectScene = "LevelSelect";
 
     private void Update()
     {
-        // Keyboard Enter
-        if (Keyboard.current != null && Keyboard.current.enterKey.wasPressedThisFrame)
-            StartGame();
+        if (Keyboard.current == null)
+            return;
 
-        // Optional: also allow Space
-        if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
-            StartGame();
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+            GoToLevelSelect();
+
+        // Optional: also allow Enter
+        if (Keyboard.current.enterKey.wasPressedThisFrame)
+            GoToLevelSelect();
     }
 
-    public void StartGame()
+    private void GoToLevelSelect()
     {
-        Time.timeScale = 1f; // safety if you ever return from pause
-        SceneManager.LoadScene(sceneToLoad);
-    }
-
-    public void Quit()
-    {
-        Application.Quit();
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(levelSelectScene);
     }
 }
