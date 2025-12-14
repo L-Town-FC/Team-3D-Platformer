@@ -16,8 +16,17 @@ public class PauseManager : MonoBehaviour
     [Header("Scenes")]
     [SerializeField] private string mainMenuSceneName = "MainMenu";
 
+    [Header("Dependencies")]
+    [SerializeField] private DeathManager deathManager; // drag your DeathManager here
+
     private bool isPaused;
     private int selectedIndex;
+
+    private void Awake()
+    {
+        if (deathManager == null)
+            deathManager = FindFirstObjectByType<DeathManager>();
+    }
 
     private void Start()
     {
@@ -43,12 +52,15 @@ public class PauseManager : MonoBehaviour
             pauseAction.action.Disable();
         }
 
-        // Safety: never leave timescale at 0 if object disables
         Time.timeScale = 1f;
     }
 
     private void Update()
     {
+        // If dead, pause menu should never be navigable
+        if (deathManager != null && deathManager.IsDead)
+            return;
+
         if (!isPaused)
             return;
 
@@ -71,11 +83,21 @@ public class PauseManager : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        // If we became dead while paused, force pause off so Death UI owns timescale/UI
+        if (deathManager != null && deathManager.IsDead && isPaused)
+            SetPaused(false);
+    }
+
     private void OnPause(InputAction.CallbackContext ctx)
     {
+        // Ignore pause toggles while dead
+        if (deathManager != null && deathManager.IsDead)
+            return;
+
         SetPaused(!isPaused);
 
-        // When pausing, default the selection to Resume (0)
         if (isPaused)
         {
             selectedIndex = 0;
@@ -123,7 +145,6 @@ public class PauseManager : MonoBehaviour
         if (optionTexts == null || optionTexts.Length < 2)
             return;
 
-        // Enforce labels in case you want it fully standardized
         optionTexts[0].text = (selectedIndex == 0 ? cursor : "  ") + "Resume";
         optionTexts[1].text = (selectedIndex == 1 ? cursor : "  ") + "Main Menu";
     }
