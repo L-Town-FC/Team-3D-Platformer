@@ -4,6 +4,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
+    //TODO: movement up slope is slowed down a lot. Player should be able to move same speed on slope as flat surface
+    //TODO: player bounces down steep slopes instead of sliding down them
+
     Rigidbody rb;
     PlayerInput input; //player input script
     [SerializeField]
@@ -13,8 +16,6 @@ public class PlayerController : MonoBehaviour
     float speed = 12f;
     [SerializeField]
     float gravityForce = 5f;
-    [SerializeField, Range(0f, 0.5f)]
-    float groundCheckDst = 0.05f; //small distance so player doesnt accidentally just brute force through ground when falling
     [SerializeField]
     float jumpForce = 30f;
     [SerializeField]
@@ -30,6 +31,7 @@ public class PlayerController : MonoBehaviour
     bool isGrounded = false;
     Vector3 groundNormal = Vector3.zero; //used to calculate the slope the player is on
     float maxSlopeAngle = 45; //degrees
+    float currentSlopeAngle = 0f;
     [SerializeField]
     LayerMask groundLayerMask; //masks out player layer so groundcheck checks all colliders except the players
     public Vector3 externalMovement = Vector3.zero;
@@ -47,6 +49,8 @@ public class PlayerController : MonoBehaviour
     {
         rb.linearVelocity = Vector3.zero; //stops residual velocity from collisions from affecting player movement
 
+        Debug.DrawRay(transform.position + Vector3.down, groundNormal * 5f, Color.red);
+
         //splits movement into horizontal and vertical parts to make dealing with
         //gravity and inputs easier
         Vector3 horizontalMovement = transform.TransformDirection(input.movementInput) + Vector3.ProjectOnPlane(appliedMovement, Vector3.up);
@@ -55,7 +59,7 @@ public class PlayerController : MonoBehaviour
         //need to figure out how to properly cancel gravity while still letting players slide down slopes
         if (!isGrounded)
         {
-            verticalMovement += ApplyGravity();
+            (horizontalMovement, verticalMovement) = ApplyGravity(horizontalMovement, verticalMovement);
         }
         else
         {
@@ -98,7 +102,7 @@ public class PlayerController : MonoBehaviour
         //moves the player
         //ISSUE: if multiple scripts are trying to edit external movement only one of them will be used
         //possible fix is to have the external movement be added to not set by other scripts and then zeroed out by player script after movement is applied
-
+        
         appliedMovement = ApplySlopeMovement(appliedMovement);
 
         rb.Move(rb.position + appliedMovement * Time.fixedDeltaTime + externalMovement, rb.rotation * appliedRotation);
@@ -108,27 +112,44 @@ public class PlayerController : MonoBehaviour
             externalMovement = Vector3.zero;
         }
 
-        //sets isGrounded to false every fixed update call because OnCollisionEnter will always determine if its true or not before fixed update is called
-        isGrounded = false;
-        groundNormal = Vector3.zero;
+        //sets ground variables to false every fixed update call because OnCollisionEnter will always determine if its true or not before next fixed update is called
+        ResetGroundVariables();
     }
 
     Vector3 ClampMovement(Vector3 _movement, float lowerLimit, float upperLimit)
     {
+        //clamps inputs speeds by set limits
         float finalSpeed = Mathf.Clamp(_movement.magnitude, lowerLimit, upperLimit);
 
         return _movement.normalized * finalSpeed;
     }
 
-    Vector3 ApplyGravity()
+    (Vector3, Vector3) ApplyGravity(Vector3 _horizontalMovement, Vector3 _verticalMovement)
     {
-        return Vector3.down * gravityForce;
+        //if the player is on a steep slope, gravity should push them down it instead of being set to zero
+        //if they arent on a steep slope, no need to force them downward by applying a diaganol force down slope
+
+        if(currentSlopeAngle > maxSlopeAngle)
+        {
+            Vector3 slopeAdjustedVector = Vector3.ProjectOnPlane(_verticalMovement, groundNormal);
+            _verticalMovement = slopeAdjustedVector.y * Vector3.up;
+            _horizontalMovement += new Vector3(slopeAdjustedVector.x, 0f, slopeAdjustedVector.z);
+        }
+        else
+        {
+            _verticalMovement += Vector3.down * gravityForce;
+        }
+
+
+        return (_horizontalMovement, _verticalMovement);
     }
 
     Vector3 DragForce(Vector3 _startingMovement)
     {
         //will potentially have to move to handle separate script since this can get complicated
         //when dealing with moving on different materials
+
+        //slows the player down by creating a movement vector oppsite the direction they are moving
 
         float dragAmount; //player experiences more drag when grounded than when in the air
         if (isGrounded)
@@ -171,10 +192,8 @@ public class PlayerController : MonoBehaviour
 
     Vector3 CheckAbovePlayer(Vector3 _inputVector)
     {
-        //do rb sweeptest all to get collision point
-        //if no collision point, return original vector
-        //if there is a collision point, recalculate vertical movement vector to stop player at that point and disable "is jumping"
-
+        //checks if the players head is current hitting anything
+        //removes upward movement if this is the case
         if(Physics.SphereCast(transform.position + Vector3.up * 0.5f, 0.5f, Vector3.up, out RaycastHit hitInfo, groundLayerMask))
         {
             _inputVector.y = Mathf.Clamp(_inputVector.y, -Mathf.Infinity, 0f);
@@ -185,17 +204,40 @@ public class PlayerController : MonoBehaviour
 
     Vector3 ApplySlopeMovement(Vector3 _inputVector)
     {
-        //calculate slope angle
+        //final slope check before player movement
+        //converts the horizontal movement of the player partially into vertical movement to match the angle of the slope the player is on
+        Vector3 horizontalMovementProjectedOnSlope = Vector3.ProjectOnPlane(new Vector3(_inputVector.x, 0f, _inputVector.z), groundNormal);
 
-        //if the slope is too steep, cancel movement in that direction and possible add downward movement to player so they slide
+        //if the player is on a slope of less than the max allowed slope angle, nothing further needs to be done
+        if(currentSlopeAngle < maxSlopeAngle)
+        {
+            return _inputVector.y * Vector3.up + horizontalMovementProjectedOnSlope;
+        }
 
-        //take ground normal and use it to project horizontal components of input vector onto sloped plane
-        
-        //use sin and cosine to convert horizontal components of _input vector and turn them into partial horizontal and partial vertical
+        /*
+         * if the player is on a steeper slope, find the vector component that goes up the slope and remove if from the players movement.
+         * this means the player can move down the slope or horizontally, but not up the slope
+         */
 
-        //return the new vector
 
-        return _inputVector;
+        //projects the global "up" onto the sloped surface to get a vector that
+        //has no horizontal component and points to top of slope
+        Vector3 upProjectedSlopeVector = Vector3.ProjectOnPlane(Vector3.up, groundNormal); 
+
+        //using the upProject vector, the component of the movement vector that is aligns with it can be calculated
+        Vector3 projectedMovementUpSlope = Vector3.Project(horizontalMovementProjectedOnSlope, upProjectedSlopeVector); 
+
+        //this component is then subtracted from the intial input vector, thus removing any movement "up slope"
+        return _inputVector - projectedMovementUpSlope;
+    }
+
+    void ResetGroundVariables()
+    {
+        //these variables are used for player logic when the player is grounded or not
+        //needs to be reset every fixed update or else player controller will think its grounded even when its not
+        isGrounded = false;
+        groundNormal = Vector3.zero;
+        currentSlopeAngle = 0f;
     }
 
     private void OnCollisionStay(Collision collision)
@@ -215,8 +257,16 @@ public class PlayerController : MonoBehaviour
                 continue;
             }
 
-            isGrounded = true;
             groundNormal = contact.normal;
+
+            currentSlopeAngle = Vector3.Angle(groundNormal, Vector3.up);
+
+            if (currentSlopeAngle > maxSlopeAngle)
+            {
+                continue;
+            }
+
+            isGrounded = true;
         }
     }
 }
