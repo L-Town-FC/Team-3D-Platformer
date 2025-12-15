@@ -6,17 +6,31 @@ public class MainMenuController : MonoBehaviour
 {
     [SerializeField] private string levelSelectScene = "LevelSelect";
 
+    private PlayerControls controls;
+    private InputAction submitAction;
+
+    private void Awake()
+    {
+        controls = new PlayerControls();
+        submitAction = controls.UI.Submit;
+    }
+
+    private void OnEnable()
+    {
+        controls.UI.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controls.UI.Disable();
+    }
+
     private void Update()
     {
-        if (Keyboard.current == null)
-            return;
-
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        if (submitAction != null && submitAction.WasPressedThisFrame())
+        {
             GoToLevelSelect();
-
-        // Optional: also allow Enter
-        if (Keyboard.current.enterKey.wasPressedThisFrame)
-            GoToLevelSelect();
+        }
     }
 
     private void GoToLevelSelect()

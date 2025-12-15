@@ -3671,6 +3671,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 5592229119203436248, guid: d715010f6e805d68e834e193c18acb03, type: 3}
+      propertyPath: input
+      value: 
+      objectReference: {fileID: 8789770469873566045}
+    - target: {fileID: 5592229119203436248, guid: d715010f6e805d68e834e193c18acb03, type: 3}
+      propertyPath: cameraTarget
+      value: 
+      objectReference: {fileID: 1441359924}
+    - target: {fileID: 5592229119203436248, guid: d715010f6e805d68e834e193c18acb03, type: 3}
+      propertyPath: cinemachineCamera
+      value: 
+      objectReference: {fileID: 1750507883}
     - target: {fileID: 6635767576865755617, guid: d715010f6e805d68e834e193c18acb03, type: 3}
       propertyPath: m_LocalPosition.x
       value: 12.3
@@ -3716,6 +3728,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d715010f6e805d68e834e193c18acb03, type: 3}
+--- !u!114 &8789770469873566045 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6974700603725050712, guid: d715010f6e805d68e834e193c18acb03, type: 3}
+  m_PrefabInstance: {fileID: 8789770469873566044}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1548fa472d70eb438348d8c2069b4cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInput
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
