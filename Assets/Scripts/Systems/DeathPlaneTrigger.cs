@@ -1,14 +1,18 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Collider))]
 public class DeathPlaneTrigger : MonoBehaviour
 {
     [SerializeField] private string playerTag = "Player";
-    [SerializeField] private DeathMenuController deathManager;
+
+    private DeathMenuController deathMenu;
 
     private void Awake()
     {
-        if (deathManager == null)
-            deathManager = FindFirstObjectByType<DeathMenuController>();
+        // Find in the active scene at runtime (works in every level)
+        deathMenu = FindFirstObjectByType<DeathMenuController>();
+        if (deathMenu == null)
+            Debug.LogWarning("DeathPlaneTrigger: No DeathMenuController found in scene.");
     }
 
     private void OnTriggerEnter(Collider other)
@@ -16,7 +20,7 @@ public class DeathPlaneTrigger : MonoBehaviour
         if (!other.CompareTag(playerTag))
             return;
 
-        if (deathManager != null)
-            deathManager.Die();
+        if (deathMenu != null)
+            deathMenu.Die();
     }
 }
