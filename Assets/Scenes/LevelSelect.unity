@@ -904,16 +904,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1776667750}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 346d0d04e2adaab24b268bd77786203e, type: 3}
+  m_Script: {fileID: 11500000, guid: e2fc65c4a060d41589871ce916c1ac28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelSelectController
-  scenes:
-  - SampleScene
-  - Level2
+  panel: {fileID: 217045830}
   optionTexts:
   - {fileID: 1220976624}
   - {fileID: 1080227430}
   cursor: '> '
+  useNavigateRepeatGuard: 1
+  scenes:
+  - SampleScene
+  - Level2
 --- !u!4 &1776667752
 Transform:
   m_ObjectHideFlags: 0

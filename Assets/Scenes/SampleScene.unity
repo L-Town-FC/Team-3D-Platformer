@@ -383,7 +383,7 @@ GameObject:
   - component: {fileID: 73985551}
   - component: {fileID: 73985550}
   m_Layer: 0
-  m_Name: PauseManager
+  m_Name: PauseMenuController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -398,15 +398,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 73985549}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08f488ce3ec122072b6cfda2b4995255, type: 3}
+  m_Script: {fileID: 11500000, guid: 9f814ea64b70a5c83b39ba0238ec7ba1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseManager
-  pausePanel: {fileID: 2142879016}
+  panel: {fileID: 2142879016}
   optionTexts:
   - {fileID: 1393722840}
   - {fileID: 646553301}
   cursor: '> '
-  pauseAction: {fileID: -1742889472869178165, guid: ac7518a948995dc478e419f30856031e, type: 3}
+  useNavigateRepeatGuard: 1
   mainMenuSceneName: MainMenu
   deathManager: {fileID: 0}
 --- !u!4 &73985551
@@ -1900,7 +1900,7 @@ GameObject:
   - component: {fileID: 736812145}
   - component: {fileID: 736812146}
   m_Layer: 0
-  m_Name: DeathManager
+  m_Name: DeathMenuController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1915,14 +1915,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 736812144}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b015c350dd260f871b3de4b14348ab41, type: 3}
+  m_Script: {fileID: 11500000, guid: 34a4b4161f4f1b14a85caadf23abf284, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeathManager
-  deathPanel: {fileID: 1748781241}
+  panel: {fileID: 1748781241}
   optionTexts:
   - {fileID: 174594739}
   - {fileID: 2146933827}
   cursor: '> '
+  useNavigateRepeatGuard: 1
   mainMenuSceneName: MainMenu
 --- !u!114 &736812146
 MonoBehaviour:
@@ -1937,7 +1938,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeathPlaneTrigger
   playerTag: Player
-  deathManager: {fileID: 0}
+  deathManager: {fileID: 736812145}
 --- !u!4 &736812147
 Transform:
   m_ObjectHideFlags: 0
@@ -3577,7 +3578,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1748781242
 RectTransform:
   m_ObjectHideFlags: 0

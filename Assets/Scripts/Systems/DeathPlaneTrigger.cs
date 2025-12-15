@@ -3,12 +3,12 @@ using UnityEngine;
 public class DeathPlaneTrigger : MonoBehaviour
 {
     [SerializeField] private string playerTag = "Player";
-    [SerializeField] private DeathManager deathManager;
+    [SerializeField] private DeathMenuController deathManager;
 
     private void Awake()
     {
         if (deathManager == null)
-            deathManager = FindFirstObjectByType<DeathManager>();
+            deathManager = FindFirstObjectByType<DeathMenuController>();
     }
 
     private void OnTriggerEnter(Collider other)

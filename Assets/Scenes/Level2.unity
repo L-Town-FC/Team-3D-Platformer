@@ -383,7 +383,7 @@ GameObject:
   - component: {fileID: 73985551}
   - component: {fileID: 73985550}
   m_Layer: 0
-  m_Name: PauseManager
+  m_Name: PauseMenuController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -398,15 +398,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 73985549}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08f488ce3ec122072b6cfda2b4995255, type: 3}
+  m_Script: {fileID: 11500000, guid: 9f814ea64b70a5c83b39ba0238ec7ba1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseManager
-  pausePanel: {fileID: 2142879016}
+  panel: {fileID: 2142879016}
   optionTexts:
   - {fileID: 1763260267}
   - {fileID: 938568888}
   cursor: '> '
-  pauseAction: {fileID: -1742889472869178165, guid: ac7518a948995dc478e419f30856031e, type: 3}
+  useNavigateRepeatGuard: 1
   mainMenuSceneName: MainMenu
   deathManager: {fileID: 0}
 --- !u!4 &73985551
@@ -3587,14 +3587,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1917791251}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b015c350dd260f871b3de4b14348ab41, type: 3}
+  m_Script: {fileID: 11500000, guid: 34a4b4161f4f1b14a85caadf23abf284, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeathManager
-  deathPanel: {fileID: 451513407}
+  panel: {fileID: 451513407}
   optionTexts:
   - {fileID: 1666170784}
   - {fileID: 824781631}
   cursor: '> '
+  useNavigateRepeatGuard: 1
   mainMenuSceneName: MainMenu
 --- !u!4 &1917791254
 Transform:
