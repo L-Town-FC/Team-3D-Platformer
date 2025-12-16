@@ -3696,7 +3696,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6941840748759370631, guid: 4f7b59583339ed4caa6cded9deba6045, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.36046
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6941840748759370631, guid: 4f7b59583339ed4caa6cded9deba6045, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3740,7 +3740,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8889110506406722529, guid: 4f7b59583339ed4caa6cded9deba6045, type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9142865784742713085, guid: 4f7b59583339ed4caa6cded9deba6045, type: 3}
+      propertyPath: m_UseGravity
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9142865784742713085, guid: 4f7b59583339ed4caa6cded9deba6045, type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9142865784742713085, guid: 4f7b59583339ed4caa6cded9deba6045, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
