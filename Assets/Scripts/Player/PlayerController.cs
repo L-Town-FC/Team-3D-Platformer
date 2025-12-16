@@ -2,7 +2,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamegeable
 {
     //TODO: movement up slope is slowed down a lot. Player should be able to move same speed on slope as flat surface
     //TODO: player bounces down steep slopes instead of sliding down them
@@ -36,11 +36,17 @@ public class PlayerController : MonoBehaviour
     LayerMask groundLayerMask; //masks out player layer so groundcheck checks all colliders except the players
     public Vector3 externalMovement = Vector3.zero;
 
+    PlayerCamera playerCamera;
+
+    public float health { get; set; }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         input = GetComponent<PlayerInput>();
+        playerCamera = GetComponent<PlayerCamera>();
+        health = 100f;
     }
 
     // Update is called once per frame
@@ -238,6 +244,23 @@ public class PlayerController : MonoBehaviour
         isGrounded = false;
         groundNormal = Vector3.zero;
         currentSlopeAngle = 0f;
+    }
+
+    public void TakeDamage(float damageAmount)
+    {
+        //damages players and checks if they should be dead or not
+        health -= damageAmount;
+        if(health <= 0f)
+        {
+            Die();
+        }
+    }
+
+    public void Die()
+    {
+        DeathMenuController deathMenu = FindFirstObjectByType<DeathMenuController>();
+        playerCamera.enabled = false; //disables players ability to move the camera when they are dead
+        deathMenu.Die();        
     }
 
     private void OnCollisionStay(Collision collision)

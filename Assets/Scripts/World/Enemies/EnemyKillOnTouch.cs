@@ -20,7 +20,12 @@ public class EnemyKillOnTouch : MonoBehaviour
             return;
 
         if (deathMenu != null)
-            deathMenu.Die();
+            if(collision.transform.TryGetComponent<IDamegeable>(out IDamegeable _damageableInterface))
+            {
+                //this could also just be _damageableInterface.Die(), but wanted to test out take damage function
+                _damageableInterface.TakeDamage(_damageableInterface.health);
+            }
+            //deathMenu.Die();
     }
 
     // If you decide to use Trigger instead of Collision, swap to this and set your enemy collider to Is Trigger.
