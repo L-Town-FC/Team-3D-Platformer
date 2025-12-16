@@ -33,6 +33,11 @@ public class PlayerInput : MonoBehaviour
         playerActionMap.Enable();
     }
 
+    private void OnDisable()
+    {
+        playerActionMap.Disable();
+    }
+
     void Update()
     {
         Vector2 move = playerActionMap.FindAction("Move").ReadValue<Vector2>();
