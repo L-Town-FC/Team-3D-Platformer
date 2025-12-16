@@ -19,6 +19,8 @@ public class PlayerCamera : MonoBehaviour
 
     private void Awake()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+
         if (cameraTarget != null)
         {
             Vector3 e = cameraTarget.rotation.eulerAngles;
