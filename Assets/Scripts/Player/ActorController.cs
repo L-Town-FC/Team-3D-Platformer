@@ -62,7 +62,7 @@ public class ActorController : MonoBehaviour
 
         //calculates the players movement for the next physics step using values from the player input script
         appliedMovement = horizontalMovement + verticalMovement;
-        
+
         //applies drag force to object, slowing them down
         appliedMovement = DragForce(appliedMovement);
 
