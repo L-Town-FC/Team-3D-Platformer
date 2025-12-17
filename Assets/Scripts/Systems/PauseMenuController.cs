@@ -52,6 +52,7 @@ public class PauseMenuController : MenuControllerBase
         Time.timeScale = 0f;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        
     }
 
     protected override void OnClosed()

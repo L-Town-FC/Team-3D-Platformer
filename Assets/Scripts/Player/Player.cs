@@ -10,9 +10,7 @@ public class Player : ActorController, IDamegeable
     float jumpForce = 30f;
     [SerializeField]
     float maxJumpHoldTime = 0.2f;
-    PlayerCamera playerCamera;
-    //protected override Vector3 inputVector { get; set; } not sure why this has to be disabled, I assumed this was required
-    //protected override Vector3 newTransformForward { get; set; }
+    PlayerCamera playerCamera; //access to camera so it can be disabled during death or game pause
     float maxHealth = 100f;
     public float health { get; set; }
 
