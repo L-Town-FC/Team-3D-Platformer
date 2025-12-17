@@ -1,8 +1,7 @@
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerController : MonoBehaviour
+public class ActorController : MonoBehaviour
 {
     //TODO: movement up slope is slowed down a lot. Player should be able to move same speed on slope as flat surface
     //TODO: player bounces down steep slopes instead of sliding down them

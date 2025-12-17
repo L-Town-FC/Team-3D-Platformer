@@ -57,7 +57,7 @@ public class MovingPlatform : MonoBehaviour
         foreach (RaycastHit hit in hits)
         {
             isTouchingPlayer = true;
-            hit.transform.GetComponent<PlayerController>().externalMovement = rb.position - lastPosition;
+            hit.transform.GetComponent<ActorController>().externalMovement = rb.position - lastPosition;
         }
     }
 

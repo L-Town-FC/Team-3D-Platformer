@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BasicEnemy : PlayerController
+public class BasicEnemy : ActorController
 {
     [SerializeField] private Transform player;
     [SerializeField] private float stopDistance = 0.75f;

@@ -1,6 +1,7 @@
 using UnityEngine;
 
-public class Player : PlayerController, IDamegeable
+[RequireComponent(typeof(PlayerInput))]
+public class Player : ActorController, IDamegeable
 {
     PlayerInput input;
     bool isJumping = false;
