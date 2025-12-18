@@ -163,7 +163,7 @@ public class ActorController : MonoBehaviour
         //if the player is on a slope of less than the max allowed slope angle, nothing further needs to be done
         if (currentSlopeAngle < maxSlopeAngle)
         {
-            return (horizontalComponent, _verticalMovement + verticalComponent);
+            return (_horizontalMovement, _verticalMovement + verticalComponent);
         }
 
         /*
