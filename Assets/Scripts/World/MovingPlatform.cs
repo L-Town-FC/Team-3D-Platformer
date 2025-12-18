@@ -29,32 +29,39 @@ public class MovingPlatform : MonoBehaviour
     float haltStartTime = 0f; //holds the time when the platform starts halting
 
     Vector3 lastPosition = Vector3.zero;
-    BoxCollider boxCollider;
+    protected BoxCollider boxCollider;
+    protected MeshRenderer meshRenderer;
     [SerializeField]
     LayerMask playerMask;
 
+    protected bool isTouchingPlayer = false;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    protected virtual void Start()
     {
         Platform = transform.GetChild(0).gameObject;
         rb = Platform.GetComponent<Rigidbody>();
         boxCollider = Platform.GetComponent<BoxCollider>();
+        meshRenderer = Platform.GetComponent<MeshRenderer>();
         lastPosition = rb.position;
     }
 
-    private void Update()
+    protected virtual void Update()
     {
+        isTouchingPlayer = false;
         //checks if the player is touching the platform, if they are add the platforms movements to the player
         //ISSUE: the player will stick to the platform even when player is touching side opposite the direction it is moving
         //1.05f values are just arbitrary values to create a small buffer that guarentees the platform touches the player
         RaycastHit[] hits = Physics.BoxCastAll(rb.position, boxCollider.bounds.extents * 1.05f, rb.position - lastPosition, rb.rotation, 1.05f, playerMask);
-        foreach(RaycastHit hit in hits)
+
+        foreach (RaycastHit hit in hits)
         {
-            hit.transform.GetComponent<PlayerController>().externalMovement = rb.position - lastPosition;
+            isTouchingPlayer = true;
+            hit.transform.GetComponent<ActorController>().externalMovement = rb.position - lastPosition;
         }
     }
 
-    private void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         //halts the platform for set amount of time
         if (isHalted)
