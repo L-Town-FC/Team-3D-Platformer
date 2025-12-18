@@ -5,8 +5,12 @@ public class DestructibleMovingPlatforms : MovingPlatform, IDamegeable
     //values are arbitrary and for testing purposes
     public float health { get; set; }
     float maxHealth = 100f;
-    float regenAmount = 0.1f; //how fast the platform respawns
-    float damageTaken = 0.2f; //how fast the platform dies while the player is on it
+    [SerializeField]
+    float timeToDestroyPlatform = 10f; //seconds to destroy platform
+    [SerializeField]
+    float timeToRegenPlatform = 5f; //seconds to regen platform
+    float regenAmount; //how fast the platform respawns
+    float damageAmount; //how fast the platform dies while the player is on it
     bool isDead = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -14,6 +18,8 @@ public class DestructibleMovingPlatforms : MovingPlatform, IDamegeable
     {
         base.Start();
         health = maxHealth;
+        damageAmount = maxHealth / timeToDestroyPlatform;
+        regenAmount = maxHealth / timeToRegenPlatform;
     }
 
     // Update is called once per frame
@@ -29,11 +35,15 @@ public class DestructibleMovingPlatforms : MovingPlatform, IDamegeable
 
         //putting a negative numner into take damage is the same as adding health
         //this is always called but since its less than the damage taken modifier, the platform will always break while the player is standing on it
-        TakeDamage(-regenAmount);
 
         if (isTouchingPlayer)
         {
-            TakeDamage(damageTaken);
+            TakeDamage(damageAmount * Time.deltaTime);
+        }
+
+        if (isDead)
+        {
+            TakeDamage(-regenAmount * Time.deltaTime);
         }
 
         //hide and disable collision for the platform while its dead/regenerating

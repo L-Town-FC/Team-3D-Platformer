@@ -2130,7 +2130,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1039230914}
-  - component: {fileID: 1039230916}
   - component: {fileID: 1039230915}
   m_Layer: 0
   m_Name: Basic Destructible Platform
@@ -2170,29 +2169,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e65508c14642eea42a9365076924c770, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DestructibleMovingPlatforms
-  PlatformWaypoints:
-  - {fileID: 520351372}
-  - {fileID: 1550571521}
-  - {fileID: 1927808835}
-  nextWaypoint: 1
-  timeBetweenWaypoints: 1
-  snakeMovement: 0
-  haltLength: 1
-  playerMask:
-    serializedVersion: 2
-    m_Bits: 64
---- !u!114 &1039230916
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1039230913}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9108fe44f52d0ab44b7babea8b0674d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MovingPlatform
   PlatformWaypoints:
   - {fileID: 520351372}
   - {fileID: 1550571521}
