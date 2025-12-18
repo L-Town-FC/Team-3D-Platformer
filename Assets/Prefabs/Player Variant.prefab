@@ -57,11 +57,11 @@ PrefabInstance:
       objectReference: {fileID: 3619068225187507377}
     - target: {fileID: 4778157200799872232, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
       propertyPath: horizontalAndVerticalCameraSensitivity.x
-      value: 0.75
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4778157200799872232, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
       propertyPath: horizontalAndVerticalCameraSensitivity.y
-      value: 0.75
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5705284338004130759, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
       propertyPath: m_Name
@@ -109,7 +109,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1886993309503196399, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8034346371125399296, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 6035387678138205137, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
       insertIndex: -1

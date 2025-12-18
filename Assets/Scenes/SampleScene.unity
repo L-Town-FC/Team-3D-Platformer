@@ -2246,7 +2246,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1039230914}
-  - component: {fileID: 1039230916}
   - component: {fileID: 1039230915}
   m_Layer: 0
   m_Name: Basic Destructible Platform
@@ -2297,29 +2296,8 @@ MonoBehaviour:
   playerMask:
     serializedVersion: 2
     m_Bits: 64
---- !u!114 &1039230916
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1039230913}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9108fe44f52d0ab44b7babea8b0674d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MovingPlatform
-  PlatformWaypoints:
-  - {fileID: 520351372}
-  - {fileID: 1550571521}
-  - {fileID: 1927808835}
-  nextWaypoint: 1
-  timeBetweenWaypoints: 1
-  snakeMovement: 0
-  haltLength: 1
-  playerMask:
-    serializedVersion: 2
-    m_Bits: 64
+  timeToDestroyPlatform: 10
+  timeToRegenPlatform: 5
 --- !u!1 &923692163
 GameObject:
   m_ObjectHideFlags: 0
@@ -2650,31 +2628,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1071258331}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62d54399b04b4fa48a73e121d4937dd4, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e8b78ac948f05a46a6d8339a503172b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachinePanTilt
-  ReferenceFrame: 2
-  RecenterTarget: 0
-  PanAxis:
-    Value: 0
-    Center: 0
-    Range: {x: -180, y: 180}
-    Wrap: 1
-    Recentering:
-      Enabled: 0
-      Wait: 1
-      Time: 2
-    Restrictions: 0
-  TiltAxis:
-    Value: 0
-    Center: 0
-    Range: {x: -70, y: 70}
-    Wrap: 0
-    Recentering:
-      Enabled: 0
-      Wait: 1
-      Time: 2
-    Restrictions: 0
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineHardLookAt
+  LookAtOffset: {x: 0, y: -1, z: 0}
 --- !u!1 &1071286716
 GameObject:
   m_ObjectHideFlags: 0
@@ -3097,11 +3054,11 @@ PrefabInstance:
       objectReference: {fileID: 1071258332}
     - target: {fileID: 5592229119203436248, guid: d715010f6e805d68e834e193c18acb03, type: 3}
       propertyPath: horizontalAndVerticalCameraSensitivity.x
-      value: 0.2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5592229119203436248, guid: d715010f6e805d68e834e193c18acb03, type: 3}
       propertyPath: horizontalAndVerticalCameraSensitivity.y
-      value: 0.2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6635767576865755617, guid: d715010f6e805d68e834e193c18acb03, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4205,7 +4162,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2072497652
 MonoBehaviour:
   m_ObjectHideFlags: 0
