@@ -2816,11 +2816,11 @@ PrefabInstance:
       objectReference: {fileID: 1071258332}
     - target: {fileID: 5592229119203436248, guid: d715010f6e805d68e834e193c18acb03, type: 3}
       propertyPath: horizontalAndVerticalCameraSensitivity.x
-      value: 0.25
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 5592229119203436248, guid: d715010f6e805d68e834e193c18acb03, type: 3}
       propertyPath: horizontalAndVerticalCameraSensitivity.y
-      value: 0.25
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 6635767576865755617, guid: d715010f6e805d68e834e193c18acb03, type: 3}
       propertyPath: m_LocalPosition.x
