@@ -12,7 +12,7 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private Transform cameraTarget;
 
     [SerializeField] private Vector2 minAndMaxCameraTilt = new Vector2(-60f, 75f);
-    [SerializeField] private Vector2 horizontalAndVerticalCameraSensitivity = new Vector2(1f, 1f);
+    [SerializeField] private Vector2 horizontalAndVerticalCameraSensitivity = new Vector2(10f, 10f);
 
     private float yaw;
     private float pitch;
@@ -35,12 +35,13 @@ public class PlayerCamera : MonoBehaviour
 
         Vector2 look = input.cameraInput;
 
-        yaw += look.x * horizontalAndVerticalCameraSensitivity.x;
-        pitch -= look.y * horizontalAndVerticalCameraSensitivity.y;
+        yaw += look.x * horizontalAndVerticalCameraSensitivity.x * Time.deltaTime;
+        pitch -= look.y * horizontalAndVerticalCameraSensitivity.y * Time.deltaTime;
 
         // clamp pitch (tilt)
         pitch = Mathf.Clamp(pitch, minAndMaxCameraTilt.x, minAndMaxCameraTilt.y);
 
+        //this is really bad and shouldnt be done
         cameraTarget.rotation = Quaternion.Euler(pitch, yaw, 0f);
     }
 }
