@@ -53,16 +53,20 @@ public class KeyManager : MonoBehaviour
     /// </summary>
     public void RegisterKeyCollected()
     {
-        // Clamp to avoid going above requiredKeys (e.g., if keys overlap or duplicate triggers).
         CollectedKeys = Mathf.Clamp(CollectedKeys + 1, 0, requiredKeys);
-
-        // Notify listeners (HUD, etc.).
         RaiseChanged();
 
-        // If we have enough keys, activate the portal.
-        if (CollectedKeys >= requiredKeys && portal != null)
-            portal.SetActive(true);
+        // If complete, do NOT activate immediately — run cutscene first.
+        if (CollectedKeys >= requiredKeys)
+        {
+            PortalRevealCutscene cutscene = FindFirstObjectByType<PortalRevealCutscene>();
+            if (cutscene != null)
+                cutscene.Play();
+            else if (portal != null)
+                portal.SetActive(true); // fallback if no cutscene in scene
+        }
     }
+
 
     /// <summary>
     /// Resets key progress and deactivates the portal again.
