@@ -12,11 +12,16 @@ public class DestructibleMovingPlatforms : MovingPlatform, IDamegeable
     float regenAmount; //how fast the platform respawns
     float damageAmount; //how fast the platform dies while the player is on it
     bool isDead = true;
+    bool isDying = false;
+    Material material;
+    ParticleSystem particleSystem;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected override void Start()
     {
         base.Start();
+        material = transform.GetChild(0).GetComponent<MeshRenderer>().material;
+        particleSystem = transform.GetChild(0).GetComponent<ParticleSystem>();
         health = maxHealth;
         damageAmount = maxHealth / timeToDestroyPlatform;
         regenAmount = maxHealth / timeToRegenPlatform;
@@ -36,15 +41,22 @@ public class DestructibleMovingPlatforms : MovingPlatform, IDamegeable
         //putting a negative numner into take damage is the same as adding health
         //this is always called but since its less than the damage taken modifier, the platform will always break while the player is standing on it
 
-        if (isTouchingPlayer)
+        if (isTouchingPlayer || isDying)
         {
             TakeDamage(damageAmount * Time.deltaTime);
+            isDying = true;
         }
 
         if (isDead)
         {
-            TakeDamage(-regenAmount * Time.deltaTime);
+            isDying = false;
+            if (!isTouchingPlayer)
+            {
+                TakeDamage(-regenAmount * Time.deltaTime);
+            }
         }
+
+        material.SetFloat("_Health", health);
 
         //hide and disable collision for the platform while its dead/regenerating
         base.boxCollider.enabled = !isDead;
@@ -62,7 +74,7 @@ public class DestructibleMovingPlatforms : MovingPlatform, IDamegeable
         health -= damage;
         health = Mathf.Clamp(health, 0f, maxHealth);
 
-        if(health == 0f)
+        if(health == 0f && !isDead)
         {
             Die();
         }
@@ -71,5 +83,6 @@ public class DestructibleMovingPlatforms : MovingPlatform, IDamegeable
     public void Die()
     {
         isDead = true;
+        particleSystem.Play();
     }
 }
