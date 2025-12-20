@@ -6887,7 +6887,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 660877535}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-<<<<<<< Updated upstream
 --- !u!1001 &666147449
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6966,8 +6965,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a4aa7d9acbf43c9b68fe72fb5eb9508b, type: 3}
   m_PrefabInstance: {fileID: 666147449}
   m_PrefabAsset: {fileID: 0}
-=======
->>>>>>> Stashed changes
 --- !u!1 &717558886
 GameObject:
   m_ObjectHideFlags: 0
@@ -7391,6 +7388,14 @@ MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 771719087}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &771942640 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4681992680585308663, guid: d715010f6e805d68e834e193c18acb03, type: 3}
+  m_PrefabInstance: {fileID: 1278116415}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -7576,7 +7581,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 890750909}
   m_CullTransparentMesh: 1
-<<<<<<< Updated upstream
 --- !u!1 &923692163
 GameObject:
   m_ObjectHideFlags: 0
@@ -7651,8 +7655,6 @@ RectTransform:
   m_AnchoredPosition: {x: 20, y: -20}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
-=======
->>>>>>> Stashed changes
 --- !u!1 &1039230913
 GameObject:
   m_ObjectHideFlags: 0
@@ -8755,7 +8757,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-<<<<<<< Updated upstream
     - target: {fileID: 3232483956638116468, guid: d715010f6e805d68e834e193c18acb03, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -8764,8 +8765,6 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
-=======
->>>>>>> Stashed changes
     - target: {fileID: 4681992680585308663, guid: d715010f6e805d68e834e193c18acb03, type: 3}
       propertyPath: m_Name
       value: Player Variant
@@ -9888,7 +9887,6 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
-<<<<<<< Updated upstream
 --- !u!1 &1784243322
 GameObject:
   m_ObjectHideFlags: 0
@@ -10260,8 +10258,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1884251122}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-=======
->>>>>>> Stashed changes
 --- !u!1 &1927808834
 GameObject:
   m_ObjectHideFlags: 0
