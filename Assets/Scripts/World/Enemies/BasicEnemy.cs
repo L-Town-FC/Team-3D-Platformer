@@ -32,7 +32,8 @@ public class BasicEnemy : ActorController
 
     protected override void FixedUpdate()
     {
-        base.inputVector = Vector3.forward;
+        base.inputVector = transform.forward;
+        base.newTransformForward = dir;
         base.FixedUpdate();
     }
 }

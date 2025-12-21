@@ -28,8 +28,8 @@ public class Player : ActorController, IDamegeable
     // Update is called once per frame
     protected override void Update()
     {
-        base.inputVector = input.movementInput.normalized;
-        base.newTransformForward = Camera.main.transform.forward;
+        base.inputVector = Camera.main.transform.TransformDirection(input.movementInput.normalized);
+        base.newTransformForward = base.inputVector;
         //sets variables for jumping
         JumpCheck();
 
