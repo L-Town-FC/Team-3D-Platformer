@@ -79,6 +79,13 @@ public class ActorController : MonoBehaviour
         //possible fix is to have the external movement be added to not set by other scripts and then zeroed out by player script after movement is applied
 
         rb.Move(rb.position + appliedMovement * Time.fixedDeltaTime + externalMovement, rb.rotation * appliedRotation);
+        
+        //Checks to make sure character hasnt flipped updside down
+        //May cause rare movement instability
+        if(transform.up != Vector3.up)
+        {
+            transform.up = Vector3.up;
+        }
 
         if (isGrounded)
         {

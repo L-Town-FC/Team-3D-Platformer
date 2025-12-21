@@ -14,14 +14,14 @@ public class DestructibleMovingPlatforms : MovingPlatform, IDamegeable
     bool isDead = true;
     bool isDying = false;
     Material material;
-    ParticleSystem particleSystem;
+    ParticleSystem particles;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected override void Start()
     {
         base.Start();
         material = transform.GetChild(0).GetComponent<MeshRenderer>().material;
-        particleSystem = transform.GetChild(0).GetComponent<ParticleSystem>();
+        particles = transform.GetChild(0).GetComponent<ParticleSystem>();
         health = maxHealth;
         damageAmount = maxHealth / timeToDestroyPlatform;
         regenAmount = maxHealth / timeToRegenPlatform;
@@ -38,24 +38,29 @@ public class DestructibleMovingPlatforms : MovingPlatform, IDamegeable
             isDead = false;
         }
 
-        //putting a negative numner into take damage is the same as adding health
-        //this is always called but since its less than the damage taken modifier, the platform will always break while the player is standing on it
-
+        //Paltform death is triggered whenever a player touches it and cant be stopped once it starts
+        //once its been touched, platform takes damage until it dies
         if (isTouchingPlayer || isDying)
         {
             TakeDamage(damageAmount * Time.deltaTime);
             isDying = true;
         }
 
+        //when the platform is dead, it starts regening health
         if (isDead)
         {
             isDying = false;
+            //stops platform from popping back into existence when player is in its collider
             if (!isTouchingPlayer)
             {
+                //putting a negative numner into take damage is the same as adding health
                 TakeDamage(-regenAmount * Time.deltaTime);
             }
         }
 
+        //_Health is a  float in the platform shader script
+        //it is directly linked to the platforms transparency when its alive
+        //so as the platform loses health it becomes more transparent
         material.SetFloat("_Health", health);
 
         //hide and disable collision for the platform while its dead/regenerating
@@ -74,6 +79,7 @@ public class DestructibleMovingPlatforms : MovingPlatform, IDamegeable
         health -= damage;
         health = Mathf.Clamp(health, 0f, maxHealth);
 
+        //Stops a platform from triggering its death effects multiple times
         if(health == 0f && !isDead)
         {
             Die();
@@ -83,6 +89,8 @@ public class DestructibleMovingPlatforms : MovingPlatform, IDamegeable
     public void Die()
     {
         isDead = true;
-        particleSystem.Play();
+
+        //basic explosion effects when platform is destroyed
+        particles.Play();
     }
 }

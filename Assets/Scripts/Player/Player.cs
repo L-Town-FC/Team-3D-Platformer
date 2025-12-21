@@ -28,7 +28,10 @@ public class Player : ActorController, IDamegeable
     // Update is called once per frame
     protected override void Update()
     {
+        //movements inputs are made relative to the camera
         base.inputVector = Camera.main.transform.TransformDirection(input.movementInput.normalized);
+        
+        //player always face the direction they are moving in
         base.newTransformForward = base.inputVector;
         //sets variables for jumping
         JumpCheck();

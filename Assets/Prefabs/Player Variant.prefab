@@ -768,6 +768,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6974700603725050712}
     - target: {fileID: 4778157200799872232, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4778157200799872232, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
       propertyPath: cameraTarget
       value: 
       objectReference: {fileID: 3619068225187507377}
@@ -841,6 +845,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5705284338004130759, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4952950075037070094}
+    - targetCorrespondingSourceObject: {fileID: 5705284338004130759, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4977909055713767498}
   m_SourcePrefab: {fileID: 100100000, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
 --- !u!1 &4681992680585308663 stripped
 GameObject:
@@ -871,6 +878,23 @@ MonoBehaviour:
   jumpForce: 30
   maxJumpHoldTime: 0.2
 --- !u!114 &4952950075037070094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4681992680585308663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1efe008a04acf9c6882b9460ffb2632, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitboxGizmo
+  show: 1
+  color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  segments: 24
+  rings: 6
+  meridians: 6
+--- !u!114 &4977909055713767498
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

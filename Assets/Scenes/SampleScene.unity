@@ -7202,11 +7202,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 764218963}
   m_CullTransparentMesh: 1
---- !u!1 &771942640 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4681992680585308663, guid: d715010f6e805d68e834e193c18acb03, type: 3}
-  m_PrefabInstance: {fileID: 1278116415}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -7895,7 +7890,7 @@ MonoBehaviour:
     ScreenPosition: {x: 0, y: 0}
     DeadZone:
       Enabled: 1
-      Size: {x: 0, y: 0.5}
+      Size: {x: 0, y: 0.6}
     HardLimits:
       Enabled: 0
       Size: {x: 0.8, y: 1}
@@ -7954,7 +7949,7 @@ MonoBehaviour:
   VerticalAxis:
     Value: 17.5
     Center: 17.5
-    Range: {x: -10, y: 45}
+    Range: {x: -65, y: 65}
     Wrap: 0
     Recentering:
       Enabled: 0
@@ -8417,38 +8412,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3232483956638116468, guid: d715010f6e805d68e834e193c18acb03, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3245676287992983227, guid: d715010f6e805d68e834e193c18acb03, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4681992680585308663, guid: d715010f6e805d68e834e193c18acb03, type: 3}
       propertyPath: m_Name
       value: Player Variant
-      objectReference: {fileID: 0}
-    - target: {fileID: 4681992680585308663, guid: d715010f6e805d68e834e193c18acb03, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5592229119203436248, guid: d715010f6e805d68e834e193c18acb03, type: 3}
-      propertyPath: m_Enabled
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5592229119203436248, guid: d715010f6e805d68e834e193c18acb03, type: 3}
       propertyPath: cinemachineCamera
       value: 
       objectReference: {fileID: 1071258332}
-    - target: {fileID: 5592229119203436248, guid: d715010f6e805d68e834e193c18acb03, type: 3}
-      propertyPath: horizontalAndVerticalCameraSensitivity.x
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5592229119203436248, guid: d715010f6e805d68e834e193c18acb03, type: 3}
-      propertyPath: horizontalAndVerticalCameraSensitivity.y
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 6635767576865755617, guid: d715010f6e805d68e834e193c18acb03, type: 3}
       propertyPath: m_LocalPosition.x
       value: 11.401188
@@ -8489,40 +8460,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6974700603725050712, guid: d715010f6e805d68e834e193c18acb03, type: 3}
-      propertyPath: gamepadLookMult
-      value: 120
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4681992680585308663, guid: d715010f6e805d68e834e193c18acb03, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1278116423}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d715010f6e805d68e834e193c18acb03, type: 3}
 --- !u!4 &1278116416 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6635767576865755617, guid: d715010f6e805d68e834e193c18acb03, type: 3}
   m_PrefabInstance: {fileID: 1278116415}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1278116423
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 771942640}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1efe008a04acf9c6882b9460ffb2632, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HitboxGizmo
-  show: 1
-  color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  segments: 24
-  rings: 6
-  meridians: 6
 --- !u!1 &1341443734
 GameObject:
   m_ObjectHideFlags: 0
@@ -9476,7 +9423,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2072497652
 MonoBehaviour:
   m_ObjectHideFlags: 0
