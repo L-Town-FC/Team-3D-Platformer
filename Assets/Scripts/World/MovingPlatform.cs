@@ -57,6 +57,12 @@ public class MovingPlatform : MonoBehaviour
         foreach (RaycastHit hit in hits)
         {
             isTouchingPlayer = true;
+
+            //platform shouldnt move and therefore shouldnt apply movement if there are less than 2 waypoints
+            if (PlatformWaypoints.Count < 2)
+            {
+                continue;
+            }
             hit.transform.GetComponent<ActorController>().externalMovement = rb.position - lastPosition;
         }
     }
@@ -72,6 +78,12 @@ public class MovingPlatform : MonoBehaviour
                 return;
             }
 
+            return;
+        }
+
+        //platform shouldnt move if there are less than 2 waypoints
+        if(PlatformWaypoints.Count < 2)
+        {
             return;
         }
 
