@@ -6928,7 +6928,8 @@ GameObject:
   m_Component:
   - component: {fileID: 736812147}
   - component: {fileID: 736812145}
-  - component: {fileID: 736812146}
+  - component: {fileID: 736812149}
+  - component: {fileID: 736812148}
   m_Layer: 0
   m_Name: DeathMenuController
   m_TagString: Untagged
@@ -6955,19 +6956,6 @@ MonoBehaviour:
   cursor: '> '
   useNavigateRepeatGuard: 1
   mainMenuSceneName: MainMenu
---- !u!114 &736812146
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 736812144}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e60a6e551286af88a99765777faf17d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DeathPlaneTrigger
-  playerTag: Player
 --- !u!4 &736812147
 Transform:
   m_ObjectHideFlags: 0
@@ -6983,6 +6971,40 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1204322841}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &736812148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 736812144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e60a6e551286af88a99765777faf17d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeathPlaneTrigger
+  playerTag: Player
+--- !u!65 &736812149
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 736812144}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &754816617
 GameObject:
   m_ObjectHideFlags: 0
@@ -7040,17 +7062,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 758965452}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95887e81ff9bab2a88f6ad1c9a58a654, type: 3}
+  m_Script: {fileID: 11500000, guid: 2dab93d522ef43f99843ee0330ca032f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PortalRevealCutscene
-  portal: {fileID: 0}
+  portal: {fileID: 228462144}
   portalEnableDelay: 0.25
-  portalCam: {fileID: 0}
+  portalCam: {fileID: 1859119171}
   cutscenePriority: 50
   holdTime: 1.25
   blendSafety: 0.75
   disableDuringCutscene: []
-  playerRoot: {fileID: 0}
+  playerRoot: {fileID: 1756687312}
 --- !u!4 &758965454
 Transform:
   m_ObjectHideFlags: 0
@@ -8482,6 +8504,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6635767576865755617, guid: d715010f6e805d68e834e193c18acb03, type: 3}
   m_PrefabInstance: {fileID: 1278116415}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1315608626 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3667206332786314320, guid: a4beac5b6ba9dafe08722d639f03e157, type: 3}
+  m_PrefabInstance: {fileID: 5921763769151400798}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1315608627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1315608626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e60a6e551286af88a99765777faf17d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeathPlaneTrigger
+  playerTag: Player
 --- !u!1 &1341443734
 GameObject:
   m_ObjectHideFlags: 0
@@ -9123,6 +9163,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1748781241}
   m_CullTransparentMesh: 1
+--- !u!1 &1756687312 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4681992680585308663, guid: d715010f6e805d68e834e193c18acb03, type: 3}
+  m_PrefabInstance: {fileID: 1278116415}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1784243322
 GameObject:
   m_ObjectHideFlags: 0
@@ -10152,10 +10197,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5584454252752709023, guid: a4beac5b6ba9dafe08722d639f03e157, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3667206332786314320, guid: a4beac5b6ba9dafe08722d639f03e157, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1315608627}
   m_SourcePrefab: {fileID: 100100000, guid: a4beac5b6ba9dafe08722d639f03e157, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

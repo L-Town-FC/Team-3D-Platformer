@@ -41,7 +41,10 @@ public class ActorController : MonoBehaviour
     //all inputs and calculations to movement and rotation should be done here
     protected virtual void Update()
     {
-        rb.linearVelocity = Vector3.zero; //stops residual velocity from collisions from affecting player movement
+        //stops residual velocity from collisions from affecting player movement
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        
         //splits movement into horizontal and vertical parts to make dealing with
         //gravity and inputs easier
         Vector3 horizontalMovement = inputVector + Vector3.ProjectOnPlane(appliedMovement, Vector3.up);
