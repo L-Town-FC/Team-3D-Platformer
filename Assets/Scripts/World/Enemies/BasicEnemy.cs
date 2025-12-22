@@ -20,6 +20,7 @@ public class BasicEnemy : ActorController
             return;
         dir =  player.position - transform.position;
         base.newTransformForward = dir;
+        base.inputVector = transform.forward;
 
         float dist = dir.magnitude;
         if (dist <= stopDistance || dist < 0.001f)
@@ -32,8 +33,6 @@ public class BasicEnemy : ActorController
 
     protected override void FixedUpdate()
     {
-        base.inputVector = transform.forward;
-        base.newTransformForward = dir;
         base.FixedUpdate();
     }
 }
