@@ -40,8 +40,10 @@ Material:
     m_Floats:
     - _Health: 100
     - _MaxHealth: 100
+    - _MinAlpha: 25
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _ShakeSpeed: 10
     m_Colors: []
   m_BuildTextureStacks: []
   m_AllowLocking: 1

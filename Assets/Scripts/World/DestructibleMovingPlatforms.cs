@@ -62,6 +62,7 @@ public class DestructibleMovingPlatforms : MovingPlatform, IDamegeable
         //it is directly linked to the platforms transparency when its alive
         //so as the platform loses health it becomes more transparent
         material.SetFloat("_Health", health);
+        material.SetFloat("_ShakeSpeed", SetShakeSpeed());
 
         //hide and disable collision for the platform while its dead/regenerating
         base.boxCollider.enabled = !isDead;
@@ -72,6 +73,18 @@ public class DestructibleMovingPlatforms : MovingPlatform, IDamegeable
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
+    }
+
+    float SetShakeSpeed()
+    {
+        float shakeStartHealth = 35f;
+        float shakeSpeed = 0f;
+        float shakeMultiplier = 15f;
+        if(health < shakeStartHealth)
+        {
+            shakeSpeed = Mathf.InverseLerp(shakeStartHealth, 0f, health) * shakeMultiplier;
+        }
+        return shakeSpeed;
     }
 
     public void TakeDamage(float damage)
