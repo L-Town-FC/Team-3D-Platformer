@@ -8,7 +8,7 @@ public class BasicEnemy : ActorController
     SphereCollider sphereCollider;
     float chaseDistance = 10f; //max distance from the player that an enemy can continue chasing them
     Vector3 dir = Vector3.zero;
-
+    public bool IsDying { get; private set; }
     bool isChasePlayer = false; //if the enemy is actively chasing the player
     string playerTag = "Player";
 
@@ -74,4 +74,24 @@ public class BasicEnemy : ActorController
             isChasePlayer = false;
         }
     }
+
+    public void DieByStomp()
+    {
+        Debug.Log($"[ENEMY] DieByStomp called on {name}");
+
+        if (IsDying)
+            return;
+
+        IsDying = true;
+
+        // Disable colliders immediately so EnemyKillOnTouch can't fire after stomp
+        foreach (var c in GetComponentsInChildren<Collider>())
+            c.enabled = false;
+
+        Debug.Log($"[ENEMY] DieByStomp called on {name}");
+
+        Destroy(gameObject);
+    }
+
+
 }
