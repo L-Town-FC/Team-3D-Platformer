@@ -3,10 +3,6 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class ActorController : MonoBehaviour
 {
-    //TODO: movement up slope is slowed down a lot. Player should be able to move same speed on slope as flat surface
-    //TODO: player bounces down steep slopes instead of sliding down them
-    //TODO: Up slope climbing is broken
-
     Rigidbody rb;
     [SerializeField]
     private Vector3 appliedMovement = Vector3.zero; //holds the movement vector that is eventually applied to the player
@@ -29,11 +25,17 @@ public class ActorController : MonoBehaviour
     LayerMask groundLayerMask; //masks out player layer so groundcheck checks all colliders except the players
     public Vector3 externalMovement = Vector3.zero;
 
+    protected Collision actorCollision = new Collision();
+
+    protected float airDrag = 0.15f;
+    protected float groundDrag = 0.5f;
+
     protected virtual Vector3 inputVector { get; set; } = Vector3.zero;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected virtual void Start()
     {
+        newTransformForward = transform.forward;
         rb = GetComponent<Rigidbody>();
     }
 
@@ -127,11 +129,11 @@ public class ActorController : MonoBehaviour
         float dragAmount; //player experiences more drag when grounded than when in the air
         if (isGrounded)
         {
-            dragAmount = 0.5f;
+            dragAmount = groundDrag;
         }
         else
         {
-            dragAmount = 0.15f;
+            dragAmount = airDrag;
         }
 
         //creates a vector in the opposite direction of the inputted movement to create a drag force
@@ -191,37 +193,6 @@ public class ActorController : MonoBehaviour
         return (horizontalComponent, _verticalMovement - verticalComponent);
     }
 
-    Vector3 ApplySlopeMovement(Vector3 _inputVector)
-    {
-        //final slope check before player movement
-        //converts the horizontal movement of the player partially into vertical movement to match the angle of the slope the player is on
-        Vector3 horizontalMovementProjectedOnSlope = Vector3.ProjectOnPlane(new Vector3(_inputVector.x, 0f, _inputVector.z), groundNormal);
-
-        Debug.DrawRay(transform.position + Vector3.down, horizontalMovementProjectedOnSlope * 5f, Color.red);
-
-        //if the player is on a slope of less than the max allowed slope angle, nothing further needs to be done
-        if(currentSlopeAngle < maxSlopeAngle)
-        {
-            return _inputVector.y * Vector3.up + horizontalMovementProjectedOnSlope;
-        }
-
-        /*
-         * if the player is on a steeper slope, find the vector component that goes up the slope and remove if from the players movement.
-         * this means the player can move down the slope or horizontally, but not up the slope
-         */
-
-
-        //projects the global "up" onto the sloped surface to get a vector that
-        //has no horizontal component and points to top of slope
-        Vector3 upProjectedSlopeVector = Vector3.ProjectOnPlane(Vector3.up, groundNormal); 
-
-        //using the upProject vector, the component of the movement vector that is aligns with it can be calculated
-        Vector3 projectedMovementUpSlope = Vector3.Project(horizontalMovementProjectedOnSlope, upProjectedSlopeVector); 
-
-        //this component is then subtracted from the intial input vector, thus removing any movement "up slope"
-        return _inputVector - projectedMovementUpSlope;
-    }
-
     void ResetGroundVariables()
     {
         //these variables are used for player logic when the player is grounded or not
@@ -241,6 +212,7 @@ public class ActorController : MonoBehaviour
          */
 
         float bufferDst = 0.01f; //small distance to help false positive grounding
+        actorCollision = collision;
 
         foreach (ContactPoint contact in collision.contacts)
         {

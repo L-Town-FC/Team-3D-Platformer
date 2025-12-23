@@ -3,6 +3,8 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerInput))]
 public class Player : ActorController, IDamegeable
 {
+    //TODO: Need to add literal corner case to OnWallCheck()
+
     PlayerInput input;
     bool isJumping = false;
     float jumpStartTime = 0f;
@@ -13,8 +15,7 @@ public class Player : ActorController, IDamegeable
     PlayerCamera playerCamera; //access to camera so it can be disabled during death or game pause
     float maxHealth = 100f;
     public float health { get; set; }
-
-    //protected override Vector3 newTransformForward { get; set; } 
+    bool isOnWall = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected override void Start()
@@ -33,6 +34,7 @@ public class Player : ActorController, IDamegeable
         
         //player always face the direction they are moving in
         base.newTransformForward = base.inputVector;
+
         //sets variables for jumping
         JumpCheck();
 
@@ -43,7 +45,11 @@ public class Player : ActorController, IDamegeable
             inputVector += Vector3.up * jumpForce * (1f - Mathf.InverseLerp(jumpStartTime, jumpStartTime + maxJumpHoldTime, Time.time));
         }
 
+        WallJump();
+
         base.Update();
+
+        isOnWall = false;
     }
 
     protected override void FixedUpdate()
@@ -71,7 +77,7 @@ public class Player : ActorController, IDamegeable
     void JumpCheck()
     {
         //checks if the player can start a jump and what time the jump started
-        if (base.isGrounded)
+        if (isGrounded)
         {
             if (input.isJump)
             {
@@ -82,6 +88,28 @@ public class Player : ActorController, IDamegeable
             {
                 isJumping = false;
             }
+        }
+    }
+
+    void WallJump()
+    {
+        //checks if the player is touching wall
+        int numOfWallContactHits = 0;
+        Vector3 wallJumpDirection = Vector3.zero;
+        //currently only checks if atleast 2 points are returning that they are touching the wall
+        //may need to modify criteria to stop unintended wall jumps
+        foreach (ContactPoint contact in actorCollision.contacts)
+        {
+            if(contact.normal.y == 0)
+            {
+                numOfWallContactHits++;
+                wallJumpDirection = -contact.normal.normalized;
+            }
+        }
+
+        if(numOfWallContactHits > 1 && !isGrounded)
+        {
+            isOnWall = true;
         }
     }
 
