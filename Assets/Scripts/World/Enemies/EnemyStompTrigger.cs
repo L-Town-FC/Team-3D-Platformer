@@ -2,7 +2,7 @@ using UnityEngine;
 
 /// <summary>
 /// Put this on the HeadStompTrigger child (trigger collider).
-/// If the player contacts this trigger from above, kill the enemy and optionally bounce the player.
+/// If the player contacts this trigger from above, kill the enemy and bounce the player.
 /// </summary>
 [RequireComponent(typeof(Collider))]
 public class EnemyStompTrigger : MonoBehaviour
@@ -10,15 +10,11 @@ public class EnemyStompTrigger : MonoBehaviour
     [SerializeField] private string playerTag = "Player";
 
     [Header("Stomp detection")]
-    // How far below the head trigger bottom we still accept as "from above"
     [SerializeField] private float aboveHeadPadding = 0.05f;
-
-    // Allow stomps even if the player's RB velocity reads as 0 (common on contact),
-    // but reject clearly upward motion.
     [SerializeField] private float maxUpwardSpeedAllowed = 0.25f;
 
     [Header("Bounce")]
-    [SerializeField] private float stompBounceVelocity = 8f;
+    [SerializeField] private float stompBounceVelocity = 18f;
 
     private BasicEnemy enemy;
     private Collider headTrigger;
@@ -27,8 +23,6 @@ public class EnemyStompTrigger : MonoBehaviour
     {
         enemy = GetComponentInParent<BasicEnemy>();
         headTrigger = GetComponent<Collider>();
-
-        // Safety: ensure this collider is a trigger
         headTrigger.isTrigger = true;
     }
 
@@ -38,31 +32,32 @@ public class EnemyStompTrigger : MonoBehaviour
         if (!other.CompareTag(playerTag))
             return;
 
-        // Must have a Rigidbody somewhere on the colliding player object
+        // Must have a Rigidbody somewhere on the player
         Rigidbody playerRb = other.attachedRigidbody;
         if (playerRb == null)
             return;
 
-        // 1) Require the player to be "above" the head trigger (prevents side hits counting as stomps)
+        // 1) Player must be above the head trigger
         float playerFeetY = other.bounds.min.y;
         float headBottomY = headTrigger.bounds.min.y;
 
-        bool fromAbove = playerFeetY >= (headBottomY - aboveHeadPadding);
-        if (!fromAbove)
+        if (playerFeetY < headBottomY - aboveHeadPadding)
             return;
 
-        // 2) Reject obvious upward motion (but allow 0 / tiny upward)
-        float velY = playerRb.linearVelocity.y;
-        if (velY > maxUpwardSpeedAllowed)
+        // 2) Reject obvious upward motion
+        if (playerRb.linearVelocity.y > maxUpwardSpeedAllowed)
             return;
 
-        // 3) Kill the enemy (should despawn via Destroy)
+        // 3) Kill enemy first (disables colliders immediately)
         if (enemy != null)
             enemy.DieByStomp();
 
-        // 4) Optional bounce
-        Vector3 v = playerRb.linearVelocity;
-        v.y = stompBounceVelocity;
-        playerRb.linearVelocity = v;
+        // 4) Bounce player USING Player.cs movement system
+        //    (do NOT fight Rigidbody velocity directly)
+        Player player = other.GetComponentInParent<Player>();
+        if (player != null)
+        {
+            player.ApplyStompBounce(stompBounceVelocity);
+        }
     }
 }
