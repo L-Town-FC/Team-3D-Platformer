@@ -6,7 +6,7 @@ public class BasicEnemy : ActorController
     [SerializeField] private float stopDistance = 0.75f;
 
     SphereCollider sphereCollider;
-    float chaseDistance = 10f; //max distance from the player that an enemy can continue chasing them
+    [SerializeField] float chaseDistance = 10f; //max distance from the player that an enemy can continue chasing them
     Vector3 dir = Vector3.zero;
     public bool IsDying { get; private set; }
     bool isChasePlayer = false; //if the enemy is actively chasing the player
