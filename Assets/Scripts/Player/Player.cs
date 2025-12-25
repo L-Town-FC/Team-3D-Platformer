@@ -14,7 +14,8 @@ public class Player : ActorController, IDamegeable
     [SerializeField] float jumpForce = 30f;
     [SerializeField] float maxJumpHoldTime = 0.2f;
 
-    float maxHealth = 100f;
+    float _maxHealth = 100f;
+    public float maxHealth { get { return _maxHealth; } set {} }
     public float health { get; set; }
 
     // --- Stomp bounce (triggered by EnemyStompTrigger via ApplyStompBounce) ---
@@ -26,7 +27,7 @@ public class Player : ActorController, IDamegeable
 
     protected override void Start()
     {
-        health = maxHealth;
+        health = _maxHealth;
         input = GetComponent<PlayerInput>();
         playerCamera = GetComponent<PlayerCamera>();
         base.Start();
@@ -110,7 +111,6 @@ public class Player : ActorController, IDamegeable
     {
         health -= damage;
         health = Mathf.Clamp(health, 0f, maxHealth);
-
         if (health == 0f)
             Die();
     }

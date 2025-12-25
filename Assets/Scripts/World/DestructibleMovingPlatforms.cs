@@ -3,8 +3,10 @@ using UnityEngine;
 public class DestructibleMovingPlatforms : MovingPlatform, IDamegeable
 {
     //values are arbitrary and for testing purposes
+    float _maxHealth = 100f;
+    public float maxHealth { get { return _maxHealth; } set { } }
     public float health { get; set; }
-    float maxHealth = 100f;
+
     [SerializeField]
     float timeToDestroyPlatform = 10f; //seconds to destroy platform
     [SerializeField]
@@ -19,10 +21,10 @@ public class DestructibleMovingPlatforms : MovingPlatform, IDamegeable
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected override void Start()
     {
+        health = _maxHealth;
         base.Start();
         material = transform.GetChild(0).GetComponent<MeshRenderer>().material;
         particles = transform.GetChild(0).GetComponent<ParticleSystem>();
-        health = maxHealth;
         damageAmount = maxHealth / timeToDestroyPlatform;
         regenAmount = maxHealth / timeToRegenPlatform;
     }
