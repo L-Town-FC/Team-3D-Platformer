@@ -6,6 +6,7 @@ public class ActorController : MonoBehaviour
     Rigidbody rb;
     [SerializeField]
     private Vector3 appliedMovement = Vector3.zero; //holds the movement vector that is eventually applied to the player
+    public Vector3 AppliedMovmement => appliedMovement; //read only copy of the appliedMovement for other scripts to read
     private Quaternion appliedRotation { get; set; } = Quaternion.identity; //holds the rotation quaternion that is eventually applied to the player
     protected virtual Vector3 newTransformForward { get; set; } = Vector3.zero;
     
