@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BasicEnemy : ActorController
+public class BasicEnemy : ActorController, IDamegeable
 {
     [SerializeField] private Transform player;
     [SerializeField] private float stopDistance = 0.75f;
@@ -8,13 +8,30 @@ public class BasicEnemy : ActorController
     SphereCollider sphereCollider;
     [SerializeField] float chaseDistance = 10f; //max distance from the player that an enemy can continue chasing them
     Vector3 dir = Vector3.zero;
-    public bool IsDying { get; private set; }
+    EnemyPlayerInteractions enemyPlayerInteractions;
     bool isChasePlayer = false; //if the enemy is actively chasing the player
     string playerTag = "Player";
+
+    float _maxHealth = 100f;
+    public float maxHealth { get { return _maxHealth; } set { } }
+    public float health { get; set; }
+
+    //used for stun determination
+    public bool isStunned = false;
+    [SerializeField]
+    float stunLength = 5f;
+    float stunStartTime = 0f;
+    Material mat;
+    Color startingColor;
+    Color stunnedColor = Color.red;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected override void Start()
     {
+        health = _maxHealth;
+        mat = GetComponent<MeshRenderer>().material;
+        startingColor = mat.color;
+        enemyPlayerInteractions = GetComponent<EnemyPlayerInteractions>();
         sphereCollider = GetComponent<SphereCollider>();
         base.Start();
     }
@@ -32,16 +49,19 @@ public class BasicEnemy : ActorController
         dir =  player.position - transform.position;
 
         //zeros out the enemy inputs if they arent actively chasing the player
-        if (isChasePlayer)
-        {
-            base.newTransformForward = dir;
-            base.inputVector = transform.forward;
-        }
-        else
+        //this is either from being out of range or that they are currently stunned
+        if(isStunned || !isChasePlayer)
         {
             base.newTransformForward = transform.forward;
             base.inputVector = Vector3.zero;
         }
+        else
+        {
+            base.newTransformForward = dir;
+            base.inputVector = transform.forward;
+        }
+
+        StunCheck();
 
         float dist = dir.magnitude;
         if (dist <= stopDistance || dist < 0.001f)
@@ -50,6 +70,43 @@ public class BasicEnemy : ActorController
         }
 
         base.Update();
+    }
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        health = Mathf.Clamp(health, 0f, maxHealth);
+
+        isStunned = true; //stun the enemy whenever they take damage
+        stunStartTime = Time.time;
+
+        if (health == 0f)
+            Die();
+    }
+
+    public void Die()
+    {
+        Destroy(transform.gameObject);
+    }
+
+    void StunCheck()
+    {
+        //checks if player should be stunned and sets effects accordingly
+        if (Time.time > stunStartTime + stunLength)
+        {
+            isStunned = false;
+            enemyPlayerInteractions.enabled = true;
+        }
+
+        //should change the player when stunned but doesnt work currently
+        if (isStunned)
+        {
+            mat.SetColor("_Color", stunnedColor);
+        }
+        else
+        {
+            mat.SetColor("_Color", startingColor);
+        }
     }
 
     protected override void FixedUpdate()
@@ -74,24 +131,4 @@ public class BasicEnemy : ActorController
             isChasePlayer = false;
         }
     }
-
-    public void DieByStomp()
-    {
-        Debug.Log($"[ENEMY] DieByStomp called on {name}");
-
-        if (IsDying)
-            return;
-
-        IsDying = true;
-
-        // Disable colliders immediately so EnemyKillOnTouch can't fire after stomp
-        foreach (var c in GetComponentsInChildren<Collider>())
-            c.enabled = false;
-
-        Debug.Log($"[ENEMY] DieByStomp called on {name}");
-
-        Destroy(gameObject);
-    }
-
-
 }
