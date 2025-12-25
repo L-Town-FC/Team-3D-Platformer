@@ -9,7 +9,7 @@ using UnityEngine;
 /// - Enemy has a separate head trigger (EnemyStompTrigger) that calls BasicEnemy.DieByStomp()
 /// </summary>
 [RequireComponent(typeof(Collider))]
-public class EnemyKillOnTouch : MonoBehaviour
+public class EnemyPlayerInteractions : MonoBehaviour
 {
     [Header("Player Detection")]
     [SerializeField] private string playerTag = "Player";
@@ -39,32 +39,37 @@ public class EnemyKillOnTouch : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log($"[KILL COLLISION] With: {collision.collider.name} tag={collision.collider.tag} rb={(collision.collider.attachedRigidbody != null)} velY={(collision.collider.attachedRigidbody != null ? collision.collider.attachedRigidbody.linearVelocity.y : 999f)} enemy={name}");
+        //Debug.Log($"[KILL COLLISION] With: {collision.collider.name} tag={collision.collider.tag} rb={(collision.collider.attachedRigidbody != null)} velY={(collision.collider.attachedRigidbody != null ? collision.collider.attachedRigidbody.linearVelocity.y : 999f)} enemy={name}");
 
         // Only react to player collisions
         if (!collision.collider.CompareTag(playerTag))
             return;
 
-        // If the enemy has already been stomp-killed (or is in the process), do nothing
-        if (enemy != null && enemy.IsDying)
-            return;
-
         // If this collision is effectively a stomp, do NOT kill the player.
         // (The head trigger should handle killing the enemy.)
         if (IsStompContact(collision))
-            return;
-
-        // Otherwise, this is a side/bottom hit -> kill/damage player
-        if (deathMenu != null)
         {
-            if (collision.transform.TryGetComponent<IDamegeable>(out IDamegeable damageable))
+            //damage the enemy
+            if (transform.TryGetComponent<IDamegeable>(out IDamegeable damegeable))
             {
-                // Kill the player via the damage interface
-                damageable.TakeDamage(damageable.health);
+                damegeable.TakeDamage(50f);
             }
 
-            // If you prefer the menu-based death, you can use this instead:
-            // deathMenu.Die();
+            //give the player upward velocity for stomp bounce
+            Player player = collision.transform.GetComponentInParent<Player>();
+            if (player != null)
+            {
+                player.ApplyStompBounce(15f);
+            }
+
+            return;
+        }
+
+        // Otherwise, this is a side/bottom hit -> kill/damage player
+        if (collision.transform.TryGetComponent<IDamegeable>(out IDamegeable damageable))
+        {
+            // Kill the player via the damage interface
+            damageable.TakeDamage(damageable.health);
         }
     }
 
@@ -74,12 +79,9 @@ public class EnemyKillOnTouch : MonoBehaviour
     /// </summary>
     private bool IsStompContact(Collision collision)
     {
-        Rigidbody playerRb = collision.collider.attachedRigidbody;
-        if (playerRb == null)
-            return false;
-
+        ActorController player = collision.transform.GetComponent<ActorController>();
         // Must be moving downward (or at least not moving upward)
-        bool falling = playerRb.linearVelocity.y <= stompDownwardSpeedThreshold;
+        bool falling = player.AppliedMovmement.y <= stompDownwardSpeedThreshold;
         if (!falling)
             return false;
 
