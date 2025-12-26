@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.VFX;
 public class BasicEnemy : ActorController, IDamegeable
 {
     [SerializeField] private Transform player;
@@ -21,16 +21,13 @@ public class BasicEnemy : ActorController, IDamegeable
     [SerializeField]
     float stunLength = 5f;
     float stunStartTime = 0f;
-    Material mat;
-    Color startingColor;
-    Color stunnedColor = Color.red;
+    VisualEffect stunEffect;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected override void Start()
     {
         health = _maxHealth;
-        mat = GetComponent<MeshRenderer>().material;
-        startingColor = mat.color;
+        stunEffect = GetComponent<VisualEffect>();
         enemyPlayerInteractions = GetComponent<EnemyPlayerInteractions>();
         sphereCollider = GetComponent<SphereCollider>();
         base.Start();
@@ -79,6 +76,7 @@ public class BasicEnemy : ActorController, IDamegeable
 
         isStunned = true; //stun the enemy whenever they take damage
         stunStartTime = Time.time;
+        stunEffect.Play();
 
         if (health == 0f)
             Die();
@@ -99,13 +97,9 @@ public class BasicEnemy : ActorController, IDamegeable
         }
 
         //should change the player when stunned but doesnt work currently
-        if (isStunned)
+        if (!isStunned)
         {
-            mat.SetColor("_Color", stunnedColor);
-        }
-        else
-        {
-            mat.SetColor("_Color", startingColor);
+            stunEffect.Reinit();
         }
     }
 
