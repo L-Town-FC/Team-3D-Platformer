@@ -13,7 +13,7 @@ public class ActorController : MonoBehaviour
     [SerializeField]
     protected float speed = 12f;
     [SerializeField]
-    float gravityForce = 5f;
+    float gravityForce = 4f;
     [SerializeField]
     protected Vector2 minAndMaxVerticalMovementSpeed = new Vector2(-30f, 30f);
     
@@ -105,9 +105,18 @@ public class ActorController : MonoBehaviour
     Vector3 ClampMovement(Vector3 _movement, float lowerLimit, float upperLimit)
     {
         //clamps inputs speeds by set limits
-        float finalSpeed = Mathf.Clamp(_movement.magnitude, lowerLimit, upperLimit);
+        float terminalDragFactor = 0.3f;
+        float adjustedSpeed = _movement.magnitude;
+        if(_movement.magnitude > upperLimit)
+        {
+            adjustedSpeed = Mathf.Clamp(_movement.magnitude - upperLimit, 0f, Mathf.Infinity) * terminalDragFactor;
+            if(adjustedSpeed < upperLimit && _movement.magnitude > upperLimit)
+            {
+                adjustedSpeed = upperLimit;
+            }
+        }
 
-        return _movement.normalized * finalSpeed;
+        return _movement.normalized * adjustedSpeed;
     }
 
     Vector3 ApplyGravity(Vector3 _verticalMovement)
