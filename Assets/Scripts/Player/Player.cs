@@ -3,7 +3,8 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerInput))]
 public class Player : ActorController, IDamegeable
 {
-    //TODO: Need to add literal corner case to OnWallCheck()
+    //TODO: May need to add wall check to base actor class so vertical drag can be lowered while touching wall
+    //(player should have to some friction when moving down wall)
 
     PlayerInput input;
     PlayerCamera playerCamera; // access to camera so it can be disabled during death or game pause
@@ -24,6 +25,9 @@ public class Player : ActorController, IDamegeable
     float stompBounceForce = 22f;   // set by ApplyStompBounce()
 
     bool isOnWall = false;
+    bool isWallJumping = false;
+    float wallJumpStartTime = 0f;
+    Vector3 wallJumpDir = Vector3.zero;
 
     protected override void Start()
     {
@@ -91,8 +95,6 @@ public class Player : ActorController, IDamegeable
 
 
         base.Update();
-
-        isOnWall = false;
     }
 
     protected override void FixedUpdate()
@@ -129,7 +131,33 @@ public class Player : ActorController, IDamegeable
             {
                 isJumping = false;
             }
+            return;
         }
+
+        //OnWallCheck
+        //Walls must be perfectly vertical to count as walls
+        //if they are vertical then the normal vectors must have no y-component
+        int wallContacts = 0;
+
+        foreach (ContactPoint contact in actorCollision.contacts)
+        {
+            if(contact.normal.y == 0)
+            {
+                wallJumpDir = -contact.normal.normalized;
+                wallContacts++;
+            }
+        }
+
+        if(wallContacts > 1)
+        {
+            isOnWall = true;
+        }
+        else
+        {
+            isOnWall = false;
+        }
+
+        return;
     }
 
     /// <summary>

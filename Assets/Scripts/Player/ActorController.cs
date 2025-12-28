@@ -3,6 +3,10 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class ActorController : MonoBehaviour
 {
+    //TODO: switch isGrounded from bool to enum with states being grounded, onWall, and inAir
+    //switching to enum allows more flexibility when trying to let player do actions that require several conditions to be
+    //met that can be condensed into a single state
+
     Rigidbody rb;
     [SerializeField]
     private Vector3 appliedMovement = Vector3.zero; //holds the movement vector that is eventually applied to the player
@@ -104,7 +108,9 @@ public class ActorController : MonoBehaviour
 
     Vector3 ClampMovement(Vector3 _movement, float lowerLimit, float upperLimit)
     {
-        //clamps inputs speeds by set limits
+        //soft clamps the speed
+        //now when above the set speed, an additional drag factor is added so to get the player back to the max speed
+        //this lets the actor temporarily exceed the max speed for abilities such as dashing or very powerful jumping
         float terminalDragFactor = 0.3f;
         float adjustedSpeed = _movement.magnitude;
         if(_movement.magnitude > upperLimit)
