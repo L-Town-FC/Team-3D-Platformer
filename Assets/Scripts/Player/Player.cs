@@ -188,9 +188,15 @@ public class Player : ActorController, IDamegeable
         if (input.isAttacking)
         {
             Debug.Log("Hello World: is attacking");
-            if (Physics.SphereCast(transform.position + transform.forward, 0.5f, transform.forward, out RaycastHit hitInfo))
+            RaycastHit[] hits = Physics.SphereCastAll(transform.position + transform.forward, 0.5f, transform.forward, 0.5f);
+            foreach(RaycastHit hit in hits)
             {
-                if (hitInfo.transform.TryGetComponent<IDamegeable>(out IDamegeable damegeable))
+                if (hit.transform.CompareTag("Player"))
+                {
+                    return;
+                }
+
+                if(hit.transform.TryGetComponent<IDamegeable>(out IDamegeable damegeable))
                 {
                     Debug.Log("Hello World: AttackCheck hit a damageable target");
 
