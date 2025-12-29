@@ -6,6 +6,8 @@ public class Player : ActorController, IDamegeable
     //TODO: May need to add wall check to base actor class so vertical drag can be lowered while touching wall
     //(player should have to some friction when moving down wall)
 
+    //TODO: Wall jump works correctly, but the forces are way off and I dont know why
+
     PlayerInput input;
     PlayerCamera playerCamera; // access to camera so it can be disabled during death or game pause
 
@@ -26,7 +28,6 @@ public class Player : ActorController, IDamegeable
 
     bool isOnWall = false;
     bool isWallJumping = false;
-    float wallJumpStartTime = 0f;
     Vector3 wallJumpDir = Vector3.zero;
 
     protected override void Start()
@@ -54,7 +55,7 @@ public class Player : ActorController, IDamegeable
         // player always faces the direction they are moving in
         base.newTransformForward = base.inputVector;
 
-        // sets variables for jumping
+        // checks conditions/sets variables and states for jumping
         JumpCheck();
 
         // --------------------------------------------------------------------
@@ -68,7 +69,17 @@ public class Player : ActorController, IDamegeable
         }
 
         // --------------------------------------------------------------------
-        // 3) STOMP BOUNCE (MINI JUMP WINDOW)
+        // 3) WALL JUMP / JUMP-HOLD
+        // --------------------------------------------------------------------
+        if (input.isJump && isWallJumping)
+        {
+            // holding jump increases height of jump, diminishing until maxJumpHoldTime
+            base.inputVector += Vector3.up + wallJumpDir * jumpForce *
+                (1f - Mathf.InverseLerp(jumpStartTime, jumpStartTime + maxJumpHoldTime, Time.time));
+        }
+
+        // --------------------------------------------------------------------
+        // 4) STOMP BOUNCE (MINI JUMP WINDOW)
         //    Old code did: base.inputVector += Vector3.up * bounce...
         //    But if inputVector.y is negative (camera tilt) or small,
         //    adding might not win. So we OVERRIDE Y upward for the window.
@@ -92,7 +103,6 @@ public class Player : ActorController, IDamegeable
             if (Time.time >= stompBounceStartTime + stompBounceDuration)
                 stompBounceStartTime = -1f;
         }
-
 
         base.Update();
     }
@@ -119,18 +129,24 @@ public class Player : ActorController, IDamegeable
 
     void JumpCheck()
     {
+        //if the player isnt trying to jump, dont trigger a jump
+        if (!input.isJump)
+        {
+            isJumping = isWallJumping = false;
+        }
+
         // checks if the player can start a jump and what time the jump started
         if (isGrounded)
         {
+            //since you cant be considered "OnWall" when grounded, you can't wall jump
+            isWallJumping = false;
+
             if (input.isJump)
             {
                 isJumping = true;
                 jumpStartTime = Time.time;
             }
-            else
-            {
-                isJumping = false;
-            }
+
             return;
         }
 
@@ -143,18 +159,22 @@ public class Player : ActorController, IDamegeable
         {
             if(contact.normal.y == 0)
             {
+                Debug.DrawRay(contact.point, contact.normal, Color.green);
+                //the direction exactly opposite the wall
                 wallJumpDir = -contact.normal.normalized;
                 wallContacts++;
             }
         }
 
-        if(wallContacts > 1)
+        //if atleast two points on the player are touching a wall, the player is considered on the wall
+        isOnWall = wallContacts > 1;
+
+        //stops player from wall jupming as soon as they touch the wall. They need to actively try to jump
+        //after releasing jump and touching the wall
+        if (input.isJump && !isJumping && isOnWall)
         {
-            isOnWall = true;
-        }
-        else
-        {
-            isOnWall = false;
+            isWallJumping = true;
+            jumpStartTime = Time.time;
         }
 
         return;

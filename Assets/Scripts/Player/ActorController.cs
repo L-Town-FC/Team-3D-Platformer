@@ -3,10 +3,6 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class ActorController : MonoBehaviour
 {
-    //TODO: switch isGrounded from bool to enum with states being grounded, onWall, and inAir
-    //switching to enum allows more flexibility when trying to let player do actions that require several conditions to be
-    //met that can be condensed into a single state
-
     Rigidbody rb;
     [SerializeField]
     private Vector3 appliedMovement = Vector3.zero; //holds the movement vector that is eventually applied to the player
@@ -56,6 +52,7 @@ public class ActorController : MonoBehaviour
         //gravity and inputs easier
         Vector3 horizontalMovement = inputVector + Vector3.ProjectOnPlane(appliedMovement, Vector3.up);
         Vector3 verticalMovement = Vector3.up * (appliedMovement.y + inputVector.y);
+        print(verticalMovement);
 
         //applies gravity
         verticalMovement = ApplyGravity(verticalMovement);
