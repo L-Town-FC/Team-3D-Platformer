@@ -18,7 +18,7 @@ public class IndicatorBelowObject : MonoBehaviour
     {
         if(Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, 100f, playerMask))
         {
-            print("here");
+            // print("here");
             indicator.position = hitInfo.point + Vector3.up * 0.01f;
         }
     }

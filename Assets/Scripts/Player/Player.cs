@@ -219,4 +219,27 @@ public class Player : ActorController, IDamegeable
         // Start (or restart) the bounce window now
         stompBounceStartTime = Time.time;
     }
+
+    void OnDrawGizmos()
+    {
+        if (input == null || !input.isAttacking)
+            return;
+
+        float radius = 0.5f;
+        Vector3 origin = transform.position + transform.forward;
+        Vector3 direction = transform.forward;
+        float distance = 1.0f; // match your intended attack range
+
+        Gizmos.color = Color.red;
+
+        // Start sphere
+        Gizmos.DrawWireSphere(origin, radius);
+
+        // End sphere
+        Gizmos.DrawWireSphere(origin + direction * distance, radius);
+
+        // Connecting line (center path)
+        Gizmos.DrawLine(origin, origin + direction * distance);
+    }
+
 }
