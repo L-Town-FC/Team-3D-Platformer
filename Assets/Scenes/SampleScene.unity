@@ -8649,7 +8649,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7325689739069660379, guid: d715010f6e805d68e834e193c18acb03, type: 3}
       propertyPath: jumpForce
-      value: 25
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7325689739069660379, guid: d715010f6e805d68e834e193c18acb03, type: 3}
+      propertyPath: gravityForce
+      value: 2.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9726,7 +9730,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BasicEnemy
   appliedMovement: {x: 0, y: 0, z: 0}
   speed: 4
-  gravityForce: 5
+  gravityForce: 3
   minAndMaxVerticalMovementSpeed: {x: -30, y: 30}
   isGrounded: 0
   groundLayerMask:

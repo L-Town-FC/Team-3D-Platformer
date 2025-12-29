@@ -13,7 +13,7 @@ public class ActorController : MonoBehaviour
     [SerializeField]
     protected float speed = 12f;
     [SerializeField]
-    float gravityForce = 4f;
+    float gravityForce = 3f;
     [SerializeField]
     protected Vector2 minAndMaxVerticalMovementSpeed = new Vector2(-30f, 30f);
     
@@ -30,6 +30,8 @@ public class ActorController : MonoBehaviour
 
     protected float airDrag = 0.15f;
     protected float groundDrag = 0.5f;
+
+    protected float downwardGravityModifier = 0.6f;
 
     protected virtual Vector3 inputVector { get; set; } = Vector3.zero;
 
@@ -127,6 +129,11 @@ public class ActorController : MonoBehaviour
         if (isGrounded)
         {
             return Vector3.zero;
+        }
+
+        if(AppliedMovmement.y < 0f)
+        {
+            return _verticalMovement += Vector3.down * downwardGravityModifier * gravityForce;
         }
 
         return _verticalMovement += Vector3.down * gravityForce;
