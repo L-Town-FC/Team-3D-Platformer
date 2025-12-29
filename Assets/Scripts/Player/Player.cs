@@ -105,6 +105,8 @@ public class Player : ActorController, IDamegeable
                 stompBounceStartTime = -1f;
         }
 
+        AttackCheck();
+
         base.Update();
     }
 
@@ -181,6 +183,24 @@ public class Player : ActorController, IDamegeable
         return;
     }
 
+    void AttackCheck()
+    {
+        if (input.isAttacking)
+        {
+            Debug.Log("Hello World: is attacking");
+            if (Physics.SphereCast(transform.position + transform.forward, 0.5f, transform.forward, out RaycastHit hitInfo))
+            {
+                if (hitInfo.transform.TryGetComponent<IDamegeable>(out IDamegeable damegeable))
+                {
+                    Debug.Log("Hello World: AttackCheck hit a damageable target");
+
+                    damegeable.TakeDamage(damegeable.health);
+                }
+            }
+        }
+    }
+
+
     /// <summary>
     /// Called by EnemyStompTrigger when the player stomps an enemy.
     /// Starts a short bounce window using the same movement pipeline as your jump.
@@ -199,4 +219,27 @@ public class Player : ActorController, IDamegeable
         // Start (or restart) the bounce window now
         stompBounceStartTime = Time.time;
     }
+
+    void OnDrawGizmos()
+    {
+        if (input == null || !input.isAttacking)
+            return;
+
+        float radius = 0.5f;
+        Vector3 origin = transform.position + transform.forward;
+        Vector3 direction = transform.forward;
+        float distance = 1.0f; // match your intended attack range
+
+        Gizmos.color = Color.red;
+
+        // Start sphere
+        Gizmos.DrawWireSphere(origin, radius);
+
+        // End sphere
+        Gizmos.DrawWireSphere(origin + direction * distance, radius);
+
+        // Connecting line (center path)
+        Gizmos.DrawLine(origin, origin + direction * distance);
+    }
+
 }
