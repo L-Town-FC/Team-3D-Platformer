@@ -104,6 +104,8 @@ public class Player : ActorController, IDamegeable
                 stompBounceStartTime = -1f;
         }
 
+        AttackCheck();
+
         base.Update();
     }
 
@@ -179,6 +181,24 @@ public class Player : ActorController, IDamegeable
 
         return;
     }
+
+    void AttackCheck()
+    {
+        if (input.isAttacking)
+        {
+            Debug.Log("Hello World: is attacking");
+            if (Physics.SphereCast(transform.position + transform.forward, 0.5f, transform.forward, out RaycastHit hitInfo))
+            {
+                if (hitInfo.transform.TryGetComponent<IDamegeable>(out IDamegeable damegeable))
+                {
+                    Debug.Log("Hello World: AttackCheck hit a damageable target");
+
+                    damegeable.TakeDamage(damegeable.health);
+                }
+            }
+        }
+    }
+
 
     /// <summary>
     /// Called by EnemyStompTrigger when the player stomps an enemy.

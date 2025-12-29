@@ -9,10 +9,12 @@ public class PlayerInput : MonoBehaviour
     private InputAction moveAction;
     private InputAction lookAction;
     private InputAction jumpAction;
+    private InputAction attackAction;
 
     public Vector3 movementInput = Vector3.zero;
     public Vector2 cameraInput = Vector2.zero;
     public bool isJump;
+    public bool isAttacking;
     public bool lastLookWasGamepad { get; private set; }
 
 
@@ -30,6 +32,7 @@ public class PlayerInput : MonoBehaviour
         moveAction = playerActionMap.FindAction("Move");
         lookAction = playerActionMap.FindAction("Look");
         jumpAction = playerActionMap.FindAction("Jump");
+        attackAction = playerActionMap.FindAction("Attack");
         playerActionMap.Enable();
     }
 
@@ -59,6 +62,7 @@ public class PlayerInput : MonoBehaviour
         cameraInput = look;
 
         isJump = playerActionMap.FindAction("Jump").IsPressed();
+        isAttacking = playerActionMap.FindAction("Attack").WasPressedThisFrame();
     }
 
 }
