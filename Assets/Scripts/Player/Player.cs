@@ -7,6 +7,7 @@ public class Player : ActorController, IDamegeable
     //(player should have to some friction when moving down wall)
 
     //TODO: Wall jump works correctly, but the forces are way off and I dont know why
+    //TODO: Wall jumps let player float indefinitely
 
     PlayerInput input;
     PlayerCamera playerCamera; // access to camera so it can be disabled during death or game pause

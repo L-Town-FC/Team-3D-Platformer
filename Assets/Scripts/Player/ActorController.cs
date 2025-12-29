@@ -31,6 +31,7 @@ public class ActorController : MonoBehaviour
     protected float airDrag = 0.15f;
     protected float groundDrag = 0.5f;
 
+    [SerializeField]
     protected float downwardGravityModifier = 0.6f;
 
     protected virtual Vector3 inputVector { get; set; } = Vector3.zero;
@@ -54,7 +55,6 @@ public class ActorController : MonoBehaviour
         //gravity and inputs easier
         Vector3 horizontalMovement = inputVector + Vector3.ProjectOnPlane(appliedMovement, Vector3.up);
         Vector3 verticalMovement = Vector3.up * (appliedMovement.y + inputVector.y);
-        print(verticalMovement);
 
         //applies gravity
         verticalMovement = ApplyGravity(verticalMovement);
