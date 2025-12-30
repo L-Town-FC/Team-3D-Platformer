@@ -18,17 +18,42 @@ public class LevelSelectMenuController : MenuControllerBase
         if (scenes == null || index < 0 || index >= scenes.Length)
             return base.GetLabelForIndex(index);
 
-        return scenes[index];
+        string label = scenes[index];
+
+        if (label == "Level2")
+        {
+            bool unlocked = (ProgressManager.Instance != null) && ProgressManager.Instance.Level2Unlocked;
+            if (!unlocked)
+                return "Level2 (Locked)";
+        }
+
+        return label;
     }
+
 
     protected override void OnSelect(int index)
     {
         if (scenes == null || index < 0 || index >= scenes.Length)
             return;
 
+        string sceneToLoad = scenes[index];
+
+        // Gate Level2
+        if (sceneToLoad == "Level2")
+        {
+            bool unlocked = (ProgressManager.Instance != null) && ProgressManager.Instance.Level2Unlocked;
+            if (!unlocked)
+            {
+                // Optional: add a UI beep / message later; for now we just ignore.
+                Debug.Log("Level 2 is locked. Reach it via the Level 1 portal first.");
+                return;
+            }
+        }
+
         Time.timeScale = 1f;
-        SceneManager.LoadScene(scenes[index]);
+        SceneManager.LoadScene(sceneToLoad);
     }
+
 
     protected override bool CanCancel() => true;
 
@@ -36,4 +61,5 @@ public class LevelSelectMenuController : MenuControllerBase
     {
         SceneManager.LoadScene("MainMenu");
     }
+    
 }

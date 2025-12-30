@@ -1,39 +1,47 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-/// <summary>
-/// Attach to each key pickup object.
-/// When the player touches it, we:
-/// - mark it collected
-/// - notify KeyManager
-/// - destroy the key GameObject (disappears)
-/// </summary>
 [RequireComponent(typeof(Collider))]
 public class KeyPickup : MonoBehaviour
 {
-    [SerializeField] private string playerTag = "Player"; // Tag used to identify the player.
-    private bool collected;                               // Guard against double-triggering.
+    [SerializeField] private string playerTag = "Player";
+
+    [Header("Persistence")]
+    [SerializeField] private string keyId; // MUST be unique within the scene (e.g., "Key_01", "Key_Rooftop", etc.)
+
+    private bool collected;
 
     private void Reset()
     {
-        // Reset() runs when the component is first added or reset in Inspector.
-        // Ensure this collider behaves as a pickup trigger.
         GetComponent<Collider>().isTrigger = true;
+
+        // Nice default so you don't forget to set it, but you SHOULD override in Inspector.
+        if (string.IsNullOrEmpty(keyId))
+            keyId = gameObject.name;
     }
 
     private void Awake()
     {
-        // Defensive: ensure the collider is a trigger even if someone unticked it in Inspector.
         GetComponent<Collider>().isTrigger = true;
+
+        // If progress manager exists and says this key was collected, delete it immediately.
+        if (ProgressManager.Instance != null)
+        {
+            string sceneName = SceneManager.GetActiveScene().name;
+
+            if (!string.IsNullOrEmpty(keyId) && ProgressManager.Instance.IsKeyCollected(sceneName, keyId))
+            {
+                Destroy(gameObject);
+                return;
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        // Prevent double collection (can happen with multiple colliders / rapid events).
         if (collected)
             return;
 
-        // Support child colliders:
-        // If the player's colliders are on child objects, they may not carry the Player tag.
         bool isPlayer =
             other.CompareTag(playerTag) ||
             other.transform.root.CompareTag(playerTag);
@@ -43,13 +51,27 @@ public class KeyPickup : MonoBehaviour
 
         collected = true;
 
-        // Notify the manager (if missing, we log so it's obvious why nothing happens).
+        // Persist THIS key as collected
+        if (ProgressManager.Instance != null)
+        {
+            string sceneName = SceneManager.GetActiveScene().name;
+
+            if (!string.IsNullOrEmpty(keyId))
+                ProgressManager.Instance.MarkKeyCollected(sceneName, keyId);
+            else
+                Debug.LogWarning($"KeyPickup: keyId is empty on {name}. Set a unique keyId in Inspector.");
+        }
+        else
+        {
+            Debug.LogWarning("KeyPickup: No ProgressManager found (key won't persist).");
+        }
+
+        // Tell KeyManager to update HUD / portal logic
         if (KeyManager.Instance != null)
             KeyManager.Instance.RegisterKeyCollected();
         else
             Debug.LogWarning("KeyPickup: No KeyManager found in scene.");
 
-        // Remove the key from the world.
         Destroy(gameObject);
     }
 }

@@ -6944,6 +6944,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyPickup
   playerTag: Player
+  keyId: Key_2
 --- !u!65 &680816061
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9634,6 +9635,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyPickup
   playerTag: Player
+  keyId: Key_1
 --- !u!65 &1880573202
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10474,6 +10476,10 @@ PrefabInstance:
     - target: {fileID: 1276477995062279612, guid: 895a694bd35a46b4fb09175caf12d7eb, type: 3}
       propertyPath: m_Name
       value: key
+      objectReference: {fileID: 0}
+    - target: {fileID: 1930402883935012254, guid: 895a694bd35a46b4fb09175caf12d7eb, type: 3}
+      propertyPath: keyId
+      value: Key_0
       objectReference: {fileID: 0}
     - target: {fileID: 1944751663948130054, guid: 895a694bd35a46b4fb09175caf12d7eb, type: 3}
       propertyPath: m_LocalPosition.x

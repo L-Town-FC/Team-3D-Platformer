@@ -1,33 +1,24 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-/// <summary>
-/// Central manager that tracks how many keys have been collected in the level.
-/// When all keys are collected, it activates the ScenePortal.
-/// 
-/// Also exposes an event so HUD widgets can update without polling.
-/// </summary>
 public class KeyManager : MonoBehaviour
 {
-    // Simple singleton for easy access (KeyPickup, HUD, etc.).
     public static KeyManager Instance { get; private set; }
 
     [Header("Keys")]
-    [SerializeField] private int requiredKeys = 3; // Total keys needed to activate the portal.
+    [SerializeField] private int requiredKeys = 3;
 
     [Header("Portal")]
-    [SerializeField] private ScenePortal portal;   // Portal to activate when requirements are met.
+    [SerializeField] private ScenePortal portal;
 
-    // Public read-only accessors for other systems (HUD, etc.).
     public int RequiredKeys => requiredKeys;
     public int CollectedKeys { get; private set; }
 
-    // Event raised whenever counts change: (collected, required)
     public event Action<int, int> OnKeyCountChanged;
 
     private void Awake()
     {
-        // Enforce singleton (one KeyManager per scene).
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -36,42 +27,44 @@ public class KeyManager : MonoBehaviour
 
         Instance = this;
 
-        // Optional: keep across scenes if you want persistent progression.
-        // DontDestroyOnLoad( gameObject );
-
-        // Portal starts off until we collect enough keys.
         if (portal != null)
             portal.SetActive(false);
 
-        // Broadcast initial state so HUD can show "0 / 3" immediately.
+        // ✅ Initialize from persisted progress for this scene
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        if (ProgressManager.Instance != null)
+            CollectedKeys = Mathf.Clamp(ProgressManager.Instance.GetCollectedKeyCount(sceneName), 0, requiredKeys);
+        else
+            CollectedKeys = 0;
+
+        // If already complete, ensure portal is active (or play reveal if you want)
+        if (CollectedKeys >= requiredKeys)
+        {
+            // If you want the cutscene to play again when returning, keep your cutscene logic.
+            // Usually you DON'T; you just want the portal available.
+            if (portal != null)
+                portal.SetActive(true);
+        }
+
         RaiseChanged();
     }
 
-    /// <summary>
-    /// Called by KeyPickup when the player collects a key.
-    /// Increments count, updates HUD, and activates portal if complete.
-    /// </summary>
     public void RegisterKeyCollected()
     {
         CollectedKeys = Mathf.Clamp(CollectedKeys + 1, 0, requiredKeys);
         RaiseChanged();
 
-        // If complete, do NOT activate immediately — run cutscene first.
         if (CollectedKeys >= requiredKeys)
         {
             PortalRevealCutscene cutscene = FindFirstObjectByType<PortalRevealCutscene>();
             if (cutscene != null)
                 cutscene.Play();
             else if (portal != null)
-                portal.SetActive(true); // fallback if no cutscene in scene
+                portal.SetActive(true);
         }
     }
 
-
-    /// <summary>
-    /// Resets key progress and deactivates the portal again.
-    /// Useful when restarting a level, respawning, etc.
-    /// </summary>
     public void ResetKeys()
     {
         CollectedKeys = 0;
@@ -79,12 +72,16 @@ public class KeyManager : MonoBehaviour
         if (portal != null)
             portal.SetActive(false);
 
+        // Optional: also wipe persisted keys for this scene
+        if (ProgressManager.Instance != null)
+        {
+            string sceneName = SceneManager.GetActiveScene().name;
+            ProgressManager.Instance.ResetCollectedKeysForScene(sceneName);
+        }
+
         RaiseChanged();
     }
 
-    /// <summary>
-    /// Helper to raise the change event.
-    /// </summary>
     private void RaiseChanged()
     {
         OnKeyCountChanged?.Invoke(CollectedKeys, requiredKeys);

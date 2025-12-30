@@ -66,6 +66,11 @@ public class ScenePortal : MonoBehaviour
         if (portalBounds.Contains(playerBounds.min) && portalBounds.Contains(playerBounds.max))
         {
             isLoading = true;
+
+            // Mark Level 2 unlocked the moment the player actually uses the portal.
+            if (ProgressManager.Instance != null)
+                ProgressManager.Instance.UnlockLevel2();
+
             Time.timeScale = 1f; // safety if you paused
             SceneManager.LoadScene(targetSceneName);
         }
