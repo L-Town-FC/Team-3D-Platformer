@@ -185,21 +185,16 @@ public class Player : ActorController, IDamegeable
 
     void AttackCheck()
     {
+        //if the player is attacking, create a sphere in front of them and check the colliders that are hit
+        //Trigger checking was disabled so colliders are only checked if the player can collide with them
         if (input.isAttacking)
         {
-            Debug.Log("Hello World: is attacking");
-            RaycastHit[] hits = Physics.SphereCastAll(transform.position + transform.forward, 0.5f, transform.forward, 0.5f);
-            foreach(RaycastHit hit in hits)
+            LayerMask everythingExceptPlayerMask = ~LayerMask.GetMask("Player"); //creates a layer mask that affects everything except the player
+            Collider[] hits = Physics.OverlapSphere(transform.position + transform.forward, 0.5f, everythingExceptPlayerMask, QueryTriggerInteraction.Ignore);
+            foreach(Collider hit in hits)
             {
-                if (hit.transform.CompareTag("Player"))
-                {
-                    return;
-                }
-
                 if(hit.transform.TryGetComponent<IDamegeable>(out IDamegeable damegeable))
                 {
-                    Debug.Log("Hello World: AttackCheck hit a damageable target");
-
                     damegeable.TakeDamage(damegeable.health);
                 }
             }
@@ -242,10 +237,10 @@ public class Player : ActorController, IDamegeable
         Gizmos.DrawWireSphere(origin, radius);
 
         // End sphere
-        Gizmos.DrawWireSphere(origin + direction * distance, radius);
+        //Gizmos.DrawWireSphere(origin + direction * distance, radius);
 
         // Connecting line (center path)
-        Gizmos.DrawLine(origin, origin + direction * distance);
+        //Gizmos.DrawLine(origin, origin + direction * distance);
     }
 
 }

@@ -62,7 +62,7 @@ public class PlayerInput : MonoBehaviour
         cameraInput = look;
 
         isJump = playerActionMap.FindAction("Jump").IsPressed();
-        isAttacking = playerActionMap.FindAction("Attack").WasPressedThisFrame();
+        isAttacking = playerActionMap.FindAction("Attack").IsPressed();
     }
 
 }
