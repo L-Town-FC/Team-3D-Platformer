@@ -59,7 +59,7 @@ public class EnemyPlayerInteractions : MonoBehaviour
             Player player = collision.transform.GetComponentInParent<Player>();
             if (player != null)
             {
-                player.ApplyStompBounce(15f);
+                player.ApplyStompBounce();
             }
 
             return;

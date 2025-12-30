@@ -25,7 +25,7 @@ public class Player : ActorController, IDamegeable
     // --- Stomp bounce (triggered by EnemyStompTrigger via ApplyStompBounce) ---
     float stompBounceStartTime = -1f;
     float stompBounceDuration = 0.12f; // tweak for feel (0.08 - 0.15 is a good range)
-    float stompBounceForce = 22f;   // set by ApplyStompBounce()
+    float stompBounceForce = 6f;   // set by ApplyStompBounce()
 
     bool isOnWall = false;
     bool isWallJumping = false;
@@ -75,7 +75,7 @@ public class Player : ActorController, IDamegeable
         if (input.isJump && isWallJumping)
         {
             // holding jump increases height of jump, diminishing until maxJumpHoldTime
-            base.inputVector += Vector3.up + wallJumpDir * jumpForce *
+            base.inputVector += (Vector3.up + wallJumpDir) * jumpForce *
                 (1f - Mathf.InverseLerp(jumpStartTime, jumpStartTime + maxJumpHoldTime, Time.time));
         }
 
@@ -206,16 +206,13 @@ public class Player : ActorController, IDamegeable
     /// Called by EnemyStompTrigger when the player stomps an enemy.
     /// Starts a short bounce window using the same movement pipeline as your jump.
     /// </summary>
-    public void ApplyStompBounce(float bounceVelocity)
+    public void ApplyStompBounce()
     {
         // Force "air" state so grounded/jump logic doesn't cancel the bounce immediately
         isGrounded = false;
 
         // Cancel any ongoing jump-hold so bounce isn't weakened/overridden
         isJumping = false;
-
-        // Use the passed value as the bounce force
-        stompBounceForce = bounceVelocity;
 
         // Start (or restart) the bounce window now
         stompBounceStartTime = Time.time;
@@ -228,19 +225,11 @@ public class Player : ActorController, IDamegeable
 
         float radius = 0.5f;
         Vector3 origin = transform.position + transform.forward;
-        Vector3 direction = transform.forward;
-        float distance = 1.0f; // match your intended attack range
 
         Gizmos.color = Color.red;
 
         // Start sphere
         Gizmos.DrawWireSphere(origin, radius);
-
-        // End sphere
-        //Gizmos.DrawWireSphere(origin + direction * distance, radius);
-
-        // Connecting line (center path)
-        //Gizmos.DrawLine(origin, origin + direction * distance);
     }
 
 }
