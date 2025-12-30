@@ -3,19 +3,20 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerInput))]
 public class Player : ActorController, IDamegeable
 {
-    //TODO: May need to add wall check to base actor class so vertical drag can be lowered while touching wall
-    //(player should have to some friction when moving down wall)
-
-    //TODO: Wall jump works correctly, but the forces are way off and I dont know why
-    //TODO: Wall jumps let player float indefinitely
+    //TODO: Cancel lateral movement except when jumping while on wall to stop players from abusing wall sliding
+    //TODO: Have wall drag start high enough that player doesnt move, then decrease over time so they start accelerating downward
+    
+    //TODO: Implement double jump
 
     PlayerInput input;
     PlayerCamera playerCamera; // access to camera so it can be disabled during death or game pause
 
     bool isJumping = false;
     float jumpStartTime = 0f;
+    int currentJumpCount = 0;
+    int maxJumpCount = 2;
 
-    [SerializeField] float jumpForce = 30f;
+    [SerializeField] float jumpForce = 6f;
     [SerializeField] float maxJumpHoldTime = 0.2f;
 
     float _maxHealth = 100f;
@@ -31,11 +32,16 @@ public class Player : ActorController, IDamegeable
     bool isWallJumping = false;
     Vector3 wallJumpDir = Vector3.zero;
 
+    [SerializeField]
+    float onWallAirDrag = 1.5f;
+    float baseAirDrag;
+
     protected override void Start()
     {
         health = _maxHealth;
         input = GetComponent<PlayerInput>();
         playerCamera = GetComponent<PlayerCamera>();
+        baseAirDrag = airDrag;
         base.Start();
     }
 
@@ -62,11 +68,9 @@ public class Player : ActorController, IDamegeable
         // --------------------------------------------------------------------
         // 2) NORMAL JUMP / JUMP-HOLD
         // --------------------------------------------------------------------
-        if (input.isJump && isJumping)
+        if (input.isJump && isJumping && currentJumpCount < maxJumpCount)
         {
-            // holding jump increases height of jump, diminishing until maxJumpHoldTime
-            base.inputVector += Vector3.up * jumpForce *
-                (1f - Mathf.InverseLerp(jumpStartTime, jumpStartTime + maxJumpHoldTime, Time.time));
+            base.inputVector += ApplyJump(Vector3.up, jumpForce, jumpStartTime, maxJumpHoldTime);
         }
 
         // --------------------------------------------------------------------
@@ -74,9 +78,7 @@ public class Player : ActorController, IDamegeable
         // --------------------------------------------------------------------
         if (input.isJump && isWallJumping)
         {
-            // holding jump increases height of jump, diminishing until maxJumpHoldTime
-            base.inputVector += (Vector3.up + wallJumpDir) * jumpForce *
-                (1f - Mathf.InverseLerp(jumpStartTime, jumpStartTime + maxJumpHoldTime, Time.time));
+            base.inputVector += ApplyJump(Vector3.up + wallJumpDir, jumpForce, jumpStartTime, maxJumpHoldTime);
         }
 
         // --------------------------------------------------------------------
@@ -106,6 +108,18 @@ public class Player : ActorController, IDamegeable
         }
 
         AttackCheck();
+
+        //player friction increased when "OnWall". This slows the players descent and allows for more precise wall jumps
+        //can be improved by having the drag start higher and then shrink over time
+        //player can also currently abuse this by sliding along wall so lateral movement will need to be cancelled
+        if (isOnWall)
+        {
+            airDrag = onWallAirDrag;
+        }
+        else
+        {
+            airDrag = baseAirDrag;
+        }
 
         base.Update();
     }
@@ -181,6 +195,14 @@ public class Player : ActorController, IDamegeable
         }
 
         return;
+    }
+
+    //used for "Jump" movement to player whether its standard jump, wall jump, double jump, etc
+    Vector3 ApplyJump(Vector3 _jumpDir, float _jumpForce, float _jumpStartTime, float _maxJumpHoldTime)
+    {
+        // holding jump increases height of jump, diminishing until maxJumpHoldTime
+        return _jumpDir * _jumpForce *
+                (1f - Mathf.InverseLerp(_jumpStartTime, _jumpStartTime + _maxJumpHoldTime, Time.time));
     }
 
     void AttackCheck()
