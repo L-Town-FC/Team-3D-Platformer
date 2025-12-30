@@ -8618,6 +8618,10 @@ PrefabInstance:
       propertyPath: jumpForce
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 7325689739069660379, guid: d715010f6e805d68e834e193c18acb03, type: 3}
+      propertyPath: onWallAirDrag
+      value: 1.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
