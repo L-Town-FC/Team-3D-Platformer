@@ -26,7 +26,7 @@ public class Player : ActorController, IDamegeable
     public float health { get; set; }
 
     // --- Stomp bounce (triggered by EnemyStompTrigger via ApplyStompBounce) ---
-    float stompBounceStartTime = -1f;
+    public float stompBounceStartTime = -1f;
     float stompBounceDuration = 0.12f; // tweak for feel (0.08 - 0.15 is a good range)
     float stompBounceForce = 6f;   // set by ApplyStompBounce()
 
@@ -51,18 +51,8 @@ public class Player : ActorController, IDamegeable
     {
         // --------------------------------------------------------------------
         // 1) CAMERA-RELATIVE MOVEMENT (HORIZONTAL ONLY)
-        //    Your old line was:
-        //      base.inputVector = Camera.main.transform.TransformDirection(input.movementInput.normalized);
-        //
-        //    That can introduce a NEGATIVE Y when the camera is tilted down,
-        //    which fights your stomp bounce. So we project onto the XZ plane.
         // --------------------------------------------------------------------
-        Vector3 camRelative = Camera.main.transform.TransformDirection(input.movementInput.normalized);
-        camRelative = Vector3.ProjectOnPlane(camRelative, Vector3.up).normalized; // <-- NEW
-        base.inputVector = camRelative;
-
-        // player always faces the direction they are moving in
-        base.newTransformForward = base.inputVector;
+        base.inputVector = CamRelativeInputVector();
 
         // checks conditions/sets variables and states for jumping
         JumpCheck();
@@ -85,28 +75,10 @@ public class Player : ActorController, IDamegeable
 
         // --------------------------------------------------------------------
         // 4) STOMP BOUNCE (MINI JUMP WINDOW)
-        //    Old code did: base.inputVector += Vector3.up * bounce...
-        //    But if inputVector.y is negative (camera tilt) or small,
-        //    adding might not win. So we OVERRIDE Y upward for the window.
         // --------------------------------------------------------------------
-        // Stomp bounce (mini jump window)
         if (stompBounceStartTime >= 0f)
         {
-            float t01 = Mathf.InverseLerp(
-                stompBounceStartTime,
-                stompBounceStartTime + stompBounceDuration,
-                Time.time
-            );
-
-            float bounce = stompBounceForce * (1f - t01);
-
-            // Because base.inputVector is a property, we must modify a local copy then reassign.
-            Vector3 iv = base.inputVector;
-            iv.y = Mathf.Max(iv.y, bounce);
-            base.inputVector = iv;
-
-            if (Time.time >= stompBounceStartTime + stompBounceDuration)
-                stompBounceStartTime = -1f;
+            ApplyStompBounce();
         }
 
         AttackCheck();
@@ -123,6 +95,11 @@ public class Player : ActorController, IDamegeable
             airDrag = baseAirDrag;
         }
 
+        //player always faces the direction they are moving in
+        //this is done at the end because of the movement abilties that automatically change the players
+        //input vector (wall jump)
+        base.newTransformForward = base.inputVector;
+
         base.Update();
     }
 
@@ -131,6 +108,21 @@ public class Player : ActorController, IDamegeable
         base.FixedUpdate();
     }
 
+    //Converts input vector from world vector to input vector based on the camera
+    //makes movement feel better
+    Vector3 CamRelativeInputVector()
+    {
+        //    Your old line was:
+        //      base.inputVector = Camera.main.transform.TransformDirection(input.movementInput.normalized);
+        //
+        //    That can introduce a NEGATIVE Y when the camera is tilted down,
+        //    which fights your stomp bounce. So we project onto the XZ plane.
+        Vector3 camRelative = Camera.main.transform.TransformDirection(input.movementInput.normalized);
+        camRelative = Vector3.ProjectOnPlane(camRelative, Vector3.up).normalized; // <-- NEW
+        return camRelative;
+    }
+
+    #region IDamageable methods
     public void Die()
     {
         DeathMenuController deathMenu = FindFirstObjectByType<DeathMenuController>();
@@ -145,7 +137,9 @@ public class Player : ActorController, IDamegeable
         if (health == 0f)
             Die();
     }
+    #endregion
 
+    #region Movement Methods
     void JumpCheck()
     {
         //if the player isnt trying to jump, dont trigger a jump
@@ -226,6 +220,45 @@ public class Player : ActorController, IDamegeable
                 (1f - Mathf.InverseLerp(_jumpStartTime, _jumpStartTime + _maxJumpHoldTime, Time.time));
     }
 
+    //Applies a stomp bounce velocity based on the time a stomp bounce was set
+    void ApplyStompBounce()
+    {
+        //calculates how far through the stomp bounce time the player is
+        float t01 = Mathf.InverseLerp(
+            stompBounceStartTime,
+            stompBounceStartTime + stompBounceDuration,
+            Time.time
+        );
+
+        //applied bounce amount slowly fades over time to make movement less jarring
+        float bounce = stompBounceForce * (1f - t01);
+
+        // Because base.inputVector is a property, we must modify a local copy then reassign.
+        Vector3 iv = base.inputVector;
+        iv.y = Mathf.Max(iv.y, bounce);
+        base.inputVector = iv;
+
+        //resets bounce time so player doesnt have a small infinite bounce applied to them
+        if (Time.time >= stompBounceStartTime + stompBounceDuration)
+            stompBounceStartTime = -1f;
+    }
+
+    /// <summary>
+    /// Called by EnemyStompTrigger when the player stomps an enemy.
+    /// Starts a short bounce window using the same movement pipeline as your jump.
+    /// </summary>
+    public void SetStompBounce()
+    {
+        // Force "air" state so grounded/jump logic doesn't cancel the bounce immediately
+        isGrounded = false;
+
+        // Cancel any ongoing jump-hold so bounce isn't weakened/overridden
+        isJumping = false;
+
+        // Start (or restart) the bounce window now
+        stompBounceStartTime = Time.time;
+    }
+    #endregion
     void AttackCheck()
     {
         //if the player is attacking, create a sphere in front of them and check the colliders that are hit
@@ -242,23 +275,6 @@ public class Player : ActorController, IDamegeable
                 }
             }
         }
-    }
-
-
-    /// <summary>
-    /// Called by EnemyStompTrigger when the player stomps an enemy.
-    /// Starts a short bounce window using the same movement pipeline as your jump.
-    /// </summary>
-    public void ApplyStompBounce()
-    {
-        // Force "air" state so grounded/jump logic doesn't cancel the bounce immediately
-        isGrounded = false;
-
-        // Cancel any ongoing jump-hold so bounce isn't weakened/overridden
-        isJumping = false;
-
-        // Start (or restart) the bounce window now
-        stompBounceStartTime = Time.time;
     }
 
     void OnDrawGizmos()
