@@ -11,7 +11,9 @@ public class Player : ActorController, IDamegeable
     PlayerInput input;
     PlayerCamera playerCamera; // access to camera so it can be disabled during death or game pause
 
+    [SerializeField]
     bool isJumping = false;
+    [SerializeField]
     float jumpStartTime = 0f;
     int currentJumpCount = 0;
     int maxJumpCount = 2;
@@ -68,7 +70,7 @@ public class Player : ActorController, IDamegeable
         // --------------------------------------------------------------------
         // 2) NORMAL JUMP / JUMP-HOLD
         // --------------------------------------------------------------------
-        if (input.isJump && isJumping && currentJumpCount < maxJumpCount)
+        if (input.isJump && isJumping)
         {
             base.inputVector += ApplyJump(Vector3.up, jumpForce, jumpStartTime, maxJumpHoldTime);
         }
@@ -157,11 +159,15 @@ public class Player : ActorController, IDamegeable
         {
             //since you cant be considered "OnWall" when grounded, you can't wall jump
             isWallJumping = false;
+            currentJumpCount = 0;
 
+            //start jump when player tries to jump when grounded. Also sets jumpCount variable for 
+            //double jump tracking and jumpStartTime for ability to hold jumps
             if (input.isJump)
             {
                 isJumping = true;
                 jumpStartTime = Time.time;
+                currentJumpCount++;
             }
 
             return;
@@ -186,12 +192,27 @@ public class Player : ActorController, IDamegeable
         //if atleast two points on the player are touching a wall, the player is considered on the wall
         isOnWall = wallContacts > 1;
 
+        //currently resetting jump counter letting player double jump after a wall jump
+        if (isOnWall)
+        {
+            currentJumpCount = 0;
+        }
+
         //stops player from wall jupming as soon as they touch the wall. They need to actively try to jump
         //after releasing jump and touching the wall
         if (input.isJump && !isJumping && isOnWall)
         {
             isWallJumping = true;
             jumpStartTime = Time.time;
+            return;
+        }
+
+        //checks if player can double jump
+        if (input.isJump && !isJumping && currentJumpCount < maxJumpCount)
+        {
+            isJumping = true;
+            jumpStartTime = Time.time;
+            currentJumpCount++;
         }
 
         return;
