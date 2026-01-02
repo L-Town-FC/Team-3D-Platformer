@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerInput))]
-public class Player : ActorController, IDamegeable
+public class Player : ActorController, IDamageable
 {
     //TODO: Cancel lateral movement except when jumping while on wall to stop players from abusing wall sliding
     //TODO: Have wall drag start high enough that player doesnt move, then decrease over time so they start accelerating downward
@@ -269,7 +269,7 @@ public class Player : ActorController, IDamegeable
             Collider[] hits = Physics.OverlapSphere(transform.position + transform.forward, 0.5f, everythingExceptPlayerMask, QueryTriggerInteraction.Ignore);
             foreach(Collider hit in hits)
             {
-                if(hit.transform.TryGetComponent<IDamegeable>(out IDamegeable damegeable))
+                if(hit.transform.TryGetComponent<IDamageable>(out IDamageable damegeable))
                 {
                     damegeable.TakeDamage(damegeable.health);
                 }

@@ -50,7 +50,7 @@ public class EnemyPlayerInteractions : MonoBehaviour
         if (IsStompContact(collision))
         {
             //damage the enemy
-            if (transform.TryGetComponent<IDamegeable>(out IDamegeable damegeable))
+            if (transform.TryGetComponent<IDamageable>(out IDamageable damegeable))
             {
                 damegeable.TakeDamage(50f);
             }
@@ -66,7 +66,7 @@ public class EnemyPlayerInteractions : MonoBehaviour
         }
 
         // Otherwise, this is a side/bottom hit -> kill/damage player
-        if (collision.transform.TryGetComponent<IDamegeable>(out IDamegeable damageable))
+        if (collision.transform.TryGetComponent<IDamageable>(out IDamageable damageable))
         {
             // Kill the player via the damage interface
             damageable.TakeDamage(damageable.health);

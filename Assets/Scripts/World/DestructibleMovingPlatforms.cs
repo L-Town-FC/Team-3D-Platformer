@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DestructibleMovingPlatforms : MovingPlatform, IDamegeable
+public class DestructibleMovingPlatforms : MovingPlatform, IDamageable
 {
     //values are arbitrary and for testing purposes
     float _maxHealth = 100f;

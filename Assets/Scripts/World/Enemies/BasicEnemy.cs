@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.VFX;
-public class BasicEnemy : ActorController, IDamegeable
+public class BasicEnemy : ActorController, IDamageable
 {
     [SerializeField] private Transform player;
     [SerializeField] private float stopDistance = 0.75f;

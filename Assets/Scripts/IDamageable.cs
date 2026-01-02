@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public interface IDamegeable
+public interface IDamageable
 {
     //hold health for entity
     float health { get; set; }
