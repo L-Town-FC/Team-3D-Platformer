@@ -3,10 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerInput))]
 public class Player : ActorController, IDamageable
 {
-    //TODO: Cancel lateral movement except when jumping while on wall to stop players from abusing wall sliding
     //TODO: Have wall drag start high enough that player doesnt move, then decrease over time so they start accelerating downward
-    
-    //TODO: Implement double jump
 
     PlayerInput input;
     PlayerCamera playerCamera; // access to camera so it can be disabled during death or game pause
@@ -32,18 +29,19 @@ public class Player : ActorController, IDamageable
 
     bool isOnWall = false;
     bool isWallJumping = false;
+    float defaultDownwardGravityModifier;
+    float onWallGravityModifier = 0.05f;
+    float defaultAirDrag;
+    float onWallDrag = 1f;
     Vector3 wallJumpDir = Vector3.zero;
-
-    [SerializeField]
-    float onWallAirDrag = 1.5f;
-    float baseAirDrag;
 
     protected override void Start()
     {
         health = _maxHealth;
         input = GetComponent<PlayerInput>();
         playerCamera = GetComponent<PlayerCamera>();
-        baseAirDrag = airDrag;
+        defaultDownwardGravityModifier = downwardGravityModifier;
+        defaultAirDrag = airDrag;
         base.Start();
     }
 
@@ -83,16 +81,18 @@ public class Player : ActorController, IDamageable
 
         AttackCheck();
 
-        //player friction increased when "OnWall". This slows the players descent and allows for more precise wall jumps
-        //can be improved by having the drag start higher and then shrink over time
-        //player can also currently abuse this by sliding along wall so lateral movement will need to be cancelled
+        //player gravity decreased when "OnWall". This slows the players descent and allows for more precise wall jumps
+        //player air drag is increased on wall to stop them from sliding along wall when hitting wall at angle
         if (isOnWall)
         {
-            airDrag = onWallAirDrag;
+            base.inputVector = ProjectOnWallMovement(base.inputVector);
+            downwardGravityModifier = onWallGravityModifier;
+            airDrag = onWallDrag;
         }
         else
         {
-            airDrag = baseAirDrag;
+            downwardGravityModifier = defaultDownwardGravityModifier;
+            airDrag = defaultAirDrag;
         }
 
         //player always faces the direction they are moving in
@@ -153,6 +153,7 @@ public class Player : ActorController, IDamageable
         {
             //since you cant be considered "OnWall" when grounded, you can't wall jump
             isWallJumping = false;
+            isOnWall = false;
             currentJumpCount = 0;
 
             //start jump when player tries to jump when grounded. Also sets jumpCount variable for 
@@ -257,6 +258,29 @@ public class Player : ActorController, IDamageable
 
         // Start (or restart) the bounce window now
         stompBounceStartTime = Time.time;
+    }
+
+    Vector3 ProjectOnWallMovement(Vector3 input)
+    {
+        Vector3 horInputVector = new Vector3(input.x, 0f, input.z); //remove the vertical component
+
+        //wall jump normal is directly away from wall
+        //since when on the wall we only care about vertical movement and
+        //movement away from the wall, the horizontal vector is projected onto the wallJumpDir
+        //so only movement away from the wall remains
+        Vector3 projHorInputVector = Vector3.Project(horInputVector, wallJumpDir);
+
+        //check if the new horizontal input vector is in the same direction as the wall normal
+        //if not, the player shouldnt try to move towards the wall so cancel all horizontal input
+
+        float dot = Vector3.Dot(projHorInputVector, wallJumpDir);
+        if(dot < 0f)
+        {
+            projHorInputVector = Vector3.zero;
+        }
+
+        //the vertical component is then readded to the projected vector
+        return new Vector3(projHorInputVector.x, input.y, projHorInputVector.z);
     }
     #endregion
     void AttackCheck()
