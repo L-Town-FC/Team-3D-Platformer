@@ -289,8 +289,11 @@ MonoBehaviour:
     m_Bits: 63
   externalMovement: {x: 0, y: 0, z: 0}
   downwardGravityModifier: 0.6
+  isJumping: 0
+  jumpStartTime: 0
   jumpForce: 6
   maxJumpHoldTime: 0.2
+  stompBounceStartTime: -1
 --- !u!114 &4952950075037070094
 MonoBehaviour:
   m_ObjectHideFlags: 0

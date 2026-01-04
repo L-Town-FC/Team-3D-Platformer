@@ -3,10 +3,12 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerInput))]
 public class Player : ActorController, IDamageable
 {
-    //TODO: Have wall drag start high enough that player doesnt move, then decrease over time so they start accelerating downward
-
     PlayerInput input;
     PlayerCamera playerCamera; // access to camera so it can be disabled during death or game pause
+
+    //Player State variables
+    enum PlayerState {onGround, inAir, onWall}
+    PlayerState currentPlayerState = PlayerState.inAir;
 
     [SerializeField]
     bool isJumping = false;
@@ -27,13 +29,15 @@ public class Player : ActorController, IDamageable
     float stompBounceDuration = 0.12f; // tweak for feel (0.08 - 0.15 is a good range)
     float stompBounceForce = 6f;   // set by ApplyStompBounce()
 
-    bool isOnWall = false;
     bool isWallJumping = false;
-    float defaultDownwardGravityModifier;
-    float onWallGravityModifier = 0.05f;
+    float defaultDownwardGravityModifier; //base modifier for gravity when player is moving downward
+    float onWallGravityModifier = 0.05f; //downward gravity modifier for when player first touches a wall
+    float gravityModifierMaxChangeTime = 2f; //how long until normal gravity takes over when on the wall
     float defaultAirDrag;
     float onWallDrag = 1f;
     Vector3 wallJumpDir = Vector3.zero;
+
+    float playerStateChangeTime = 0f;
 
     protected override void Start()
     {
@@ -51,6 +55,10 @@ public class Player : ActorController, IDamageable
         // 1) CAMERA-RELATIVE MOVEMENT (HORIZONTAL ONLY)
         // --------------------------------------------------------------------
         base.inputVector = CamRelativeInputVector();
+
+        //Sets player state so future methods are using the same state
+        //this should only occur here
+        SetPlayerState();
 
         // checks conditions/sets variables and states for jumping
         JumpCheck();
@@ -80,20 +88,6 @@ public class Player : ActorController, IDamageable
         }
 
         AttackCheck();
-
-        //player gravity decreased when "OnWall". This slows the players descent and allows for more precise wall jumps
-        //player air drag is increased on wall to stop them from sliding along wall when hitting wall at angle
-        if (isOnWall)
-        {
-            base.inputVector = ProjectOnWallMovement(base.inputVector);
-            downwardGravityModifier = onWallGravityModifier;
-            airDrag = onWallDrag;
-        }
-        else
-        {
-            downwardGravityModifier = defaultDownwardGravityModifier;
-            airDrag = defaultAirDrag;
-        }
 
         //player always faces the direction they are moving in
         //this is done at the end because of the movement abilties that automatically change the players
@@ -149,11 +143,10 @@ public class Player : ActorController, IDamageable
         }
 
         // checks if the player can start a jump and what time the jump started
-        if (isGrounded)
+        if (currentPlayerState == PlayerState.onGround)
         {
             //since you cant be considered "OnWall" when grounded, you can't wall jump
             isWallJumping = false;
-            isOnWall = false;
             currentJumpCount = 0;
 
             //start jump when player tries to jump when grounded. Also sets jumpCount variable for 
@@ -168,34 +161,10 @@ public class Player : ActorController, IDamageable
             return;
         }
 
-        //OnWallCheck
-        //Walls must be perfectly vertical to count as walls
-        //if they are vertical then the normal vectors must have no y-component
-        int wallContacts = 0;
-
-        foreach (ContactPoint contact in actorCollision.contacts)
-        {
-            if(contact.normal.y == 0)
-            {
-                Debug.DrawRay(contact.point, contact.normal, Color.green);
-                //the direction exactly opposite the wall
-                wallJumpDir = -contact.normal.normalized;
-                wallContacts++;
-            }
-        }
-
-        //if atleast two points on the player are touching a wall, the player is considered on the wall
-        isOnWall = wallContacts > 1;
-
-        //currently resetting jump counter letting player double jump after a wall jump
-        if (isOnWall)
-        {
-            currentJumpCount = 0;
-        }
-
         //stops player from wall jupming as soon as they touch the wall. They need to actively try to jump
         //after releasing jump and touching the wall
-        if (input.isJump && !isJumping && isOnWall)
+        //number of jumps is reset when touching a wall. this can be changed in the OnWallCheck method
+        if (input.isJump && !isJumping && currentPlayerState == PlayerState.onWall)
         {
             isWallJumping = true;
             jumpStartTime = Time.time;
@@ -299,6 +268,83 @@ public class Player : ActorController, IDamageable
                 }
             }
         }
+    }
+
+    bool OnWallCheck()
+    {
+        //OnWallCheck
+        //Walls must be perfectly vertical to count as walls
+        //if they are vertical then the normal vectors must have no y-component
+        int wallContacts = 0;
+
+        foreach (ContactPoint contact in actorCollision.contacts)
+        {
+            if (contact.normal.y == 0)
+            {
+                Debug.DrawRay(contact.point, contact.normal, Color.green);
+                //the direction exactly opposite the wall
+                wallJumpDir = -contact.normal.normalized;
+                wallContacts++;
+            }
+        }
+
+        //if atleast two points on the player are touching a wall, the player is considered on the wall
+        return wallContacts > 1;
+    }
+
+    void SetPlayerState()
+    {
+        //incredibly simple state machine that probably shouldnt even be called a state machine
+        //need to look into moving this into a separate script to keep the player code clean
+        //EnterState only fires when player is transitioning between different states
+        //this lets playerStateChangeTime update correctly and not every frame
+        if (isGrounded)
+        {
+            if(currentPlayerState != PlayerState.onGround)
+            {
+                currentPlayerState = EnterState(PlayerState.onGround);
+            }
+
+            downwardGravityModifier = defaultDownwardGravityModifier;
+            airDrag = defaultAirDrag;
+        }
+        else if (OnWallCheck())
+        {
+            if (currentPlayerState != PlayerState.onWall)
+            {
+                currentPlayerState = EnterState(PlayerState.onWall);
+            }
+            base.inputVector = ProjectOnWallMovement(base.inputVector);
+
+            //player gravity changes to very small when first on the wall so they appear to stick to wall
+            //this "stick" allows player to make precision jumps
+            //over time the player loses their "stick" and starts falling at normal gravity rate
+            downwardGravityModifier = Mathf.Lerp(
+                onWallGravityModifier, 
+                defaultDownwardGravityModifier, 
+                Mathf.InverseLerp(playerStateChangeTime, playerStateChangeTime + gravityModifierMaxChangeTime, Time.time)
+                );
+
+            //player air drag is increased on wall to stop them from sliding along wall when hitting wall at angle
+            airDrag = onWallDrag;
+
+            currentJumpCount = 0;
+        }
+        else
+        {
+            if (currentPlayerState != PlayerState.inAir)
+            {
+                currentPlayerState = EnterState(PlayerState.inAir);
+            }
+            downwardGravityModifier = defaultDownwardGravityModifier;
+            airDrag = defaultAirDrag;
+        }
+    }
+
+    PlayerState EnterState(PlayerState newPlayerState)
+    {
+        playerStateChangeTime = Time.time;
+        return newPlayerState;
     }
 
     void OnDrawGizmos()
