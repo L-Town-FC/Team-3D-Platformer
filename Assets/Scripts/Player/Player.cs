@@ -7,7 +7,7 @@ public class Player : ActorController, IDamageable
     PlayerCamera playerCamera; // access to camera so it can be disabled during death or game pause
 
     //Player State variables
-    enum PlayerState {onGround, inAir, onWall}
+    enum PlayerState {onGround, inAir, onWall, crouched}
     PlayerState currentPlayerState = PlayerState.inAir;
 
     [SerializeField]
@@ -37,6 +37,10 @@ public class Player : ActorController, IDamageable
     float onWallDrag = 1f;
     Vector3 wallJumpDir = Vector3.zero;
 
+    bool isCrouch = false;
+    float crouchSpeed = 3f;
+    float defaultSpeed;
+
     float playerStateChangeTime = 0f;
 
     protected override void Start()
@@ -46,6 +50,7 @@ public class Player : ActorController, IDamageable
         playerCamera = GetComponent<PlayerCamera>();
         defaultDownwardGravityModifier = downwardGravityModifier;
         defaultAirDrag = airDrag;
+        defaultSpeed = speed;
         base.Start();
     }
 
@@ -86,6 +91,8 @@ public class Player : ActorController, IDamageable
         {
             ApplyStompBounce();
         }
+
+        CrouchCheck();
 
         AttackCheck();
 
@@ -292,12 +299,31 @@ public class Player : ActorController, IDamageable
         return wallContacts > 1;
     }
 
+    void CrouchCheck()
+    {
+        if(!isCrouch && input.isCrouching)
+        {
+            isCrouch = true;
+            transform.localScale = new Vector3(1f, 0.5f, 1f);
+            speed = crouchSpeed;
+        }
+
+        if (!input.isCrouching || currentPlayerState == PlayerState.onWall)
+        {
+            isCrouch = false;
+            transform.localScale = Vector3.one;
+            speed = defaultSpeed;
+        }
+    }
+
     void SetPlayerState()
     {
         //incredibly simple state machine that probably shouldnt even be called a state machine
         //need to look into moving this into a separate script to keep the player code clean
         //EnterState only fires when player is transitioning between different states
         //this lets playerStateChangeTime update correctly and not every frame
+
+
         if (isGrounded)
         {
             if(currentPlayerState != PlayerState.onGround)

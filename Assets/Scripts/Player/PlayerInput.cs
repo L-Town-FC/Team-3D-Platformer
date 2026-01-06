@@ -10,11 +10,13 @@ public class PlayerInput : MonoBehaviour
     private InputAction lookAction;
     private InputAction jumpAction;
     private InputAction attackAction;
+    private InputAction crouchAction;
 
     public Vector3 movementInput = Vector3.zero;
     public Vector2 cameraInput = Vector2.zero;
     public bool isJump;
     public bool isAttacking;
+    public bool isCrouching;
     public bool lastLookWasGamepad { get; private set; }
 
 
@@ -33,6 +35,8 @@ public class PlayerInput : MonoBehaviour
         lookAction = playerActionMap.FindAction("Look");
         jumpAction = playerActionMap.FindAction("Jump");
         attackAction = playerActionMap.FindAction("Attack");
+        crouchAction = playerActionMap.FindAction("Crouch");
+
         playerActionMap.Enable();
     }
 
@@ -43,12 +47,11 @@ public class PlayerInput : MonoBehaviour
 
     void Update()
     {
-        Vector2 move = playerActionMap.FindAction("Move").ReadValue<Vector2>();
-        Vector2 look = playerActionMap.FindAction("Look").ReadValue<Vector2>();
+        Vector2 move = moveAction.ReadValue<Vector2>();
+        Vector2 look = lookAction.ReadValue<Vector2>();
 
         // Detect which device last drove the Look action
-        lastLookWasGamepad = playerActionMap
-            .FindAction("Look")
+        lastLookWasGamepad = lookAction
             .activeControl?.device is Gamepad;
 
         // Mouse delta = per-frame delta
@@ -61,8 +64,9 @@ public class PlayerInput : MonoBehaviour
         movementInput = new Vector3(move.x, 0f, move.y).normalized;
         cameraInput = look;
 
-        isJump = playerActionMap.FindAction("Jump").IsPressed();
-        isAttacking = playerActionMap.FindAction("Attack").IsPressed();
+        isJump = jumpAction.IsPressed();
+        isAttacking = attackAction.IsPressed();
+        isCrouching = crouchAction.IsPressed();
     }
 
 }

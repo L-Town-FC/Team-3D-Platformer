@@ -11,7 +11,7 @@ public class ActorController : MonoBehaviour
     protected virtual Vector3 newTransformForward { get; set; } = Vector3.zero;
     
     [SerializeField]
-    protected float speed = 12f;
+    protected float speed = 10f;
     [SerializeField]
     float gravityForce = 3f;
     [SerializeField]
