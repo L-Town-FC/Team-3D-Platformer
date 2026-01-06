@@ -5,20 +5,42 @@ public class PlayerCamera : MonoBehaviour
 {
     [SerializeField] private PlayerInput input;
 
-    // Drag your active CinemachineCamera here (the one in your screenshot)
-    [SerializeField] GameObject cinemachineCamera;
+    [Header("Auto-bind")]
+    [SerializeField] private string cinemachineRigTag = "CinemachineRig";
+
+    private GameObject cinemachineCamera;
     private CinemachineInputAxisController inputAxisController;
     private CinemachineOrbitalFollow orbitFollow;
 
     [SerializeField] private Vector2 minAndMaxCameraTilt = new Vector2(-60f, 75f);
     [SerializeField] private Vector2 horizontalAndVerticalCameraSensitivity = new Vector2(1f, 1f);
 
-
     private void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
+
+        cinemachineCamera = GameObject.FindGameObjectWithTag(cinemachineRigTag);
+
+        if (cinemachineCamera == null)
+        {
+            Debug.LogError($"[{nameof(PlayerCamera)}] No object tagged '{cinemachineRigTag}' found. " +
+                            $"Tag your CinemachineCamera GameObject or change cinemachineRigTag.");
+            enabled = false;
+            return;
+        }
+
         inputAxisController = cinemachineCamera.GetComponent<CinemachineInputAxisController>();
         orbitFollow = cinemachineCamera.GetComponent<CinemachineOrbitalFollow>();
+
+        if (inputAxisController == null || orbitFollow == null)
+        {
+            Debug.LogError($"[{nameof(PlayerCamera)}] Cinemachine rig missing required components. " +
+                            $"Need {nameof(CinemachineInputAxisController)} and {nameof(CinemachineOrbitalFollow)} on {cinemachineCamera.name}.");
+            enabled = false;
+            return;
+        }
+
+        ApplyTuning();
     }
 
     private void Update()
@@ -28,15 +50,18 @@ public class PlayerCamera : MonoBehaviour
 
     private void OnValidate()
     {
-        //this will have to be moved out of OnValidate when we want these values to be modifiable by UI
-        if(inputAxisController != null && orbitFollow != null)
+        // Keep OnValidate for editor-time tuning, but don't rely on it for runtime correctness
+        if (inputAxisController != null && orbitFollow != null)
         {
-            //sets camera sensitivity
-            inputAxisController.GetController("Look Orbit X").Input.Gain = horizontalAndVerticalCameraSensitivity.x;
-            inputAxisController.GetController("Look Orbit Y").Input.Gain = horizontalAndVerticalCameraSensitivity.y;
-
-            //set camera tilt constaints
-            orbitFollow.VerticalAxis.Range = minAndMaxCameraTilt;
+            ApplyTuning();
         }
+    }
+
+    private void ApplyTuning()
+    {
+        inputAxisController.GetController("Look Orbit X").Input.Gain = horizontalAndVerticalCameraSensitivity.x;
+        inputAxisController.GetController("Look Orbit Y").Input.Gain = horizontalAndVerticalCameraSensitivity.y;
+
+        orbitFollow.VerticalAxis.Range = minAndMaxCameraTilt;
     }
 }
