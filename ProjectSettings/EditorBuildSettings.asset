@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Level2.unity
     guid: 07da3ffe06e6d20619490b2a3262ab7c
+  - enabled: 1
+    path: Assets/Scenes/HauntedForest.unity
+    guid: cc9d034f90731f1bbaba3ac8af6d6635
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 37bc8978691df68a59777657ceb1db26, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
