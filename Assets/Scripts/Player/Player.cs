@@ -43,11 +43,16 @@ public class Player : ActorController, IDamageable
 
     float playerStateChangeTime = 0f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip jumpClip;
+    private AudioSource audioSource;
+
     protected override void Start()
     {
         health = _maxHealth;
         input = GetComponent<PlayerInput>();
         playerCamera = GetComponent<PlayerCamera>();
+        audioSource = GetComponentInChildren<AudioSource>();
         defaultDownwardGravityModifier = downwardGravityModifier;
         defaultAirDrag = airDrag;
         defaultSpeed = speed;
@@ -160,6 +165,7 @@ public class Player : ActorController, IDamageable
             //double jump tracking and jumpStartTime for ability to hold jumps
             if (input.isJump)
             {
+                audioSource.PlayOneShot(jumpClip);
                 isJumping = true;
                 jumpStartTime = Time.time;
                 currentJumpCount++;
@@ -173,6 +179,7 @@ public class Player : ActorController, IDamageable
         //number of jumps is reset when touching a wall. this can be changed in the OnWallCheck method
         if (input.isJump && !isJumping && currentPlayerState == PlayerState.onWall)
         {
+            audioSource.PlayOneShot(jumpClip);
             isWallJumping = true;
             jumpStartTime = Time.time;
             return;
@@ -181,6 +188,7 @@ public class Player : ActorController, IDamageable
         //checks if player can double jump
         if (input.isJump && !isJumping && currentJumpCount < maxJumpCount)
         {
+            audioSource.PlayOneShot(jumpClip);
             isJumping = true;
             jumpStartTime = Time.time;
             currentJumpCount++;
