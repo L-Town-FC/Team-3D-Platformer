@@ -1,15 +1,29 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
 
 public class DeathMenuController : MenuControllerBase
 {
     [Header("Scenes")]
     [SerializeField] private string mainMenuSceneName = "MainMenu";
 
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        Player.playerDeath += Die;
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        Player.playerDeath -= Die;
+    }
+
     public bool IsDead => isOpen;
 
     public void Die()
     {
+        print(Time.time);
         if (isOpen)
             return;
 

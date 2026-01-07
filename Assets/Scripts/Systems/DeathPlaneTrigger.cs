@@ -20,7 +20,9 @@ public class DeathPlaneTrigger : MonoBehaviour
         if (!other.CompareTag(playerTag))
             return;
 
-        if (deathMenu != null)
-            deathMenu.Die();
+        if(other.transform.TryGetComponent<Player>(out Player player))
+        {
+            player.Die();
+        }
     }
 }

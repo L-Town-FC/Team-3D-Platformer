@@ -1,8 +1,13 @@
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(PlayerInput))]
 public class Player : ActorController, IDamageable
 {
+    //Event that triggers when the player dies
+    public delegate void PlayerDeath();
+    public static PlayerDeath playerDeath;
+
     PlayerInput input;
     PlayerCamera playerCamera; // access to camera so it can be disabled during death or game pause
 
@@ -131,9 +136,12 @@ public class Player : ActorController, IDamageable
     #region IDamageable methods
     public void Die()
     {
-        DeathMenuController deathMenu = FindFirstObjectByType<DeathMenuController>();
         playerCamera.enabled = false; // disables player's ability to move the camera when they are dead
-        deathMenu.Die();
+        if(playerDeath != null)
+        {
+            playerDeath.Invoke();
+        }
+        Destroy(this.gameObject);
     }
 
     public void TakeDamage(float damage)
