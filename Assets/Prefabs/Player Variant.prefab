@@ -134,7 +134,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -315,6 +315,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3619068225187507377}
     - target: {fileID: 4778157200799872232, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
+      propertyPath: invertVerticalControls
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4778157200799872232, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
       propertyPath: horizontalAndVerticalCameraSensitivity.x
       value: 1
       objectReference: {fileID: 0}
@@ -426,6 +430,7 @@ MonoBehaviour:
   jumpForce: 6
   maxJumpHoldTime: 0.2
   stompBounceStartTime: -1
+  backflipJumpForce: 20
   jumpClip: {fileID: 8300000, guid: 14c2b7ee8a75deeaa8013efdcb51646b, type: 3}
 --- !u!114 &4952950075037070094
 MonoBehaviour:

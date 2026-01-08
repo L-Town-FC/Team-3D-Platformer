@@ -14,6 +14,7 @@ public class PlayerCamera : MonoBehaviour
 
     [SerializeField] private Vector2 minAndMaxCameraTilt = new Vector2(-60f, 75f);
     [SerializeField] private Vector2 horizontalAndVerticalCameraSensitivity = new Vector2(1f, 1f);
+    [SerializeField] private bool invertVerticalControls = false;
 
     private void Awake()
     {
@@ -60,8 +61,18 @@ public class PlayerCamera : MonoBehaviour
     private void ApplyTuning()
     {
         inputAxisController.GetController("Look Orbit X").Input.Gain = horizontalAndVerticalCameraSensitivity.x;
-        inputAxisController.GetController("Look Orbit Y").Input.Gain = horizontalAndVerticalCameraSensitivity.y;
+        inputAxisController.GetController("Look Orbit Y").Input.Gain = horizontalAndVerticalCameraSensitivity.y * ConvertBoolToFloat(invertVerticalControls);
 
         orbitFollow.VerticalAxis.Range = minAndMaxCameraTilt;
+    }
+
+    float ConvertBoolToFloat(bool _bool)
+    {
+        if (_bool)
+        {
+            return -1f;
+        }
+
+        return 1f;
     }
 }

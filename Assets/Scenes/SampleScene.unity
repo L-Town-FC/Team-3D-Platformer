@@ -6007,7 +6007,7 @@ Transform:
   m_GameObject: {fileID: 453146485}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.7189703, y: -5.88608, z: 21.9292}
+  m_LocalPosition: {x: 3.7189703, y: -2, z: 21.9292}
   m_LocalScale: {x: 3, y: 10, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6954,10 +6954,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2595143670668858342, guid: d715010f6e805d68e834e193c18acb03, type: 3}
-      propertyPath: m_PlayOnAwake
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4681992680585308663, guid: d715010f6e805d68e834e193c18acb03, type: 3}
       propertyPath: m_Name
       value: Player Variant
@@ -7002,10 +6998,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7325689739069660379, guid: d715010f6e805d68e834e193c18acb03, type: 3}
-      propertyPath: jumpClip
-      value: 
-      objectReference: {fileID: 8300000, guid: 14c2b7ee8a75deeaa8013efdcb51646b, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7886,10 +7878,6 @@ PrefabInstance:
     - target: {fileID: 2029762083403537842, guid: 15b9f082a710aadf897709f7530a351a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3875017810029454323, guid: 15b9f082a710aadf897709f7530a351a, type: 3}
-      propertyPath: m_TagString
-      value: CinemachineRig
       objectReference: {fileID: 0}
     - target: {fileID: 8478250716567795942, guid: 15b9f082a710aadf897709f7530a351a, type: 3}
       propertyPath: Target.TrackingTarget
