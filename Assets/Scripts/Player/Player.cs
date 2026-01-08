@@ -4,6 +4,9 @@ using System;
 [RequireComponent(typeof(PlayerInput))]
 public class Player : ActorController, IDamageable
 {
+    //TODO: Make proper state machine
+    //There are now enough states that its becoming a nightmare to keep track of everything
+
     //Event that triggers when the player dies
     public delegate void PlayerDeath();
     public static PlayerDeath playerDeath;
@@ -43,6 +46,9 @@ public class Player : ActorController, IDamageable
     Vector3 wallJumpDir = Vector3.zero;
 
     bool isCrouch = false;
+    bool isBackFlipping = false;
+    [SerializeField]
+    float backflipJumpForce = 16f;
     float crouchSpeed = 3f;
     float defaultSpeed;
 
@@ -81,7 +87,7 @@ public class Player : ActorController, IDamageable
         // --------------------------------------------------------------------
         // 2) NORMAL JUMP / JUMP-HOLD
         // --------------------------------------------------------------------
-        if (input.isJump && isJumping)
+        if (input.isJump && isJumping && !isBackFlipping)
         {
             base.inputVector += ApplyJump(Vector3.up, jumpForce, jumpStartTime, maxJumpHoldTime);
         }
@@ -89,9 +95,21 @@ public class Player : ActorController, IDamageable
         // --------------------------------------------------------------------
         // 3) WALL JUMP / JUMP-HOLD
         // --------------------------------------------------------------------
-        if (input.isJump && isWallJumping)
+        if (input.isJump && isWallJumping && !isBackFlipping)
         {
             base.inputVector += ApplyJump(Vector3.up + wallJumpDir, jumpForce, jumpStartTime, maxJumpHoldTime);
+        }
+
+        // --------------------------------------------------------------------
+        // 3) BACKFLIP JUMP
+        // --------------------------------------------------------------------
+        if (isBackFlipping)
+        {
+            base.inputVector += ApplyJump(Vector3.up - (transform.forward.normalized * 0.5f), backflipJumpForce, jumpStartTime, 2f * maxJumpHoldTime);
+            if(Time.time > jumpStartTime + maxJumpHoldTime)
+            {
+                isBackFlipping = false;
+            }
         }
 
         // --------------------------------------------------------------------
@@ -106,10 +124,17 @@ public class Player : ActorController, IDamageable
 
         AttackCheck();
 
-        //player always faces the direction they are moving in
+        //player always faces the direction they are moving in except when backflipping
         //this is done at the end because of the movement abilties that automatically change the players
         //input vector (wall jump)
-        base.newTransformForward = base.inputVector;
+        if (!isBackFlipping)
+        {
+            base.newTransformForward = base.inputVector;
+        }
+        else
+        {
+            base.newTransformForward = transform.forward;
+        }
 
         base.Update();
     }
@@ -174,8 +199,15 @@ public class Player : ActorController, IDamageable
             if (input.isJump)
             {
                 audioSource.PlayOneShot(jumpClip);
-                isJumping = true;
                 jumpStartTime = Time.time;
+
+                if (isCrouch)
+                {
+                    isBackFlipping = true;
+                    currentJumpCount = maxJumpCount;
+                }
+
+                isJumping = true;
                 currentJumpCount++;
             }
 
@@ -311,6 +343,11 @@ public class Player : ActorController, IDamageable
             }
         }
 
+        if (!isBackFlipping)
+        {
+            return false;
+        }
+
         //if atleast two points on the player are touching a wall, the player is considered on the wall
         return wallContacts > 1;
     }
@@ -324,7 +361,7 @@ public class Player : ActorController, IDamageable
             speed = crouchSpeed;
         }
 
-        if (!input.isCrouching || currentPlayerState == PlayerState.onWall)
+        if (!input.isCrouching || currentPlayerState == PlayerState.onWall || isBackFlipping)
         {
             isCrouch = false;
             transform.localScale = Vector3.one;
@@ -369,7 +406,7 @@ public class Player : ActorController, IDamageable
 
             //player air drag is increased on wall to stop them from sliding along wall when hitting wall at angle
             airDrag = onWallDrag;
-
+            isCrouch = false;
             currentJumpCount = 0;
         }
         else
