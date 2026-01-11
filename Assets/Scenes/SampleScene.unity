@@ -6998,17 +6998,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7325689739069660379, guid: d715010f6e805d68e834e193c18acb03, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4681992680585308663, guid: d715010f6e805d68e834e193c18acb03, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1756687322}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d715010f6e805d68e834e193c18acb03, type: 3}
 --- !u!4 &1278116416 stripped
 Transform:
@@ -7432,29 +7425,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4681992680585308663, guid: d715010f6e805d68e834e193c18acb03, type: 3}
   m_PrefabInstance: {fileID: 1278116415}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1756687322
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1756687312}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62f19864e8b67e9499a852c8754e2b63, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerV2
-  appliedMovement: {x: 0, y: 0, z: 0}
-  speed: 10
-  gravityForce: 3
-  minAndMaxVerticalMovementSpeed: {x: -30, y: 30}
-  isGrounded: 0
-  groundLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  externalMovement: {x: 0, y: 0, z: 0}
-  downwardGravityModifier: 0.6
-  input: {fileID: 0}
 --- !u!4 &1834126696 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1944751663948130054, guid: 895a694bd35a46b4fb09175caf12d7eb, type: 3}
