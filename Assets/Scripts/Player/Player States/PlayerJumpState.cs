@@ -1,36 +1,51 @@
 using UnityEngine;
 
-public class PlayerGroundState : PlayerBaseState
+public class PlayerJumpState : PlayerBaseState
 {
-    
+    float jumpForce = 6f;
+    float maxJumpHoleTime = 0.2f;
+
     public override void EnterState(PlayerV2 player)
     {
         stateEnterTime = Time.time;
-        Debug.Log("Entering Ground State");
+        Debug.Log("Entering Jump State");
     }
 
     public override void ExitState(PlayerV2 player)
     {
-        Debug.Log("Exiting Ground State");
+        Debug.Log("Exiting Jump State");
     }
 
     public override void UpdateState(PlayerV2 player)
     {
-        Vector3 newInput = CamRelativeInputVector(player.input);
-        Vector3 newForward = newInput;
-        player.UpdateActorInputVectors(newInput, newForward);
-
-        if (!player.isPlayerGrounded)
+        if(!player.input.isJump || Time.time > stateEnterTime + maxJumpHoleTime)
         {
             player.ChangeState(player.pIdleAirState);
             return;
         }
 
-        if (player.input.isJump)
+        if (player.isPlayerGrounded)
         {
-            player.ChangeState(player.pJumpState);
+            player.ChangeState(player.pGroundState);
             return;
         }
+
+        Vector3 newInput = CamRelativeInputVector(player.input);
+        Vector3 newForward = newInput;
+
+        if (player.input.isJump)
+        {
+            newInput += ApplyJump(Vector3.up, jumpForce, stateEnterTime, maxJumpHoleTime);
+        }
+
+        player.UpdateActorInputVectors(newInput, newForward);
+    }
+
+    Vector3 ApplyJump(Vector3 _jumpDir, float _jumpForce, float _jumpStartTime, float _maxJumpHoldTime)
+    {
+        // holding jump increases height of jump, diminishing until maxJumpHoldTime
+        return _jumpDir * _jumpForce *
+                (1f - Mathf.InverseLerp(_jumpStartTime, _jumpStartTime + _maxJumpHoldTime, Time.time));
     }
 
     //Converts input vector from world vector to input vector based on the camera

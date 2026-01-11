@@ -1,34 +1,28 @@
 using UnityEngine;
 
-public class PlayerGroundState : PlayerBaseState
+public class PlayerIdleAirState : PlayerBaseState
 {
-    
     public override void EnterState(PlayerV2 player)
     {
         stateEnterTime = Time.time;
-        Debug.Log("Entering Ground State");
+        Debug.Log("Entering Air State");
     }
 
     public override void ExitState(PlayerV2 player)
     {
-        Debug.Log("Exiting Ground State");
+        Debug.Log("Exiting Air State");
     }
 
     public override void UpdateState(PlayerV2 player)
     {
         Vector3 newInput = CamRelativeInputVector(player.input);
         Vector3 newForward = newInput;
+
         player.UpdateActorInputVectors(newInput, newForward);
 
-        if (!player.isPlayerGrounded)
+        if (player.isPlayerGrounded)
         {
-            player.ChangeState(player.pIdleAirState);
-            return;
-        }
-
-        if (player.input.isJump)
-        {
-            player.ChangeState(player.pJumpState);
+            player.ChangeState(player.pGroundState);
             return;
         }
     }

@@ -3,26 +3,29 @@ using UnityEngine;
 public class PlayerV2 : ActorController
 {
     public PlayerBaseState currentPlayerState;
-    public Vector3 playerInputVector = Vector3.zero;
-    public Vector3 playerTransformForward;
+    public bool isPlayerGrounded => isGrounded;
+    public PlayerInput input;
 
-    public PlayerGroundState GroundState;
-    public TestState testState;
+    public PlayerGroundState pGroundState;
+    public PlayerIdleAirState pIdleAirState;
+    public PlayerJumpState pJumpState;
 
     private void Awake()
     {
-        GroundState = new PlayerGroundState();
-        testState = new TestState();
+        input = GetComponent<PlayerInput>();
+        pGroundState = new PlayerGroundState();
+        pIdleAirState = new PlayerIdleAirState();
+        pJumpState = new PlayerJumpState();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected override void Start()
     {
-        base.inputVector = playerInputVector;
-        base.newTransformForward = playerTransformForward;
+        base.inputVector = Vector3.zero;
+        base.newTransformForward = transform.forward;
 
-        GroundState.EnterState(this);
-
+        currentPlayerState = pGroundState;
+     
         base.Start();
     }
 
@@ -30,9 +33,6 @@ public class PlayerV2 : ActorController
     protected override void Update()
     {
         currentPlayerState.UpdateState(this);
-
-        base.inputVector = Vector3.zero;
-        base.newTransformForward = playerTransformForward;
 
         base.Update();
     }
@@ -42,10 +42,16 @@ public class PlayerV2 : ActorController
         base.FixedUpdate();
     }
 
-    public void ChangeState(PlayerBaseState newState)
+    public void ChangeState(PlayerBaseState _newState)
     {
         currentPlayerState.ExitState(this);
-        currentPlayerState = newState;
+        currentPlayerState = _newState;
         currentPlayerState.EnterState(this);
+    }
+
+    public void UpdateActorInputVectors(Vector3 _inputVector, Vector3 _newForward)
+    {
+        base.inputVector = _inputVector;
+        base.newTransformForward = _newForward;
     }
 }
