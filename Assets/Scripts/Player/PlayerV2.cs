@@ -4,6 +4,7 @@ public class PlayerV2 : ActorController
 {
     public PlayerBaseState currentPlayerState;
     public bool isPlayerGrounded => isGrounded;
+
     public PlayerInput input;
     public Collision playerCollision => actorCollision;
 

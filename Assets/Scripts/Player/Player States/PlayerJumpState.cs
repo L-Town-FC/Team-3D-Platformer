@@ -6,15 +6,21 @@ public class PlayerJumpState : PlayerBaseState
 
     float jumpForce = 6f;
     float maxJumpHoleTime = 0.2f;
+    Vector3 jumpDir = Vector3.up;
 
     public override void EnterState(PlayerV2 player)
     {
         stateEnterTime = Time.time;
+        if (player.OnWallCheck().Item1)
+        {
+            jumpDir += player.OnWallCheck().Item2.normalized;
+        }
         Debug.Log("Entering Jump State");
     }
 
     public override void ExitState(PlayerV2 player)
     {
+        jumpDir = Vector3.up;
         Debug.Log("Exiting Jump State");
     }
 
@@ -37,7 +43,7 @@ public class PlayerJumpState : PlayerBaseState
 
         if (player.input.isJump)
         {
-            newInput += ApplyJump(Vector3.up, jumpForce, stateEnterTime, maxJumpHoleTime);
+            newInput += ApplyJump(jumpDir, jumpForce, stateEnterTime, maxJumpHoleTime);
         }
 
         player.UpdateActorInputVectors(newInput, newForward);

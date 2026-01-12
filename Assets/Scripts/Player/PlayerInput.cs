@@ -15,6 +15,7 @@ public class PlayerInput : MonoBehaviour
     public Vector3 movementInput = Vector3.zero;
     public Vector2 cameraInput = Vector2.zero;
     public bool isJump;
+    public bool wasJumpPressedThisFrame;
     public bool isAttacking;
     public bool isCrouching;
     public bool lastLookWasGamepad { get; private set; }
@@ -65,6 +66,7 @@ public class PlayerInput : MonoBehaviour
         cameraInput = look;
 
         isJump = jumpAction.IsPressed();
+        wasJumpPressedThisFrame = jumpAction.WasPerformedThisFrame();
         isAttacking = attackAction.IsPressed();
         isCrouching = crouchAction.IsPressed();
     }

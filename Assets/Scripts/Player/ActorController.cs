@@ -28,11 +28,11 @@ public class ActorController : MonoBehaviour
 
     protected Collision actorCollision = new Collision();
 
-    protected float airDrag = 0.15f;
+    public float airDrag = 0.15f;
     protected float groundDrag = 0.5f;
 
     [SerializeField]
-    protected float downwardGravityModifier = 0.6f;
+    public float downwardGravityModifier = 0.6f;
 
     protected virtual Vector3 inputVector { get; set; } = Vector3.zero;
 
@@ -133,6 +133,7 @@ public class ActorController : MonoBehaviour
 
         if(AppliedMovmement.y < 0f)
         {
+            print(downwardGravityModifier);
             return _verticalMovement += Vector3.down * downwardGravityModifier * gravityForce;
         }
 
