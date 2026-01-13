@@ -12,6 +12,7 @@ public class PlayerV2 : ActorController
     public PlayerIdleAirState pIdleAirState;
     public PlayerJumpState pJumpState;
     public PlayerWallState pWallState;
+    public PlayerCrouchState pCrouchState;
 
     private void Awake()
     {
@@ -20,6 +21,7 @@ public class PlayerV2 : ActorController
         pIdleAirState = new PlayerIdleAirState();
         pJumpState = new PlayerJumpState();
         pWallState = new PlayerWallState();
+        pCrouchState = new PlayerCrouchState();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
