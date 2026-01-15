@@ -6,6 +6,7 @@ public class PlayerCrouchState : PlayerBaseState
     float gracePeriod = 0.1f;
     public override void EnterState(PlayerV2 player)
     {
+        Debug.Log("Entering Crouch State");
         stateEnterTime = Time.time;
         player.transform.localScale = new Vector3(1f, 0.5f, 1f);
         player.transform.position -= Vector3.up;
@@ -13,6 +14,8 @@ public class PlayerCrouchState : PlayerBaseState
 
     public override void ExitState(PlayerV2 player)
     {
+        Debug.Log("Exiting Crouch State");
+
         player.transform.localScale = Vector3.one;
     }
 
@@ -23,7 +26,8 @@ public class PlayerCrouchState : PlayerBaseState
 
         player.UpdateActorInputVectors(newMovement, newForward);
 
-        if (!player.isPlayerGrounded && stateEnterTime + gracePeriod < Time.time)
+        //include a small grace period so the player doesnt instantly change to ground state while still going to crouch
+        if (!player.isPlayerGrounded && Time.time > stateEnterTime + gracePeriod)
         {
             player.ChangeState(player.pIdleAirState);
             return;
@@ -33,6 +37,11 @@ public class PlayerCrouchState : PlayerBaseState
         {
             player.ChangeState(player.pGroundState);
             return;
+        }
+
+        if (player.input.isJump)
+        {
+            player.ChangeState(player.pSuperJumpState);
         }
     }
 }

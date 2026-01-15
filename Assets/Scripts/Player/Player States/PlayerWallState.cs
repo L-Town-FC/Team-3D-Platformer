@@ -29,11 +29,12 @@ public class PlayerWallState : PlayerBaseState
     public override void UpdateState(PlayerV2 player)
     {
         //Make player always face away from wall
-
         //Stop lateral movement and movement towards wall
         Vector3 newInput = ProjectOnWallMovement(player.input.movementInput);
         Vector3 newForward = wallJumpDir;
 
+        //starts player with low gravity that increases over time
+        //this gives the appearance of sticking to the wall and then slowly losing grip
         player.downwardGravityModifier = Mathf.Lerp(
             wallGravityModifier,
             defaultGravityModifier,

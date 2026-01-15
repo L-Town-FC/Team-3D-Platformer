@@ -390,48 +390,19 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5705284338004130759, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7325689739069660379}
-    - targetCorrespondingSourceObject: {fileID: 5705284338004130759, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 4952950075037070094}
     - targetCorrespondingSourceObject: {fileID: 5705284338004130759, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7349521308798889689}
+    - targetCorrespondingSourceObject: {fileID: 5705284338004130759, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6903589123560302300}
   m_SourcePrefab: {fileID: 100100000, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
 --- !u!1 &4681992680585308663 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5705284338004130759, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
   m_PrefabInstance: {fileID: 1140811937766036016}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7325689739069660379
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4681992680585308663}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 774c50b8a49be0e4e85605fb0e1e761b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Player
-  appliedMovement: {x: 0, y: 0, z: 0}
-  speed: 10
-  gravityForce: 2.5
-  minAndMaxVerticalMovementSpeed: {x: -30, y: 30}
-  isGrounded: 0
-  groundLayerMask:
-    serializedVersion: 2
-    m_Bits: 63
-  externalMovement: {x: 0, y: 0, z: 0}
-  downwardGravityModifier: 0.6
-  isJumping: 0
-  jumpStartTime: 0
-  jumpForce: 6
-  maxJumpHoldTime: 0.2
-  stompBounceStartTime: -1
-  backflipJumpForce: 20
-  jumpClip: {fileID: 8300000, guid: 14c2b7ee8a75deeaa8013efdcb51646b, type: 3}
 --- !u!114 &4952950075037070094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -465,6 +436,36 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 63
   indicator: {fileID: 8933340211338353111}
+--- !u!114 &6903589123560302300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4681992680585308663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 774c50b8a49be0e4e85605fb0e1e761b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player
+  appliedMovement: {x: 0, y: 0, z: 0}
+  speed: 10
+  gravityForce: 3
+  minAndMaxVerticalMovementSpeed: {x: -30, y: 30}
+  isGrounded: 0
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  externalMovement: {x: 0, y: 0, z: 0}
+  airDrag: 0.15
+  downwardGravityModifier: 0.6
+  isJumping: 0
+  jumpStartTime: 0
+  jumpForce: 6
+  maxJumpHoldTime: 0.2
+  stompBounceStartTime: -1
+  backflipJumpForce: 16
+  jumpClip: {fileID: 0}
 --- !u!4 &6635767576865755617 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6035387678138205137, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
