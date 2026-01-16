@@ -5,7 +5,7 @@ public class PlayerWallState : PlayerBaseState
     float defaultGravityModifier;
     float wallGravityModifier = 0f;
     float defaultAirDrag;
-    float wallAirDrag = 1;
+    float wallAirDrag = 1f;
     float gravityModifierMaxChangeTime = 2f;
     Vector3 wallJumpDir = Vector3.zero;
     
@@ -16,21 +16,19 @@ public class PlayerWallState : PlayerBaseState
         player.airDrag = wallAirDrag;
         stateEnterTime = Time.time;
         wallJumpDir = player.OnWallCheck().Item2;
-        Debug.Log("Entering Wall State");
     }
 
     public override void ExitState(PlayerV2 player)
     {
         player.downwardGravityModifier = defaultGravityModifier;
         player.airDrag = defaultAirDrag;
-        Debug.Log("Exiting Wall State");
     }
 
     public override void UpdateState(PlayerV2 player)
     {
         //Make player always face away from wall
         //Stop lateral movement and movement towards wall
-        Vector3 newInput = ProjectOnWallMovement(player.input.movementInput);
+        Vector3 newInput = ProjectOnWallMovement(player.input.movementInput, player);
         Vector3 newForward = wallJumpDir;
 
         //starts player with low gravity that increases over time
@@ -63,9 +61,10 @@ public class PlayerWallState : PlayerBaseState
 
     }
 
-    Vector3 ProjectOnWallMovement(Vector3 input)
+    Vector3 ProjectOnWallMovement(Vector3 input, PlayerV2 player)
     {
-        Vector3 horInputVector = new Vector3(input.x, 0f, input.z); //remove the vertical component
+        
+        Vector3 horInputVector = player.CamRelativeInputVector();
 
         //wall jump normal is directly away from wall
         //since when on the wall we only care about vertical movement and
@@ -75,7 +74,6 @@ public class PlayerWallState : PlayerBaseState
 
         //check if the new horizontal input vector is in the same direction as the wall normal
         //if not, the player shouldnt try to move towards the wall so cancel all horizontal input
-
         float dot = Vector3.Dot(projHorInputVector, wallJumpDir);
         if (dot < 0f)
         {
