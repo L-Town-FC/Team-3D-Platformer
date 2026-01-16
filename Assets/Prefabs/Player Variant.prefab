@@ -396,7 +396,7 @@ PrefabInstance:
       addedObject: {fileID: 7349521308798889689}
     - targetCorrespondingSourceObject: {fileID: 5705284338004130759, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6903589123560302300}
+      addedObject: {fileID: 7120529644409001929}
   m_SourcePrefab: {fileID: 100100000, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
 --- !u!1 &4681992680585308663 stripped
 GameObject:
@@ -436,7 +436,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 63
   indicator: {fileID: 8933340211338353111}
---- !u!114 &6903589123560302300
+--- !u!114 &7120529644409001929
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -445,9 +445,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4681992680585308663}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 774c50b8a49be0e4e85605fb0e1e761b, type: 3}
+  m_Script: {fileID: 11500000, guid: 62f19864e8b67e9499a852c8754e2b63, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Player
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerV2
   appliedMovement: {x: 0, y: 0, z: 0}
   speed: 10
   gravityForce: 3
@@ -459,13 +459,7 @@ MonoBehaviour:
   externalMovement: {x: 0, y: 0, z: 0}
   airDrag: 0.15
   downwardGravityModifier: 0.6
-  isJumping: 0
-  jumpStartTime: 0
-  jumpForce: 6
-  maxJumpHoldTime: 0.2
-  stompBounceStartTime: -1
-  backflipJumpForce: 16
-  jumpClip: {fileID: 0}
+  input: {fileID: 0}
 --- !u!4 &6635767576865755617 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6035387678138205137, guid: f4d772b5dfe258df8b855529aa477ed3, type: 3}
