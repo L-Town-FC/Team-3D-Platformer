@@ -20,6 +20,12 @@ public class PlayerIdleAirState : PlayerBaseState
 
         player.UpdateActorInputVectors(newMovement, newForward);
 
+        if (BounceCheck(player))
+        {
+            player.ChangeState(player.pBounceState);
+            return;
+        }
+
         if (player.isPlayerGrounded)
         {
             player.ChangeState(player.pGroundState);
@@ -31,5 +37,11 @@ public class PlayerIdleAirState : PlayerBaseState
             player.ChangeState(player.pWallState);
             return;
         }
+    }
+
+    bool BounceCheck(PlayerV2 _player)
+    {
+        LayerMask enemyMask = LayerMask.GetMask("Enemy");
+        return Physics.CheckSphere(_player.transform.position - (Vector3.up * 1.05f), 0.5f, enemyMask, QueryTriggerInteraction.Ignore);
     }
 }

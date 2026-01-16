@@ -69,7 +69,7 @@ public class EnemyPlayerInteractions : MonoBehaviour
         if (collision.transform.TryGetComponent<IDamageable>(out IDamageable damageable))
         {
             // Kill the player via the damage interface
-            damageable.TakeDamage(damageable.health);
+            damageable.TakeDamage(50f);
         }
     }
 

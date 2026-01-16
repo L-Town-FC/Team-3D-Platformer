@@ -1,12 +1,17 @@
 using UnityEngine;
 
-public class PlayerV2 : ActorController
+public class PlayerV2 : ActorController, IDamageable
 {
-    public PlayerBaseState currentPlayerState;
-    public bool isPlayerGrounded => isGrounded;
+    public bool isPlayerGrounded => isGrounded; //read only copy of ground check from base class
 
     public PlayerInput input;
-    public Collision playerCollision => actorCollision;
+    public Collision playerCollision => actorCollision; //read only copy of collisions from base class
+
+    float _maxHealth = 100f;
+    public float maxHealth { get { return _maxHealth; } set { } }
+    public float health { get; set; }
+
+    public PlayerBaseState currentPlayerState;
 
     public PlayerGroundState pGroundState;
     public PlayerIdleAirState pIdleAirState;
@@ -14,16 +19,22 @@ public class PlayerV2 : ActorController
     public PlayerWallState pWallState;
     public PlayerCrouchState pCrouchState;
     public PlayerSuperJumpState pSuperJumpState;
+    public PlayerBounceState pBounceState;
+
+    //Event that triggers when the player dies
+    public delegate void PlayerDeath();
+    public static PlayerDeath playerDeath;
+
+    PlayerCamera playerCamera; // access to camera so it can be disabled during death or game pause
 
     private void Awake()
     {
         input = GetComponent<PlayerInput>();
-        pGroundState = new PlayerGroundState();
-        pIdleAirState = new PlayerIdleAirState();
-        pJumpState = new PlayerJumpState();
-        pWallState = new PlayerWallState();
-        pCrouchState = new PlayerCrouchState();
-        pSuperJumpState = new PlayerSuperJumpState();
+        playerCamera = GetComponent<PlayerCamera>();
+        health = _maxHealth;
+
+        //generates all possible states the player can be in
+        GetAllPlayerStates();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -57,6 +68,7 @@ public class PlayerV2 : ActorController
         currentPlayerState.EnterState(this);
     }
 
+    //method called by player state classes to update this base classes movement and direction
     public void UpdateActorInputVectors(Vector3 _inputVector, Vector3 _newForward)
     {
         base.inputVector = _inputVector;
@@ -72,7 +84,6 @@ public class PlayerV2 : ActorController
 
     public (bool, Vector3) OnWallCheck()
     {
-        //OnWallCheck
         //Walls must be perfectly vertical to count as walls
         //if they are vertical then the normal vectors must have no y-component
         int wallContacts = 0;
@@ -91,5 +102,34 @@ public class PlayerV2 : ActorController
 
         //if atleast two points on the player are touching a wall, the player is considered on the wall
         return (wallContacts > 1, wallJumpDir);
+    }
+
+    public void TakeDamage(float damageAmount)
+    {
+        health -= damageAmount;
+        health = Mathf.Clamp(health, 0f, maxHealth);
+        if (health == 0f)
+            Die();
+    }
+
+    public void Die()
+    {
+        playerCamera.enabled = false; // disables player's ability to move the camera when they are dead
+        if (playerDeath != null)
+        {
+            playerDeath.Invoke();
+        }
+        Destroy(this.gameObject);
+    }
+
+    void GetAllPlayerStates()
+    {
+        pGroundState = new PlayerGroundState();
+        pIdleAirState = new PlayerIdleAirState();
+        pJumpState = new PlayerJumpState();
+        pWallState = new PlayerWallState();
+        pCrouchState = new PlayerCrouchState();
+        pSuperJumpState = new PlayerSuperJumpState();
+        pBounceState = new PlayerBounceState();
     }
 }

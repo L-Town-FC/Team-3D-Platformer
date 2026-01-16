@@ -223,7 +223,7 @@ public class ActorController : MonoBehaviour
         currentSlopeAngle = 0f;
     }
 
-    private void OnCollisionEnter(Collision collision)
+    protected virtual void OnCollisionEnter(Collision collision)
     {
         /*
          * function triggers every fixedUpdate frame that a collision is occurring with the players collider
