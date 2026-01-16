@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class PlayerJumpState : PlayerBaseState
 {
-    //TODO: Add check for if "OnWall" to see if this jump should be a normal jump or wall jump
-
     float jumpForce = 6f;
     float maxJumpHoleTime = 0.2f;
     Vector3 jumpDir = Vector3.up;
@@ -15,13 +13,11 @@ public class PlayerJumpState : PlayerBaseState
         {
             jumpDir += player.OnWallCheck().Item2.normalized;
         }
-        Debug.Log("Entering Jump State");
     }
 
     public override void ExitState(PlayerV2 player)
     {
         jumpDir = Vector3.up;
-        Debug.Log("Exiting Jump State");
     }
 
     public override void UpdateState(PlayerV2 player)

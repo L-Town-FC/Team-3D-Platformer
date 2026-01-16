@@ -6,7 +6,6 @@ public class PlayerCrouchState : PlayerBaseState
     float gracePeriod = 0.1f;
     public override void EnterState(PlayerV2 player)
     {
-        Debug.Log("Entering Crouch State");
         stateEnterTime = Time.time;
         player.transform.localScale = new Vector3(1f, 0.5f, 1f);
         player.transform.position -= Vector3.up;
@@ -14,8 +13,6 @@ public class PlayerCrouchState : PlayerBaseState
 
     public override void ExitState(PlayerV2 player)
     {
-        Debug.Log("Exiting Crouch State");
-
         player.transform.localScale = Vector3.one;
     }
 

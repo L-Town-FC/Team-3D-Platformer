@@ -6,12 +6,10 @@ public class PlayerGroundState : PlayerBaseState
     public override void EnterState(PlayerV2 player)
     {
         stateEnterTime = Time.time;
-        Debug.Log("Entering Ground State");
     }
 
     public override void ExitState(PlayerV2 player)
     {
-        Debug.Log("Exiting Ground State");
     }
 
     public override void UpdateState(PlayerV2 player)

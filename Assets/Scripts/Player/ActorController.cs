@@ -187,8 +187,6 @@ public class ActorController : MonoBehaviour
         //converts the horizontal movement of the player partially into vertical movement to match the angle of the slope the player is on
         Vector3 movementProjectedOnSlope = Vector3.ProjectOnPlane(_horizontalMovement, groundNormal).normalized * _horizontalMovement.magnitude;
 
-        Debug.DrawRay(transform.position, movementProjectedOnSlope, Color.red);
-
         Vector3 horizontalComponent = _horizontalMovement * Mathf.Cos(currentSlopeAngle * Mathf.Deg2Rad);
         Vector3 verticalComponent = Vector3.up * (_horizontalMovement * Mathf.Sin(currentSlopeAngle * Mathf.Deg2Rad)).magnitude * Mathf.Sign(movementProjectedOnSlope.y);
 

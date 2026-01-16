@@ -5,12 +5,10 @@ public class PlayerIdleAirState : PlayerBaseState
     public override void EnterState(PlayerV2 player)
     {
         stateEnterTime = Time.time;
-        Debug.Log("Entering Air State");
     }
 
     public override void ExitState(PlayerV2 player)
     {
-        Debug.Log("Exiting Air State");
     }
 
     public override void UpdateState(PlayerV2 player)

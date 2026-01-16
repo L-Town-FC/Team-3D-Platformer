@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerBounceState : PlayerBaseState
 {
-    float bounceForce = 10f;
+    float bounceForce = 5f;
     float bounceTimeLength = 0.2f;
 
     public override void EnterState(PlayerV2 player)

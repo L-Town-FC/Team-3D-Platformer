@@ -11,7 +11,6 @@ public class PlayerSuperJumpState : PlayerBaseState
     Vector3 jumpDir;
     public override void EnterState(PlayerV2 player)
     {
-        Debug.Log("Entering Super Jump");
         stateEnterTime = Time.time;
         //0.2f is arbitrary. just sends the player backwards slightly like they are doing a backflip
         jumpDir = Vector3.up - (player.transform.forward.normalized * 0.2f);
@@ -19,7 +18,6 @@ public class PlayerSuperJumpState : PlayerBaseState
 
     public override void ExitState(PlayerV2 player)
     {
-        Debug.Log("Exiting Super Jump");
     }
 
     public override void UpdateState(PlayerV2 player)
