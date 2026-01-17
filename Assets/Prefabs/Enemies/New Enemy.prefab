@@ -14,10 +14,8 @@ GameObject:
   - component: {fileID: 8771886616696049566}
   - component: {fileID: 5631757847631915747}
   - component: {fileID: 628533209884755497}
-  - component: {fileID: 6791145346766851808}
   - component: {fileID: 8295220370545626238}
   - component: {fileID: 3933413204421963908}
-  - component: {fileID: 2569558296600402079}
   - component: {fileID: 2181734796939896225}
   - component: {fileID: 7622085189932280095}
   m_Layer: 7
@@ -170,27 +168,13 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   externalMovement: {x: 0, y: 0, z: 0}
+  airDrag: 0.15
   downwardGravityModifier: 0.6
   player: {fileID: 0}
   stopDistance: 0.75
   chaseDistance: 10
   isStunned: 0
   stunLength: 5
---- !u!114 &6791145346766851808
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4011374085280374173}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6860541fd85e0b3bc887b60eec43a12a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyKillOnTouch
-  playerTag: Player
-  stompHeightPadding: 0.15
-  stompDownwardSpeedThreshold: 0
 --- !u!135 &8295220370545626238
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -229,27 +213,6 @@ MonoBehaviour:
   segments: 24
   rings: 6
   meridians: 6
---- !u!65 &2569558296600402079
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4011374085280374173}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.5, y: 0.3, z: 1.5}
-  m_Center: {x: 0, y: 1.2, z: 0}
 --- !u!2083052967 &2181734796939896225
 VisualEffect:
   m_ObjectHideFlags: 0

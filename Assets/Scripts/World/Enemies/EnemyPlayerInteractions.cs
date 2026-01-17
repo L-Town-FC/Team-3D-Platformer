@@ -45,25 +45,25 @@ public class EnemyPlayerInteractions : MonoBehaviour
         if (!collision.collider.CompareTag(playerTag))
             return;
 
-        // If this collision is effectively a stomp, do NOT kill the player.
-        // (The head trigger should handle killing the enemy.)
-        if (IsStompContact(collision))
-        {
-            //damage the enemy
-            if (transform.TryGetComponent<IDamageable>(out IDamageable damegeable))
-            {
-                damegeable.TakeDamage(50f);
-            }
+        //// If this collision is effectively a stomp, do NOT kill the player.
+        //// (The head trigger should handle killing the enemy.)
+        //if (IsStompContact(collision))
+        //{
+        //    //damage the enemy
+        //    if (transform.TryGetComponent<IDamageable>(out IDamageable damegeable))
+        //    {
+        //        damegeable.TakeDamage(50f);
+        //    }
 
-            //give the player upward velocity for stomp bounce
-            Player player = collision.transform.GetComponentInParent<Player>();
-            if (player != null)
-            {
-                player.SetStompBounce();
-            }
+        //    //give the player upward velocity for stomp bounce
+        //    Player player = collision.transform.GetComponentInParent<Player>();
+        //    if (player != null)
+        //    {
+        //        player.SetStompBounce();
+        //    }
 
-            return;
-        }
+        //    return;
+        //}
 
         // Otherwise, this is a side/bottom hit -> kill/damage player
         if (collision.transform.TryGetComponent<IDamageable>(out IDamageable damageable))

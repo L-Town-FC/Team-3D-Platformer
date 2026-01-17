@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerBounceState : PlayerBaseState
 {
-    float bounceForce = 5f;
+    float bounceForce = 6f;
     float bounceTimeLength = 0.2f;
 
     public override void EnterState(PlayerV2 player)
@@ -20,10 +20,12 @@ public class PlayerBounceState : PlayerBaseState
         Vector3 newMovement = player.CamRelativeInputVector();
         Vector3 newForward = newMovement;
 
+        //bounce is applied the same as a jump just with different initial force and its uncancelable
         newMovement += ApplyJump(Vector3.up, bounceForce, stateEnterTime, bounceTimeLength);
 
         player.UpdateActorInputVectors(newMovement, newForward);
 
+        //the player is bouncing so they must be in the air when the bounce velocity stops being applied
         if(Time.time > stateEnterTime + bounceTimeLength)
         {
             player.ChangeState(player.pIdleAirState);

@@ -4,6 +4,7 @@ public class PlayerV2 : ActorController, IDamageable
 {
     public bool isPlayerGrounded => isGrounded; //read only copy of ground check from base class
 
+    [HideInInspector]
     public PlayerInput input;
     public Collision playerCollision => actorCollision; //read only copy of collisions from base class
 
@@ -11,8 +12,8 @@ public class PlayerV2 : ActorController, IDamageable
     public float maxHealth { get { return _maxHealth; } set { } }
     public float health { get; set; }
 
+    #region All Possible Player States
     public PlayerBaseState currentPlayerState;
-
     public PlayerGroundState pGroundState;
     public PlayerIdleAirState pIdleAirState;
     public PlayerJumpState pJumpState;
@@ -20,10 +21,14 @@ public class PlayerV2 : ActorController, IDamageable
     public PlayerCrouchState pCrouchState;
     public PlayerSuperJumpState pSuperJumpState;
     public PlayerBounceState pBounceState;
+    #endregion
 
     //Event that triggers when the player dies
     public delegate void PlayerDeath();
     public static PlayerDeath playerDeath;
+
+    [HideInInspector]
+    public float stompDamage = 50f;
 
     PlayerCamera playerCamera; // access to camera so it can be disabled during death or game pause
 

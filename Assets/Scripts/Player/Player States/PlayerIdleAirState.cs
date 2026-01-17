@@ -18,6 +18,7 @@ public class PlayerIdleAirState : PlayerBaseState
 
         player.UpdateActorInputVectors(newMovement, newForward);
 
+        //checks if player is on top of bounceable entity
         if (BounceCheck(player))
         {
             player.ChangeState(player.pBounceState);
@@ -39,7 +40,35 @@ public class PlayerIdleAirState : PlayerBaseState
 
     bool BounceCheck(PlayerV2 _player)
     {
-        LayerMask enemyMask = LayerMask.GetMask("Enemy");
-        return Physics.CheckSphere(_player.transform.position - (Vector3.up * 1.05f), 0.5f, enemyMask, QueryTriggerInteraction.Ignore);
+        //currently only bouncing on entities with the "Enemy" layer applied
+        LayerMask bounceableEntityMask = LayerMask.GetMask("Enemy");
+
+        //player should only be able to bounce if they are moving downward
+        if(_player.AppliedMovmement.y > 0f)
+        {
+            return false;
+        }
+
+        //check a sphere at the players feet
+        //if it hits a collider that has been marked as a bounceable entity
+        //its added to the array of colliders
+        Collider[] colliders = Physics.OverlapSphere(_player.transform.position - Vector3.up, 0.65f, bounceableEntityMask, QueryTriggerInteraction.Ignore);
+
+        //if nothing is detected the player should not bounce
+        if(colliders.Length < 1)
+        {
+            return false;
+        }
+
+        foreach(Collider col in colliders)
+        {
+            //apply damage to object the player is bouncing on if possible
+            if(col.TryGetComponent<IDamageable>(out IDamageable damageable))
+            {
+                damageable.TakeDamage(_player.stompDamage);
+            }
+        }
+
+        return true;
     }
 }

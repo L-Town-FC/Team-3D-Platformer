@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PlayerWallState : PlayerBaseState
 {
+    //TODO: May need to add bounce check here so the player can slide down wall into a bounce
+
     float defaultGravityModifier;
     float wallGravityModifier = 0f;
     float defaultAirDrag;
@@ -41,18 +43,23 @@ public class PlayerWallState : PlayerBaseState
 
         player.UpdateActorInputVectors(newInput, newForward);
 
+        //wall check is overrided if the player is touching the ground
+        //this lets player run along ground next to wall without getting stuck
         if (player.isPlayerGrounded)
         {
             player.ChangeState(player.pGroundState);
             return;
         }
 
+        //check if the jump was started while the player was on the wall
+        //dont want player to instantly wall jump if they are still holding jump key from a previous jump
         if (player.input.wasJumpPressedThisFrame)
         {
             player.ChangeState(player.pJumpState);
             return;
         }
 
+        //if they are no longer on the wall, and all previous checks failed they must be in the air
         if (!player.OnWallCheck().Item1)
         {
             player.ChangeState(player.pIdleAirState);

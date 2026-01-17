@@ -9,6 +9,7 @@ public class PlayerJumpState : PlayerBaseState
     public override void EnterState(PlayerV2 player)
     {
         stateEnterTime = Time.time;
+        //if the player is on the wall then they should perform a wall jump instead of a normal jump
         if (player.OnWallCheck().Item1)
         {
             jumpDir += player.OnWallCheck().Item2.normalized;
@@ -22,12 +23,16 @@ public class PlayerJumpState : PlayerBaseState
 
     public override void UpdateState(PlayerV2 player)
     {
+        //switches player out of jump state if they are either not trying to jump or have maxed out their jump
         if(!player.input.isJump || Time.time > stateEnterTime + maxJumpHoleTime)
         {
             player.ChangeState(player.pIdleAirState);
             return;
         }
 
+        //grounded the player if they are grounded and not trying to jump
+        //this check on isJump probably isnt required because if they are jumping they are going up
+        //and it would be very rare for them to be grounded in that case
         if (player.isPlayerGrounded && !player.input.isJump)
         {
             player.ChangeState(player.pGroundState);

@@ -8,10 +8,10 @@ public class BasicEnemy : ActorController, IDamageable
     SphereCollider sphereCollider;
     [SerializeField] float chaseDistance = 10f; //max distance from the player that an enemy can continue chasing them
     Vector3 dir = Vector3.zero;
-    EnemyPlayerInteractions enemyPlayerInteractions;
     bool isChasePlayer = false; //if the enemy is actively chasing the player
     string playerTag = "Player";
 
+    float contactDamage = 50f;
     float _maxHealth = 100f;
     public float maxHealth { get { return _maxHealth; } set { } }
     public float health { get; set; }
@@ -28,7 +28,6 @@ public class BasicEnemy : ActorController, IDamageable
     {
         health = _maxHealth;
         stunEffect = GetComponent<VisualEffect>();
-        enemyPlayerInteractions = GetComponent<EnemyPlayerInteractions>();
         sphereCollider = GetComponent<SphereCollider>();
         base.Start();
     }
@@ -93,7 +92,6 @@ public class BasicEnemy : ActorController, IDamageable
         if (Time.time > stunStartTime + stunLength)
         {
             isStunned = false;
-            enemyPlayerInteractions.enabled = true;
         }
 
         //should change the player when stunned but doesnt work currently
@@ -123,6 +121,21 @@ public class BasicEnemy : ActorController, IDamageable
         if (other.CompareTag(playerTag))
         {
             isChasePlayer = false;
+        }
+    }
+
+    protected override void OnCollisionEnter(Collision collision)
+    {
+        base.OnCollisionEnter(collision);
+
+        //only want to try apply damage ONLY if they are contacting the player
+        //this stops them from hurting other enemies
+        if (!collision.collider.CompareTag(playerTag)) { return; }
+
+        //apply damage to player through damage interface
+        if(collision.collider.TryGetComponent<IDamageable>(out IDamageable damageable))
+        {
+            damageable.TakeDamage(contactDamage);
         }
     }
 }
