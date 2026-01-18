@@ -9,18 +9,18 @@ public class PlayerSuperJumpState : PlayerBaseState
     float superJumpForce = 20f;
     float gracePeriod = 0.1f;
     Vector3 jumpDir;
-    public override void EnterState(PlayerV2 player)
+    public override void EnterState(Player player)
     {
         stateEnterTime = Time.time;
         //0.2f is arbitrary. just sends the player backwards slightly like they are doing a backflip
         jumpDir = Vector3.up - (player.transform.forward.normalized * 0.2f);
     }
 
-    public override void ExitState(PlayerV2 player)
+    public override void ExitState(Player player)
     {
     }
 
-    public override void UpdateState(PlayerV2 player)
+    public override void UpdateState(Player player)
     {
         Vector3 newMovement = ApplyJump(jumpDir, superJumpForce, stateEnterTime, superJumpTimeLength);
         Vector3 newForward = player.transform.forward;

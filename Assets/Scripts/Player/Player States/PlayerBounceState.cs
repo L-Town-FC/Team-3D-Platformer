@@ -5,17 +5,17 @@ public class PlayerBounceState : PlayerBaseState
     float bounceForce = 6f;
     float bounceTimeLength = 0.2f;
 
-    public override void EnterState(PlayerV2 player)
+    public override void EnterState(Player player)
     {
         stateEnterTime = Time.time;
     }
 
-    public override void ExitState(PlayerV2 player)
+    public override void ExitState(Player player)
     {
 
     }
 
-    public override void UpdateState(PlayerV2 player)
+    public override void UpdateState(Player player)
     {
         Vector3 newMovement = player.CamRelativeInputVector();
         Vector3 newForward = newMovement;

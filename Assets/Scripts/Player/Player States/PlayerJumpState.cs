@@ -6,7 +6,7 @@ public class PlayerJumpState : PlayerBaseState
     float maxJumpHoleTime = 0.2f;
     Vector3 jumpDir = Vector3.up;
 
-    public override void EnterState(PlayerV2 player)
+    public override void EnterState(Player player)
     {
         stateEnterTime = Time.time;
         //if the player is on the wall then they should perform a wall jump instead of a normal jump
@@ -16,12 +16,12 @@ public class PlayerJumpState : PlayerBaseState
         }
     }
 
-    public override void ExitState(PlayerV2 player)
+    public override void ExitState(Player player)
     {
         jumpDir = Vector3.up;
     }
 
-    public override void UpdateState(PlayerV2 player)
+    public override void UpdateState(Player player)
     {
         //switches player out of jump state if they are either not trying to jump or have maxed out their jump
         if(!player.input.isJump || Time.time > stateEnterTime + maxJumpHoleTime)

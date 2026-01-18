@@ -17,13 +17,10 @@ public class ActorController : MonoBehaviour
     [SerializeField]
     protected Vector2 minAndMaxVerticalMovementSpeed = new Vector2(-30f, 30f);
     
-    [SerializeField]
     protected bool isGrounded = false;
     Vector3 groundNormal = Vector3.zero; //used to calculate the slope the player is on
     float maxSlopeAngle = 45; //degrees
     float currentSlopeAngle = 0f;
-    [SerializeField]
-    LayerMask groundLayerMask; //masks out player layer so groundcheck checks all colliders except the players
     public Vector3 externalMovement = Vector3.zero;
 
     protected Collision actorCollision = new Collision();
@@ -31,9 +28,10 @@ public class ActorController : MonoBehaviour
     public float airDrag = 0.15f;
     protected float groundDrag = 0.5f;
 
-    [SerializeField]
+    [HideInInspector]
     public float downwardGravityModifier = 0.6f;
 
+    [HideInInspector]
     protected virtual Vector3 inputVector { get; set; } = Vector3.zero;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -60,8 +58,8 @@ public class ActorController : MonoBehaviour
         verticalMovement = ApplyGravity(verticalMovement);
 
         //clamps movement vectors so player speed doesnt increase without bound
-        horizontalMovement = ClampMovement(horizontalMovement, -speed, speed);
-        verticalMovement = ClampMovement(verticalMovement, minAndMaxVerticalMovementSpeed.x, minAndMaxVerticalMovementSpeed.y);
+        horizontalMovement = ClampMovement(horizontalMovement, speed);
+        verticalMovement = ClampMovement(verticalMovement, minAndMaxVerticalMovementSpeed.y);
 
         //checks if movement is occuring on slope and adjusts it as needed
         (horizontalMovement, verticalMovement) = ProjectMovementOnSlope(horizontalMovement, verticalMovement);
@@ -106,7 +104,7 @@ public class ActorController : MonoBehaviour
         ResetGroundVariables();
     }
 
-    Vector3 ClampMovement(Vector3 _movement, float lowerLimit, float upperLimit)
+    Vector3 ClampMovement(Vector3 _movement, float upperLimit)
     {
         //soft clamps the speed
         //now when above the set speed, an additional drag factor is added so to get the player back to the max speed
@@ -171,9 +169,10 @@ public class ActorController : MonoBehaviour
 
     Vector3 CheckAbovePlayer(Vector3 _inputVector)
     {
+        //may want to switch to CheckSphere instead but this is fine for now
         //checks if the players head is current hitting anything
         //removes upward movement if this is the case
-        if(Physics.SphereCast(transform.position + Vector3.up * 0.5f, 0.5f, Vector3.up, out RaycastHit hitInfo, groundLayerMask))
+        if(Physics.SphereCast(transform.position + Vector3.up * 0.5f, 0.5f, Vector3.up, out RaycastHit hitInfo))
         {
             _inputVector.y = Mathf.Clamp(_inputVector.y, -Mathf.Infinity, 0f);
         }

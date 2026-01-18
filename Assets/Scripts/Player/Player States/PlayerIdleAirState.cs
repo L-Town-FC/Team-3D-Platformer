@@ -2,16 +2,16 @@ using UnityEngine;
 
 public class PlayerIdleAirState : PlayerBaseState
 {
-    public override void EnterState(PlayerV2 player)
+    public override void EnterState(Player player)
     {
         stateEnterTime = Time.time;
     }
 
-    public override void ExitState(PlayerV2 player)
+    public override void ExitState(Player player)
     {
     }
 
-    public override void UpdateState(PlayerV2 player)
+    public override void UpdateState(Player player)
     {
         Vector3 newMovement = player.CamRelativeInputVector();
         Vector3 newForward = newMovement;
@@ -38,7 +38,7 @@ public class PlayerIdleAirState : PlayerBaseState
         }
     }
 
-    bool BounceCheck(PlayerV2 _player)
+    bool BounceCheck(Player _player)
     {
         //currently only bouncing on entities with the "Enemy" layer applied
         LayerMask bounceableEntityMask = LayerMask.GetMask("Enemy");

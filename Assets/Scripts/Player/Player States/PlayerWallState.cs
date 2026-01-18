@@ -11,7 +11,7 @@ public class PlayerWallState : PlayerBaseState
     float gravityModifierMaxChangeTime = 2f;
     Vector3 wallJumpDir = Vector3.zero;
     
-    public override void EnterState(PlayerV2 player)
+    public override void EnterState(Player player)
     {
         defaultGravityModifier = player.downwardGravityModifier;
         defaultAirDrag = player.airDrag;
@@ -20,13 +20,13 @@ public class PlayerWallState : PlayerBaseState
         wallJumpDir = player.OnWallCheck().Item2;
     }
 
-    public override void ExitState(PlayerV2 player)
+    public override void ExitState(Player player)
     {
         player.downwardGravityModifier = defaultGravityModifier;
         player.airDrag = defaultAirDrag;
     }
 
-    public override void UpdateState(PlayerV2 player)
+    public override void UpdateState(Player player)
     {
         //Make player always face away from wall
         //Stop lateral movement and movement towards wall
@@ -68,7 +68,7 @@ public class PlayerWallState : PlayerBaseState
 
     }
 
-    Vector3 ProjectOnWallMovement(Vector3 input, PlayerV2 player)
+    Vector3 ProjectOnWallMovement(Vector3 input, Player player)
     {
         
         Vector3 horInputVector = player.CamRelativeInputVector();
