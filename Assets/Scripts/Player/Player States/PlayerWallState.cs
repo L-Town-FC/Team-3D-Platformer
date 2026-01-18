@@ -16,6 +16,7 @@ public class PlayerWallState : PlayerBaseState
         defaultGravityModifier = player.downwardGravityModifier;
         defaultAirDrag = player.airDrag;
         player.airDrag = wallAirDrag;
+        player.currentJumpCount = 0;
         stateEnterTime = Time.time;
         wallJumpDir = player.OnWallCheck().Item2;
     }

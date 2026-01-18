@@ -12,6 +12,15 @@ public class Player : ActorController, IDamageable
     public float maxHealth { get { return _maxHealth; } set { } }
     public float health { get; set; }
 
+    public int maxJumpCount = 2;
+    public int currentJumpCount = 0;
+
+    //need a better way of doing this
+    //perhaps having all player audio clips in a different static script
+    [Header("Audio")]
+    public AudioClip jumpClip;
+    public AudioSource audioSource;
+
     #region All Possible Player States
     public PlayerBaseState currentPlayerState;
     public PlayerGroundState pGroundState;
@@ -36,6 +45,8 @@ public class Player : ActorController, IDamageable
     {
         input = GetComponent<PlayerInput>();
         playerCamera = GetComponent<PlayerCamera>();
+        audioSource = GetComponentInChildren<AudioSource>();
+
         health = _maxHealth;
 
         //generates all possible states the player can be in

@@ -36,6 +36,12 @@ public class PlayerIdleAirState : PlayerBaseState
             player.ChangeState(player.pWallState);
             return;
         }
+
+        if (player.input.wasJumpPressedThisFrame && player.currentJumpCount < player.maxJumpCount)
+        {
+            player.ChangeState(player.pJumpState);
+            return;
+        }
     }
 
     bool BounceCheck(Player _player)

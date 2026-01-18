@@ -6,6 +6,7 @@ public class PlayerGroundState : PlayerBaseState
     public override void EnterState(Player player)
     {
         stateEnterTime = Time.time;
+        player.currentJumpCount = 0;
     }
 
     public override void ExitState(Player player)

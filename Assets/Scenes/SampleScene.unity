@@ -372,6 +372,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1558931477}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 30}
+--- !u!82 &154226647 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 2595143670668858342, guid: d715010f6e805d68e834e193c18acb03, type: 3}
+  m_PrefabInstance: {fileID: 1278116415}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &177240327
 GameObject:
   m_ObjectHideFlags: 0
@@ -6997,6 +7002,18 @@ PrefabInstance:
     - target: {fileID: 6635767576865755617, guid: d715010f6e805d68e834e193c18acb03, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7120529644409001929, guid: d715010f6e805d68e834e193c18acb03, type: 3}
+      propertyPath: jumpClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 14c2b7ee8a75deeaa8013efdcb51646b, type: 3}
+    - target: {fileID: 7120529644409001929, guid: d715010f6e805d68e834e193c18acb03, type: 3}
+      propertyPath: audioSource
+      value: 
+      objectReference: {fileID: 154226647}
+    - target: {fileID: 7120529644409001929, guid: d715010f6e805d68e834e193c18acb03, type: 3}
+      propertyPath: maxJumpCount
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

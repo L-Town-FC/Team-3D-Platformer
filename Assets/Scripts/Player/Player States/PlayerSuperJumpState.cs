@@ -12,6 +12,7 @@ public class PlayerSuperJumpState : PlayerBaseState
     public override void EnterState(Player player)
     {
         stateEnterTime = Time.time;
+        player.currentJumpCount = player.maxJumpCount;
         //0.2f is arbitrary. just sends the player backwards slightly like they are doing a backflip
         jumpDir = Vector3.up - (player.transform.forward.normalized * 0.2f);
     }

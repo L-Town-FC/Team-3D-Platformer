@@ -9,11 +9,14 @@ public class PlayerJumpState : PlayerBaseState
     public override void EnterState(Player player)
     {
         stateEnterTime = Time.time;
+        player.currentJumpCount++;
         //if the player is on the wall then they should perform a wall jump instead of a normal jump
         if (player.OnWallCheck().Item1)
         {
             jumpDir += player.OnWallCheck().Item2.normalized;
         }
+
+        player.audioSource.PlayOneShot(player.jumpClip);
     }
 
     public override void ExitState(Player player)
