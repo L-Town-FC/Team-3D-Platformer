@@ -51,6 +51,9 @@ public class Player : ActorController, IDamageable
 
         //generates all possible states the player can be in
         GetAllPlayerStates();
+
+        //TESTING PURPOSES ONLY
+        PlayerPrefs.DeleteAll();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

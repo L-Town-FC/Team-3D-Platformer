@@ -31,13 +31,16 @@ public class PlayerIdleAirState : PlayerBaseState
             return;
         }
 
-        if (player.OnWallCheck().Item1)
+        if (player.OnWallCheck().Item1 && PlayerPrefs.HasKey(PowerUpList.WallCling))
         {
             player.ChangeState(player.pWallState);
             return;
         }
-
-        if (player.input.wasJumpPressedThisFrame && player.currentJumpCount < player.maxJumpCount)
+        
+        //1 is for if player has power up, 0 is default which is no power up
+        if (player.input.wasJumpPressedThisFrame && 
+            PlayerPrefs.HasKey(PowerUpList.DoubleJump) && 
+            player.currentJumpCount < player.maxJumpCount)
         {
             player.ChangeState(player.pJumpState);
             return;

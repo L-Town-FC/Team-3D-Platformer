@@ -36,7 +36,7 @@ public class PlayerCrouchState : PlayerBaseState
             return;
         }
 
-        if (player.input.isJump)
+        if (player.input.isJump && PlayerPrefs.HasKey(PowerUpList.SuperJump))
         {
             player.ChangeState(player.pSuperJumpState);
         }

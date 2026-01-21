@@ -3,6 +3,8 @@ using UnityEngine;
 public class BasePlayerPowerUp : MonoBehaviour
 {
     protected virtual bool isPowerUpEnabled { get; set; }
+    protected virtual string powerUpName { get; set; }
+
     string playerTag = "Player";
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -21,6 +23,7 @@ public class BasePlayerPowerUp : MonoBehaviour
     {
         //power up collection effect
         //time stop?
+        Destroy(this.gameObject);
     }
 
     protected void UpdatePlayerPrefs(string powerupName)
@@ -34,5 +37,7 @@ public class BasePlayerPowerUp : MonoBehaviour
         if (!other.CompareTag(playerTag)){
             return;
         }
+
+        OnCollect();
     }
 }

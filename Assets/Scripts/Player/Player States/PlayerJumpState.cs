@@ -11,7 +11,7 @@ public class PlayerJumpState : PlayerBaseState
         stateEnterTime = Time.time;
         player.currentJumpCount++;
         //if the player is on the wall then they should perform a wall jump instead of a normal jump
-        if (player.OnWallCheck().Item1)
+        if (player.OnWallCheck().Item1 && PlayerPrefs.HasKey(PowerUpList.WallCling))
         {
             jumpDir += player.OnWallCheck().Item2.normalized;
         }
