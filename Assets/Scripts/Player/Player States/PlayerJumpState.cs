@@ -16,12 +16,18 @@ public class PlayerJumpState : PlayerBaseState
             jumpDir += player.OnWallCheck().Item2.normalized;
         }
 
+        if(player.currentJumpCount == player.maxJumpCount)
+        {
+            player.doubleJumpVFX.Play();
+        }
+
         player.audioSource.PlayOneShot(player.jumpClip);
     }
 
     public override void ExitState(Player player)
     {
         jumpDir = Vector3.up;
+        player.doubleJumpVFX.Stop();
     }
 
     public override void UpdateState(Player player)

@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.VFX;
 public class Player : ActorController, IDamageable
 {
     public bool isPlayerGrounded => isGrounded; //read only copy of ground check from base class
@@ -20,6 +20,8 @@ public class Player : ActorController, IDamageable
     [Header("Audio")]
     public AudioClip jumpClip;
     public AudioSource audioSource;
+
+    public VisualEffect doubleJumpVFX;
 
     #region All Possible Player States
     public PlayerBaseState currentPlayerState;
@@ -46,6 +48,7 @@ public class Player : ActorController, IDamageable
         input = GetComponent<PlayerInput>();
         playerCamera = GetComponent<PlayerCamera>();
         audioSource = GetComponentInChildren<AudioSource>();
+        doubleJumpVFX = GetComponent<VisualEffect>();
 
         health = _maxHealth;
 
