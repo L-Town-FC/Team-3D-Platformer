@@ -11,10 +11,15 @@ public class PlayerCamera : MonoBehaviour
     private GameObject cinemachineCamera;
     private CinemachineInputAxisController inputAxisController;
     private CinemachineOrbitalFollow orbitFollow;
+    private CinemachineRotationComposer rotationComposer;
 
     [SerializeField] private Vector2 minAndMaxCameraTilt = new Vector2(-60f, 75f);
     [SerializeField] private Vector2 horizontalAndVerticalCameraSensitivity = new Vector2(1f, 1f);
     [SerializeField] private bool invertVerticalControls = false;
+
+    Vector3 defaultPositionDamping;
+    Vector2 defaultRotationDamping;
+    float verticalDampingTransitionCutOff = 0f;
 
     private void Awake()
     {
@@ -32,6 +37,10 @@ public class PlayerCamera : MonoBehaviour
 
         inputAxisController = cinemachineCamera.GetComponent<CinemachineInputAxisController>();
         orbitFollow = cinemachineCamera.GetComponent<CinemachineOrbitalFollow>();
+        rotationComposer = cinemachineCamera.GetComponent<CinemachineRotationComposer>();
+
+        defaultPositionDamping = orbitFollow.TrackerSettings.PositionDamping;
+        defaultRotationDamping = rotationComposer.Damping;
 
         if (inputAxisController == null || orbitFollow == null)
         {
@@ -46,7 +55,8 @@ public class PlayerCamera : MonoBehaviour
 
     private void Update()
     {
-        
+        orbitFollow.TrackerSettings.PositionDamping = defaultPositionDamping * CameraDampingValueBasedOnPosition();
+        rotationComposer.Damping = defaultRotationDamping * CameraDampingValueBasedOnPosition();
     }
 
     private void OnValidate()
@@ -74,5 +84,10 @@ public class PlayerCamera : MonoBehaviour
         }
 
         return 1f;
+    }
+
+    float CameraDampingValueBasedOnPosition()
+    {
+        return 1f - Mathf.InverseLerp(verticalDampingTransitionCutOff, minAndMaxCameraTilt.x, orbitFollow.VerticalAxis.Value);
     }
 }
