@@ -17,8 +17,8 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private Vector2 horizontalAndVerticalCameraSensitivity = new Vector2(1f, 1f);
     [SerializeField] private bool invertVerticalControls = false;
 
-    Vector3 defaultPositionDamping;
-    Vector2 defaultRotationDamping;
+    Vector3 defaultPositionDamping = new Vector3(1f, 3f, 1f);
+    Vector2 defaultRotationDamping = new Vector2(0.5f, 3f);
     float verticalDampingTransitionCutOff = 0f;
 
     private void Awake()
@@ -38,9 +38,6 @@ public class PlayerCamera : MonoBehaviour
         inputAxisController = cinemachineCamera.GetComponent<CinemachineInputAxisController>();
         orbitFollow = cinemachineCamera.GetComponent<CinemachineOrbitalFollow>();
         rotationComposer = cinemachineCamera.GetComponent<CinemachineRotationComposer>();
-
-        defaultPositionDamping = orbitFollow.TrackerSettings.PositionDamping;
-        defaultRotationDamping = rotationComposer.Damping;
 
         if (inputAxisController == null || orbitFollow == null)
         {
