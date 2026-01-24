@@ -4,6 +4,8 @@ using Unity.Cinemachine;
 public class PlayerCamera : MonoBehaviour
 {
     [SerializeField] private PlayerInput input;
+    [SerializeField] private Transform cameraTarget;
+    private Rigidbody playerRB;
 
     [Header("Auto-bind")]
     [SerializeField] private string cinemachineRigTag = "CinemachineRig";
@@ -17,15 +19,22 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private Vector2 horizontalAndVerticalCameraSensitivity = new Vector2(1f, 1f);
     [SerializeField] private bool invertVerticalControls = false;
 
+    [SerializeField]
     Vector3 defaultPositionDamping = new Vector3(1f, 3f, 1f);
+    [SerializeField]
     Vector2 defaultRotationDamping = new Vector2(0.5f, 3f);
+    //Angle at which damping starts getting reduced to stop player from running into camera
     float verticalDampingTransitionCutOff = 0f;
+    [SerializeField]
+    float cameraHeight = 1.5f;
 
     private void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
 
         cinemachineCamera = GameObject.FindGameObjectWithTag(cinemachineRigTag);
+
+        playerRB = GetComponent<Rigidbody>();
 
         if (cinemachineCamera == null)
         {
@@ -54,6 +63,12 @@ public class PlayerCamera : MonoBehaviour
     {
         orbitFollow.TrackerSettings.PositionDamping = defaultPositionDamping * CameraDampingValueBasedOnPosition();
         rotationComposer.Damping = defaultRotationDamping * CameraDampingValueBasedOnPosition();
+
+        //Camera Target should not be attached to player
+        //due to the rotation messing with the camera follow settings
+        //This independent game object never rotates and updates its
+        //position based on the players every frame
+        cameraTarget.Translate(playerRB.position + (Vector3.up * cameraHeight) - cameraTarget.position);
     }
 
     private void OnValidate()

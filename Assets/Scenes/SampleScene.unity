@@ -6168,6 +6168,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &491915628 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7269619705233268568, guid: 15b9f082a710aadf897709f7530a351a, type: 3}
+  m_PrefabInstance: {fileID: 107211280402935039}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &520351371
 GameObject:
   m_ObjectHideFlags: 0
@@ -7082,6 +7087,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 5592229119203436248, guid: d715010f6e805d68e834e193c18acb03, type: 3}
+      propertyPath: cameraTarget
+      value: 
+      objectReference: {fileID: 491915628}
     - target: {fileID: 6635767576865755617, guid: d715010f6e805d68e834e193c18acb03, type: 3}
       propertyPath: m_LocalPosition.x
       value: 11.401188
@@ -7443,11 +7452,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1492472952 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3619068225187507377, guid: d715010f6e805d68e834e193c18acb03, type: 3}
-  m_PrefabInstance: {fileID: 1278116415}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1550571520
 GameObject:
   m_ObjectHideFlags: 0
@@ -8251,10 +8255,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8478250716567795942, guid: 15b9f082a710aadf897709f7530a351a, type: 3}
-      propertyPath: Target.TrackingTarget
-      value: 
-      objectReference: {fileID: 1492472952}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
