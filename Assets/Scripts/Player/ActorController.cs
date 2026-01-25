@@ -72,10 +72,27 @@ public class ActorController : MonoBehaviour
         //applies drag force to object, slowing them down
         appliedMovement = DragForce(appliedMovement);
 
-        //to make camera movement smoother, the FPS camera rotates independently of the player
-        //the player rigidbody then rotates to match the new camera forward position
-        //may need to extend this to RB movement as well
-        appliedRotation = Quaternion.FromToRotation(transform.forward, Vector3.ProjectOnPlane(newTransformForward, Vector3.up));
+        //the newTransformForward may be set to a zero vector when no input is applied
+        //this causes the player to perpetually spin because it cant reach that vector
+        //so the rotation is cancelled by just setting the new transform forward to whatever
+        //the player is currently facing
+        if(newTransformForward.magnitude == 0f)
+        {
+            newTransformForward = transform.forward;
+        }
+
+        appliedRotation = CalculateQuaternionRotation();
+    }
+
+    Quaternion CalculateQuaternionRotation()
+    {
+        //Quaternion.FromToRotation was occassionally flipping the player upside down/making the player rotation freak out
+        //manually calculating the rotation matrix appears to have removed these issues
+        Quaternion from = Quaternion.LookRotation(transform.forward, Vector3.up);
+        Quaternion to = Quaternion.LookRotation(Vector3.ProjectOnPlane(newTransformForward, Vector3.up), Vector3.up);
+
+        Quaternion rot = to * Quaternion.Inverse(from);
+        return rot;
     }
 
     //forces and movements are actually exerted here
