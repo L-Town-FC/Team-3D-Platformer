@@ -19,7 +19,7 @@ GameObject:
   - component: {fileID: 2181734796939896225}
   - component: {fileID: 7622085189932280095}
   m_Layer: 7
-  m_Name: New Enemy
+  m_Name: Base Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -163,10 +163,6 @@ MonoBehaviour:
   speed: 4
   gravityForce: 3
   minAndMaxVerticalMovementSpeed: {x: -30, y: 30}
-  isGrounded: 0
-  groundLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
   externalMovement: {x: 0, y: 0, z: 0}
   airDrag: 0.15
   downwardGravityModifier: 0.6

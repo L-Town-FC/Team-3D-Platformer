@@ -13,7 +13,7 @@ public class ActorController : MonoBehaviour
     [SerializeField]
     protected float speed = 10f;
     [SerializeField]
-    float gravityForce = 3f;
+    protected float gravityForce = 3f;
     [SerializeField]
     protected Vector2 minAndMaxVerticalMovementSpeed = new Vector2(-30f, 30f);
     
@@ -84,17 +84,6 @@ public class ActorController : MonoBehaviour
         appliedRotation = CalculateQuaternionRotation();
     }
 
-    Quaternion CalculateQuaternionRotation()
-    {
-        //Quaternion.FromToRotation was occassionally flipping the player upside down/making the player rotation freak out
-        //manually calculating the rotation matrix appears to have removed these issues
-        Quaternion from = Quaternion.LookRotation(transform.forward, Vector3.up);
-        Quaternion to = Quaternion.LookRotation(Vector3.ProjectOnPlane(newTransformForward, Vector3.up), Vector3.up);
-
-        Quaternion rot = to * Quaternion.Inverse(from);
-        return rot;
-    }
-
     //forces and movements are actually exerted here
     protected virtual void FixedUpdate()
     {
@@ -142,11 +131,13 @@ public class ActorController : MonoBehaviour
 
     Vector3 ApplyGravity(Vector3 _verticalMovement)
     {
+        //zero out gravity when grounded to stop player from phasing into the ground
         if (isGrounded)
         {
             return Vector3.zero;
         }
 
+        //lessen graivty when falling to make player floatier
         if(AppliedMovmement.y < 0f)
         {
             return _verticalMovement += Vector3.down * downwardGravityModifier * gravityForce;
@@ -226,6 +217,17 @@ public class ActorController : MonoBehaviour
 
         //this component is then subtracted from the intial input vector, thus removing any movement "up slope"
         return (horizontalComponent, _verticalMovement - verticalComponent);
+    }
+
+    Quaternion CalculateQuaternionRotation()
+    {
+        //Quaternion.FromToRotation was occassionally flipping the player upside down/making the player rotation freak out
+        //manually calculating the rotation matrix appears to have removed these issues
+        Quaternion from = Quaternion.LookRotation(transform.forward, Vector3.up);
+        Quaternion to = Quaternion.LookRotation(Vector3.ProjectOnPlane(newTransformForward, Vector3.up), Vector3.up);
+
+        Quaternion rot = to * Quaternion.Inverse(from);
+        return rot;
     }
 
     void ResetGroundVariables()
