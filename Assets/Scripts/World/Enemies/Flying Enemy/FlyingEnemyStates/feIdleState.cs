@@ -4,16 +4,21 @@ public class feIdleState : FlyingEnemyBaseState
 {
     public override void EnterState(FlyingEnemy enemy)
     {
-        throw new System.NotImplementedException();
+        stateEnterTime = Time.time;
+        Debug.Log("Entering Idle");
+
     }
 
     public override void ExitState(FlyingEnemy enemy)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Leaving Idle");
     }
 
     public override void UpdateState(FlyingEnemy enemy)
     {
-        throw new System.NotImplementedException();
+        if (enemy.isAlertedToPlayer)
+        {
+            enemy.ChangeState(enemy.chaseState);
+        }
     }
 }
