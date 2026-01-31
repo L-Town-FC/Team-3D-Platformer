@@ -2,12 +2,13 @@ using UnityEngine;
 
 public class FlyingEnemy : ActorController
 {
-    float defaultHeightFromGround = 3f;
-    float enemyAlertDst = 8f;
-    public float circlingRadius = 3f;
+    public float defaultHeightAbovePlayer = 3f;
+    float enemyAlertDst = 10f;
+    public float circlingRadius = 5f;
     public bool isAlertedToPlayer = false;
     string playerTag = "Player";
     public float chaseSpeed = 1f;
+    public float circlingSpeed = 3f;
     float swoopSpeed = 5f;
     Vector2 maxAndMinTimeBetweenSwoops = new Vector2(5f, 7f);
     public FlyingEnemyBaseState currentEnemyState;
@@ -27,6 +28,8 @@ public class FlyingEnemy : ActorController
         base.Start();
 
         chaseCollider.radius = enemyAlertDst;
+        base.airDrag = base.groundDrag;
+        ChangeSpeed(chaseSpeed);
 
         currentEnemyState = idleState;
         currentEnemyState.EnterState(this);
@@ -58,6 +61,12 @@ public class FlyingEnemy : ActorController
     {
         base.inputVector = _inputVector;
         base.newTransformForward = _newForward;
+    }
+
+    public void ChangeSpeed(float _newSpeed)
+    {
+        speed = _newSpeed;
+        minAndMaxVerticalMovementSpeed = new Vector2(-_newSpeed, _newSpeed);
     }
 
     private void OnTriggerEnter(Collider other)

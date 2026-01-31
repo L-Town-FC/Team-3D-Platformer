@@ -15,9 +15,9 @@ public class feChaseState : FlyingEnemyBaseState
 
     public override void UpdateState(FlyingEnemy enemy)
     {
-        Vector3 dirToPlayer = enemy.player.position - enemy.transform.position;
+        Vector3 dirToPlayer = enemy.player.position - enemy.transform.position + Vector3.up * enemy.defaultHeightAbovePlayer;
 
-        enemy.UpdateActorInputVectors(dirToPlayer.normalized * enemy.chaseSpeed, dirToPlayer.normalized);
+        enemy.UpdateActorInputVectors(dirToPlayer.normalized, dirToPlayer.normalized);
 
         if (EnemyInCirclingRange(enemy))
         {

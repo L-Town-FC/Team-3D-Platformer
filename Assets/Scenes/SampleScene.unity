@@ -7398,9 +7398,11 @@ MonoBehaviour:
   externalMovement: {x: 0, y: 0, z: 0}
   airDrag: 0.15
   downwardGravityModifier: 0.6
-  circlingRadius: 3
+  defaultHeightAbovePlayer: 3
+  circlingRadius: 5
   isAlertedToPlayer: 0
   chaseSpeed: 3
+  circlingSpeed: 6
   player: {fileID: 0}
   chaseCollider: {fileID: 1376848011}
 --- !u!135 &1376848011
