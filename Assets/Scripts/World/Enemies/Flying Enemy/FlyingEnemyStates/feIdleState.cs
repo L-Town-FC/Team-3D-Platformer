@@ -18,7 +18,7 @@ public class feIdleState : FlyingEnemyBaseState
     {
         if (enemy.isAlertedToPlayer)
         {
-            enemy.ChangeState(enemy.chaseState);
+            enemy.ChangeState(enemy.circlingState);
         }
     }
 }

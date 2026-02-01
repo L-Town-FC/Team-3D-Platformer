@@ -2,15 +2,20 @@ using UnityEngine;
 
 public class feCirclingState : FlyingEnemyBaseState
 {
-    float circlingRandomizer = 1f;
+    float circlingRandomizer = 1f; //used to randomize circling direction
+    float bufferDst = 1f; //small buffer to let enemy swoop when not exactly on the circling radius
+    float swoopTime; //Time until next swoop
     public override void EnterState(FlyingEnemy enemy)
     {
         stateEnterTime = Time.time;
         //randomize the direction the enemy circles by just taking a
         //sin of the time
         circlingRandomizer = Mathf.Sign(Mathf.Sin(Time.time));
+        swoopTime = Random.Range(enemy.minAndMaxTimeBetweenSwoops.x, enemy.minAndMaxTimeBetweenSwoops.y);
 
-        enemy.ChangeSpeed(enemy.circlingSpeed);
+        Debug.Log(swoopTime);
+
+        enemy.ChangeSpeed(enemy.circlingSpeed, enemy.circlingSpeed);
         Debug.Log("Entering Circling");
     }
 
@@ -27,11 +32,16 @@ public class feCirclingState : FlyingEnemyBaseState
         enemyMovementInput += EnemyCirclingAdjustment(enemy);
 
         enemy.UpdateActorInputVectors(enemyMovementInput, newEnemyForward);
+
+        if (SwoopCheck(enemy))
+        {
+            enemy.ChangeState(enemy.swoopState);
+        }
     }
 
     Vector3 EnemyCirclingAdjustment(FlyingEnemy enemy)
     {
-        float enemyHorizontalPlayerDst = Vector3.ProjectOnPlane(enemy.player.position - enemy.transform.position, Vector3.up).magnitude;
+        float enemyHorizontalPlayerDst = EnemyToPlayerHorizontalDst(enemy);
 
         Vector3 horiztonalAdjustment = (enemyHorizontalPlayerDst - enemy.circlingRadius) * enemy.transform.forward;
 
@@ -41,5 +51,30 @@ public class feCirclingState : FlyingEnemyBaseState
 
         return horiztonalAdjustment + verticalAdjustment;
         
+    }
+
+    float EnemyToPlayerHorizontalDst(FlyingEnemy enemy)
+    {
+        return Vector3.ProjectOnPlane(enemy.player.position - enemy.transform.position, Vector3.up).magnitude;
+    }
+
+    bool SwoopCheck(FlyingEnemy enemy)
+    {
+        //Checks if enemy should swoop on the player
+        //player and enemy need to be within a small distance band
+        //time check to stop enemy from swooping constanly
+        float dst = EnemyToPlayerHorizontalDst(enemy);
+        float radius = enemy.circlingRadius;
+        if(dst > radius + bufferDst || dst < radius - bufferDst)
+        {
+            return false;
+        }
+
+        if(Time.time < stateEnterTime + swoopTime)
+        {
+            return false;
+        }
+
+        return true;
     }
 }

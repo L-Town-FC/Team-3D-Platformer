@@ -255,8 +255,8 @@ Transform:
   m_GameObject: {fileID: 46495909}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 13.71897, y: -5.88608, z: 3.9292}
-  m_LocalScale: {x: 50, y: 1, z: 50}
+  m_LocalPosition: {x: 23.71897, y: -5.88608, z: 3.9292}
+  m_LocalScale: {x: 80, y: 1, z: 50}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1558931477}
@@ -7373,7 +7373,7 @@ Transform:
   m_GameObject: {fileID: 1376848004}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.49, y: 6.48, z: -0.85}
+  m_LocalPosition: {x: 40.31, y: 6.48, z: -0.85}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7403,6 +7403,8 @@ MonoBehaviour:
   isAlertedToPlayer: 0
   chaseSpeed: 3
   circlingSpeed: 6
+  swoopSpeed: 5
+  minAndMaxTimeBetweenSwoops: {x: 5, y: 7}
   player: {fileID: 0}
   chaseCollider: {fileID: 1376848011}
 --- !u!135 &1376848011

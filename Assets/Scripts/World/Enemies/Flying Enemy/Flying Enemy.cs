@@ -9,8 +9,8 @@ public class FlyingEnemy : ActorController
     string playerTag = "Player";
     public float chaseSpeed = 1f;
     public float circlingSpeed = 3f;
-    float swoopSpeed = 5f;
-    Vector2 maxAndMinTimeBetweenSwoops = new Vector2(5f, 7f);
+    public float swoopSpeed = 5f;
+    public Vector2 minAndMaxTimeBetweenSwoops = new Vector2(5f, 7f);
     public FlyingEnemyBaseState currentEnemyState;
     [HideInInspector]
     public Transform player;
@@ -29,7 +29,7 @@ public class FlyingEnemy : ActorController
 
         chaseCollider.radius = enemyAlertDst;
         base.airDrag = base.groundDrag;
-        ChangeSpeed(chaseSpeed);
+        ChangeSpeed(chaseSpeed, chaseSpeed);
 
         currentEnemyState = idleState;
         currentEnemyState.EnterState(this);
@@ -63,10 +63,10 @@ public class FlyingEnemy : ActorController
         base.newTransformForward = _newForward;
     }
 
-    public void ChangeSpeed(float _newSpeed)
+    public void ChangeSpeed(float _horizontalSpeed, float _verticalSpeed)
     {
-        speed = _newSpeed;
-        minAndMaxVerticalMovementSpeed = new Vector2(-_newSpeed, _newSpeed);
+        speed = _horizontalSpeed;
+        minAndMaxVerticalMovementSpeed = new Vector2(-_verticalSpeed, _verticalSpeed);
     }
 
     private void OnTriggerEnter(Collider other)
