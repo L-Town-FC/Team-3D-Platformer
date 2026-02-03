@@ -7253,7 +7253,7 @@ GameObject:
   - component: {fileID: 1376848005}
   - component: {fileID: 1376848010}
   - component: {fileID: 1376848011}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Flying Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7392,18 +7392,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlyingEnemy
   appliedMovement: {x: 0, y: 0, z: 0}
-  speed: 3
+  speed: 5
   gravityForce: 0
   minAndMaxVerticalMovementSpeed: {x: -30, y: 30}
   externalMovement: {x: 0, y: 0, z: 0}
   airDrag: 0.15
   downwardGravityModifier: 0.6
+  isAlertedToPlayer: 0
   defaultHeightAbovePlayer: 3
   circlingRadius: 5
-  isAlertedToPlayer: 0
-  chaseSpeed: 3
-  circlingSpeed: 6
-  swoopSpeed: 5
+  circlingSpeed: 5
+  swoopSpeed: 9
   minAndMaxTimeBetweenSwoops: {x: 5, y: 7}
   player: {fileID: 0}
   chaseCollider: {fileID: 1376848011}

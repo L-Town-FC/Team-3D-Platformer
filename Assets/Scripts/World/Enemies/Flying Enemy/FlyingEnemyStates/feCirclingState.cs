@@ -13,15 +13,11 @@ public class feCirclingState : FlyingEnemyBaseState
         circlingRandomizer = Mathf.Sign(Mathf.Sin(Time.time));
         swoopTime = Random.Range(enemy.minAndMaxTimeBetweenSwoops.x, enemy.minAndMaxTimeBetweenSwoops.y);
 
-        Debug.Log(swoopTime);
-
         enemy.ChangeSpeed(enemy.circlingSpeed, enemy.circlingSpeed);
-        Debug.Log("Entering Circling");
     }
 
     public override void ExitState(FlyingEnemy enemy)
     {
-        Debug.Log("Leaving Circling");
     }
 
     public override void UpdateState(FlyingEnemy enemy)
@@ -41,6 +37,7 @@ public class feCirclingState : FlyingEnemyBaseState
 
     Vector3 EnemyCirclingAdjustment(FlyingEnemy enemy)
     {
+        //tries to keep enemy at the circling radius and at the predefined height above the player
         float enemyHorizontalPlayerDst = EnemyToPlayerHorizontalDst(enemy);
 
         Vector3 horiztonalAdjustment = (enemyHorizontalPlayerDst - enemy.circlingRadius) * enemy.transform.forward;
