@@ -23,7 +23,6 @@ public class DeathMenuController : MenuControllerBase
 
     public void Die()
     {
-        print(Time.time);
         if (isOpen)
             return;
 

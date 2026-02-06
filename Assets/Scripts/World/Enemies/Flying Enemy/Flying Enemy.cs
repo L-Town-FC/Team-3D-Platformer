@@ -1,11 +1,13 @@
 using UnityEngine;
 
-public class FlyingEnemy : ActorController, IDamageable
+[RequireComponent(typeof(ActorController))]
+public class FlyingEnemy : MonoBehaviour, IDamageable
 {
     float enemyAlertDst = 10f;
     public bool isAlertedToPlayer = false;
     string playerTag = "Player";
     public FlyingEnemyBaseState currentEnemyState;
+    public ActorController actor;
 
     #region Circling Variables
     public float defaultHeightAbovePlayer = 3f;
@@ -39,15 +41,18 @@ public class FlyingEnemy : ActorController, IDamageable
     float contactDamage = 50f;
     #endregion
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    protected override void Start()
+    private void Awake()
     {
-        base.Start();
+        actor = GetComponent<ActorController>();
+    }
 
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
         chaseCollider.radius = enemyAlertDst;
         //air drag is set to ground drag since to a flying enemy, the air is the ground
         //makes movement easier to handle
-        base.airDrag = base.groundDrag;
+        actor.airDrag = actor.groundDrag;
         ChangeSpeed(circlingSpeed, circlingSpeed);
 
         maxHealth = health = _maxHealth;
@@ -59,16 +64,14 @@ public class FlyingEnemy : ActorController, IDamageable
     }
 
     // Update is called once per frame
-    protected override void Update()
+    void Update()
     {
         currentEnemyState.UpdateState(this);
-
-        base.Update();
     }
 
-    protected override void FixedUpdate()
+    void FixedUpdate()
     {
-        base.FixedUpdate();
+        actor.ApplyMovement();
     }
 
 
@@ -82,15 +85,14 @@ public class FlyingEnemy : ActorController, IDamageable
     //method called by enemy state classes to update this base classes movement and direction
     public void UpdateActorInputVectors(Vector3 _inputVector, Vector3 _newForward)
     {
-        base.inputVector = _inputVector;
-        base.newTransformForward = _newForward;
+        actor.CalculateMovement(_inputVector, _newForward);
     }
 
     public void ChangeSpeed(float _horizontalSpeed, float _verticalSpeed)
     {
         //assigns vertical and horizontal speed independent of one another
-        speed = _horizontalSpeed;
-        minAndMaxVerticalMovementSpeed = new Vector2(-_verticalSpeed, _verticalSpeed);
+        actor.speed = _horizontalSpeed;
+        actor.minAndMaxVerticalMovementSpeed = new Vector2(-_verticalSpeed, _verticalSpeed);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -129,10 +131,8 @@ public class FlyingEnemy : ActorController, IDamageable
         Destroy(gameObject);
     }
 
-    protected override void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision collision)
     {
-        base.OnCollisionEnter(collision);
-
         //only want to try apply damage ONLY if they are contacting the player
         //this stops them from hurting other enemies
         if (!collision.collider.CompareTag(playerTag)) { return; }

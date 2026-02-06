@@ -1,12 +1,15 @@
 using UnityEngine;
 using UnityEngine.VFX;
-public class Player : ActorController, IDamageable
+
+[RequireComponent(typeof(ActorController))]
+public class Player :MonoBehaviour, IDamageable
 {
-    public bool isPlayerGrounded => isGrounded; //read only copy of ground check from base class
+    public ActorController actor;
+    public bool isPlayerGrounded => actor.isGrounded; //read only copy of ground check from actor class
 
     [HideInInspector]
     public PlayerInput input;
-    public Collision playerCollision => actorCollision; //read only copy of collisions from base class
+    public Collision playerCollision => actor.actorCollision; //read only copy of collisions from base class
 
     float _maxHealth = 100f;
     public float maxHealth { get { return _maxHealth; } set { } }
@@ -45,6 +48,8 @@ public class Player : ActorController, IDamageable
 
     private void Awake()
     {
+        actor = GetComponent<ActorController>();
+
         input = GetComponent<PlayerInput>();
         playerCamera = GetComponent<PlayerCamera>();
         audioSource = GetComponentInChildren<AudioSource>();
@@ -60,27 +65,22 @@ public class Player : ActorController, IDamageable
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    protected override void Start()
+    void Start()
     {
-        base.inputVector = Vector3.zero;
-        base.newTransformForward = transform.forward;
+        UpdateActorInputVectors(Vector3.zero, transform.forward);
 
         currentPlayerState = pGroundState;
-     
-        base.Start();
     }
 
     // Update is called once per frame
-    protected override void Update()
+    void Update()
     {
         currentPlayerState.UpdateState(this);
-
-        base.Update();
     }
 
-    protected override void FixedUpdate()
+    void FixedUpdate()
     {
-        base.FixedUpdate();
+        actor.ApplyMovement();
     }
 
     public void ChangeState(PlayerBaseState _newState)
@@ -93,8 +93,7 @@ public class Player : ActorController, IDamageable
     //method called by player state classes to update this base classes movement and direction
     public void UpdateActorInputVectors(Vector3 _inputVector, Vector3 _newForward)
     {
-        base.inputVector = _inputVector;
-        base.newTransformForward = _newForward;
+        actor.CalculateMovement(_inputVector, _newForward);
     }
 
     public Vector3 CamRelativeInputVector()
@@ -111,7 +110,7 @@ public class Player : ActorController, IDamageable
         int wallContacts = 0;
         Vector3 wallJumpDir = Vector3.up;
 
-        foreach (ContactPoint contact in actorCollision.contacts)
+        foreach (ContactPoint contact in actor.actorCollision.contacts)
         {
             if (contact.normal.y == 0)
             {

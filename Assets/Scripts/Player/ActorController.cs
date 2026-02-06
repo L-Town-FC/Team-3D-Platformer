@@ -8,47 +8,41 @@ public class ActorController : MonoBehaviour
     private Vector3 appliedMovement = Vector3.zero; //holds the movement vector that is eventually applied to the player
     public Vector3 AppliedMovmement => appliedMovement; //read only copy of the appliedMovement for other scripts to read
     private Quaternion appliedRotation { get; set; } = Quaternion.identity; //holds the rotation quaternion that is eventually applied to the player
-    protected virtual Vector3 newTransformForward { get; set; } = Vector3.zero;
-    
+
     [SerializeField]
-    protected float speed = 10f;
+    public float speed = 10f;
     [SerializeField]
-    protected float gravityForce = 3f;
+    public float gravityForce = 3f;
     [SerializeField]
-    protected Vector2 minAndMaxVerticalMovementSpeed = new Vector2(-30f, 30f);
-    
-    protected bool isGrounded = false;
+    public Vector2 minAndMaxVerticalMovementSpeed = new Vector2(-30f, 30f);
+
+    public bool isGrounded = false;
     Vector3 groundNormal = Vector3.zero; //used to calculate the slope the player is on
     float maxSlopeAngle = 45; //degrees
     float currentSlopeAngle = 0f;
     public Vector3 externalMovement = Vector3.zero;
 
-    protected Collision actorCollision = new Collision();
+    public Collision actorCollision = new Collision();
 
     public float airDrag = 0.15f;
-    protected float groundDrag = 0.5f;
+    public float groundDrag = 0.5f;
 
     [HideInInspector]
     public float downwardGravityModifier = 0.6f;
 
-    [HideInInspector]
-    protected virtual Vector3 inputVector { get; set; } = Vector3.zero;
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected virtual void Start()
     {
-        newTransformForward = transform.forward;
         rb = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
-    //all inputs and calculations to movement and rotation should be done here
-    protected virtual void Update()
+    //UPDATE METHOD
+    public void CalculateMovement(Vector3 inputVector, Vector3 newTransformForward)
     {
         //stops residual velocity from collisions from affecting player movement
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
-        
+
         //splits movement into horizontal and vertical parts to make dealing with
         //gravity and inputs easier
         Vector3 horizontalMovement = inputVector + Vector3.ProjectOnPlane(appliedMovement, Vector3.up);
@@ -72,20 +66,16 @@ public class ActorController : MonoBehaviour
         //applies drag force to object, slowing them down
         appliedMovement = DragForce(appliedMovement);
 
-        //the newTransformForward may be set to a zero vector when no input is applied
-        //this causes the player to perpetually spin because it cant reach that vector
-        //so the rotation is cancelled by just setting the new transform forward to whatever
-        //the player is currently facing
         if(newTransformForward.magnitude == 0f)
         {
             newTransformForward = transform.forward;
         }
 
-        appliedRotation = CalculateQuaternionRotation();
+        appliedRotation = CalculateQuaternionRotation(newTransformForward);
     }
 
-    //forces and movements are actually exerted here
-    protected virtual void FixedUpdate()
+    //FIXED UPDATE METHOD
+    public void ApplyMovement()
     {
         //moves the player
         //ISSUE: if multiple scripts are trying to edit external movement only one of them will be used
@@ -96,7 +86,7 @@ public class ActorController : MonoBehaviour
         //Checks to make sure character hasnt flipped updside down
         //rotates the player so their "forward" stays the same and their "up" matches world up
         //May cause rare movement instability
-        if(transform.up != Vector3.up)
+        if (transform.up != Vector3.up)
         {
             rb.MoveRotation(Quaternion.LookRotation(transform.forward, Vector3.up));
         }
@@ -117,10 +107,10 @@ public class ActorController : MonoBehaviour
         //this lets the actor temporarily exceed the max speed for abilities such as dashing or very powerful jumping
         float terminalDragFactor = 0.3f;
         float adjustedSpeed = _movement.magnitude;
-        if(_movement.magnitude > upperLimit)
+        if (_movement.magnitude > upperLimit)
         {
             adjustedSpeed = Mathf.Clamp(_movement.magnitude - upperLimit, 0f, Mathf.Infinity) * terminalDragFactor;
-            if(adjustedSpeed < upperLimit && _movement.magnitude > upperLimit)
+            if (adjustedSpeed < upperLimit && _movement.magnitude > upperLimit)
             {
                 adjustedSpeed = upperLimit;
             }
@@ -138,7 +128,7 @@ public class ActorController : MonoBehaviour
         }
 
         //lessen graivty when falling to make player floatier
-        if(AppliedMovmement.y < 0f)
+        if (AppliedMovmement.y < 0f)
         {
             return _verticalMovement += Vector3.down * downwardGravityModifier * gravityForce;
         }
@@ -165,9 +155,9 @@ public class ActorController : MonoBehaviour
 
         //creates a vector in the opposite direction of the inputted movement to create a drag force
         Vector3 dragAdjustedMovement = _startingMovement - _startingMovement.normalized * dragAmount;
-        
+
         //if the drag force is so much that is causes the player to switch directions, the movement amound is just set to 0
-        if(Vector3.Dot(_startingMovement.normalized, dragAdjustedMovement.normalized) < 0f)
+        if (Vector3.Dot(_startingMovement.normalized, dragAdjustedMovement.normalized) < 0f)
         {
             dragAdjustedMovement = Vector3.zero;
         }
@@ -180,7 +170,7 @@ public class ActorController : MonoBehaviour
         //may want to switch to CheckSphere instead but this is fine for now
         //checks if the players head is current hitting anything
         //removes upward movement if this is the case
-        if(Physics.SphereCast(transform.position + Vector3.up * 0.5f, 0.5f, Vector3.up, out RaycastHit hitInfo))
+        if (Physics.SphereCast(transform.position + Vector3.up * 0.5f, 0.5f, Vector3.up, out RaycastHit hitInfo))
         {
             _inputVector.y = Mathf.Clamp(_inputVector.y, -Mathf.Infinity, 0f);
         }
@@ -219,12 +209,12 @@ public class ActorController : MonoBehaviour
         return (horizontalComponent, _verticalMovement - verticalComponent);
     }
 
-    Quaternion CalculateQuaternionRotation()
+    Quaternion CalculateQuaternionRotation(Vector3 newForward)
     {
         //Quaternion.FromToRotation was occassionally flipping the player upside down/making the player rotation freak out
         //manually calculating the rotation matrix appears to have removed these issues
         Quaternion from = Quaternion.LookRotation(transform.forward, Vector3.up);
-        Quaternion to = Quaternion.LookRotation(Vector3.ProjectOnPlane(newTransformForward, Vector3.up), Vector3.up);
+        Quaternion to = Quaternion.LookRotation(Vector3.ProjectOnPlane(newForward, Vector3.up), Vector3.up);
 
         Quaternion rot = to * Quaternion.Inverse(from);
         return rot;
@@ -281,10 +271,11 @@ public class ActorController : MonoBehaviour
          */
 
         float bufferDst = 0.01f; //small distance to help false positive grounding
-        
-        foreach(ContactPoint contact in collision.contacts)
+
+        foreach (ContactPoint contact in collision.contacts)
         {
-            if(contact.point.y > transform.TransformPoint(Vector3.down * (0.5f + bufferDst)).y){
+            if (contact.point.y > transform.TransformPoint(Vector3.down * (0.5f + bufferDst)).y)
+            {
                 continue;
             }
 

@@ -53,7 +53,7 @@ public class PlayerIdleAirState : PlayerBaseState
         LayerMask bounceableEntityMask = LayerMask.GetMask("Enemy");
 
         //player should only be able to bounce if they are moving downward
-        if(_player.AppliedMovmement.y > 0f)
+        if(_player.actor.AppliedMovmement.y > 0f)
         {
             return false;
         }

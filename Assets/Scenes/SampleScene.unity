@@ -7253,6 +7253,7 @@ GameObject:
   - component: {fileID: 1376848005}
   - component: {fileID: 1376848010}
   - component: {fileID: 1376848011}
+  - component: {fileID: 1376848012}
   m_Layer: 7
   m_Name: Flying Enemy
   m_TagString: Untagged
@@ -7391,14 +7392,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4d67ad284153d24b8f82f086a30e4eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlyingEnemy
-  appliedMovement: {x: 0, y: 0, z: 0}
-  speed: 5
-  gravityForce: 0
-  minAndMaxVerticalMovementSpeed: {x: -30, y: 30}
-  externalMovement: {x: 0, y: 0, z: 0}
-  airDrag: 0.15
-  downwardGravityModifier: 0.6
   isAlertedToPlayer: 0
+  actor: {fileID: 1376848012}
   defaultHeightAbovePlayer: 3
   circlingRadius: 5
   circlingSpeed: 5
@@ -7427,6 +7422,27 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 8
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1376848012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1376848004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de6cd058ec4819e499e554b82a22689c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Actor1
+  appliedMovement: {x: 0, y: 0, z: 0}
+  speed: 10
+  gravityForce: 3
+  minAndMaxVerticalMovementSpeed: {x: -30, y: 30}
+  isGrounded: 0
+  externalMovement: {x: 0, y: 0, z: 0}
+  airDrag: 0.15
+  groundDrag: 0.5
+  downwardGravityModifier: 0.6
 --- !u!1 &1454079468
 GameObject:
   m_ObjectHideFlags: 0
@@ -8732,13 +8748,13 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1278116416}
+    - target: {fileID: 862728414344198817, guid: b03a14d63fecae228b6813bf0728d81c, type: 3}
+      propertyPath: speed
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 4011374085280374173, guid: b03a14d63fecae228b6813bf0728d81c, type: 3}
       propertyPath: m_Name
       value: Base Enemy
-      objectReference: {fileID: 0}
-    - target: {fileID: 4011374085280374173, guid: b03a14d63fecae228b6813bf0728d81c, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5269883089612732252, guid: b03a14d63fecae228b6813bf0728d81c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8778,10 +8794,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5269883089612732252, guid: b03a14d63fecae228b6813bf0728d81c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7622085189932280095, guid: b03a14d63fecae228b6813bf0728d81c, type: 3}
-      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

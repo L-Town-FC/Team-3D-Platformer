@@ -13,9 +13,9 @@ public class PlayerWallState : PlayerBaseState
     
     public override void EnterState(Player player)
     {
-        defaultGravityModifier = player.downwardGravityModifier;
-        defaultAirDrag = player.airDrag;
-        player.airDrag = wallAirDrag;
+        defaultGravityModifier = player.actor.downwardGravityModifier;
+        defaultAirDrag = player.actor.airDrag;
+        player.actor.airDrag = wallAirDrag;
         player.currentJumpCount = 0;
         stateEnterTime = Time.time;
         wallJumpDir = player.OnWallCheck().Item2;
@@ -23,8 +23,8 @@ public class PlayerWallState : PlayerBaseState
 
     public override void ExitState(Player player)
     {
-        player.downwardGravityModifier = defaultGravityModifier;
-        player.airDrag = defaultAirDrag;
+        player.actor.downwardGravityModifier = defaultGravityModifier;
+        player.actor.airDrag = defaultAirDrag;
     }
 
     public override void UpdateState(Player player)
@@ -36,7 +36,7 @@ public class PlayerWallState : PlayerBaseState
 
         //starts player with low gravity that increases over time
         //this gives the appearance of sticking to the wall and then slowly losing grip
-        player.downwardGravityModifier = Mathf.Lerp(
+        player.actor.downwardGravityModifier = Mathf.Lerp(
             wallGravityModifier,
             defaultGravityModifier,
             Mathf.InverseLerp(stateEnterTime, stateEnterTime + gravityModifierMaxChangeTime, Time.time)

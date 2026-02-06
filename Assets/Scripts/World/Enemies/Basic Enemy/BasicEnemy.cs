@@ -1,7 +1,11 @@
 using UnityEngine;
 using UnityEngine.VFX;
-public class BasicEnemy : ActorController, IDamageable
+
+[RequireComponent(typeof(ActorController))]
+public class BasicEnemy : MonoBehaviour, IDamageable
 {
+    ActorController actor;
+
     [SerializeField] private Transform player;
     [SerializeField] private float stopDistance = 0.75f;
 
@@ -23,17 +27,21 @@ public class BasicEnemy : ActorController, IDamageable
     float stunStartTime = 0f;
     VisualEffect stunEffect;
 
+    private void Awake()
+    {
+        actor = GetComponent<ActorController>();
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    protected override void Start()
+    void Start()
     {
         health = _maxHealth;
         stunEffect = GetComponent<VisualEffect>();
         sphereCollider = GetComponent<SphereCollider>();
-        base.Start();
     }
 
     // Update is called once per frame
-    protected override void Update()
+    void Update()
     {
         //player detection is done by checking if the player is within a sphere collider centered on the enemy
         //changing the size of the collider changes the max chase range
@@ -48,13 +56,12 @@ public class BasicEnemy : ActorController, IDamageable
         //this is either from being out of range or that they are currently stunned
         if(isStunned || !isChasePlayer)
         {
-            base.newTransformForward = transform.forward;
-            base.inputVector = Vector3.zero;
+            actor.CalculateMovement(Vector3.zero, transform.forward);
         }
         else
         {
-            base.newTransformForward = dir;
-            base.inputVector = transform.forward;
+            actor.CalculateMovement(transform.forward, dir);
+
         }
 
         StunCheck();
@@ -65,7 +72,6 @@ public class BasicEnemy : ActorController, IDamageable
             return;
         }
 
-        base.Update();
     }
 
     public void TakeDamage(float damage)
@@ -101,9 +107,9 @@ public class BasicEnemy : ActorController, IDamageable
         }
     }
 
-    protected override void FixedUpdate()
+    void FixedUpdate()
     {
-        base.FixedUpdate();
+        actor.ApplyMovement();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -124,10 +130,8 @@ public class BasicEnemy : ActorController, IDamageable
         }
     }
 
-    protected override void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision collision)
     {
-        base.OnCollisionEnter(collision);
-
         //only want to try apply damage ONLY if they are contacting the player
         //this stops them from hurting other enemies
         if (!collision.collider.CompareTag(playerTag)) { return; }

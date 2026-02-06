@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 3933413204421963908}
   - component: {fileID: 2181734796939896225}
   - component: {fileID: 7622085189932280095}
+  - component: {fileID: 862728414344198817}
   m_Layer: 7
   m_Name: Base Enemy
   m_TagString: Untagged
@@ -159,13 +160,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 121d0b4e804f09a42a626de3e524ea09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BasicEnemy
-  appliedMovement: {x: 0, y: 0, z: 0}
-  speed: 4
-  gravityForce: 3
-  minAndMaxVerticalMovementSpeed: {x: -30, y: 30}
-  externalMovement: {x: 0, y: 0, z: 0}
-  airDrag: 0.15
-  downwardGravityModifier: 0.6
   player: {fileID: 0}
   stopDistance: 0.75
   chaseDistance: 10
@@ -293,6 +287,27 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &862728414344198817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4011374085280374173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de6cd058ec4819e499e554b82a22689c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Actor1
+  appliedMovement: {x: 0, y: 0, z: 0}
+  speed: 8
+  gravityForce: 3
+  minAndMaxVerticalMovementSpeed: {x: -30, y: 30}
+  isGrounded: 0
+  externalMovement: {x: 0, y: 0, z: 0}
+  airDrag: 0.15
+  groundDrag: 0.5
+  downwardGravityModifier: 0.6
 --- !u!1 &7452872354449473930
 GameObject:
   m_ObjectHideFlags: 0
