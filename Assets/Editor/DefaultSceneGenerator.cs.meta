@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 5aea11357f75c3d4388375638ed7cb1c
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - CameraRig: {fileID: 563975252209645269, guid: 15b9f082a710aadf897709f7530a351a, type: 3}
+  - Player: {fileID: 4681992680585308663, guid: d715010f6e805d68e834e193c18acb03, type: 3}
+  - RootLevel: {fileID: 7630685280616555318, guid: 2fef9a88b693df4b88343d20b1588315, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

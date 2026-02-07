@@ -4,7 +4,7 @@ using Unity.Cinemachine;
 public class PlayerCamera : MonoBehaviour
 {
     [SerializeField] private PlayerInput input;
-    [SerializeField] private Transform cameraTarget;
+    [SerializeField] public Transform cameraTarget;
     private Rigidbody playerRB;
 
     [Header("Auto-bind")]
