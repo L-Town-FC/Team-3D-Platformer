@@ -4,6 +4,7 @@ using UnityEngine.VFX;
 [RequireComponent(typeof(ActorController))]
 public class Player :MonoBehaviour, IDamageable
 {
+    [HideInInspector]
     public ActorController actor;
     public bool isPlayerGrounded => actor.isGrounded; //read only copy of ground check from actor class
 
@@ -15,7 +16,9 @@ public class Player :MonoBehaviour, IDamageable
     public float maxHealth { get { return _maxHealth; } set { } }
     public float health { get; set; }
 
+    [HideInInspector]
     public int maxJumpCount = 2;
+    [HideInInspector]
     public int currentJumpCount = 0;
 
     //need a better way of doing this

@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class DefaultSceneGenerator: Editor
 {
     //String names of all prefabs that will be loaded
-    static string playerString = "Player Variant";
+    static string playerString = "Player";
     static string camerRigString = "CameraRig";
     static string levelRootString = "LevelRoot";
     static string deathPlaneString = "DeathPlane";

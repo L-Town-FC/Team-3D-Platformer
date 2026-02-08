@@ -4,27 +4,26 @@ using UnityEngine;
 public class ActorController : MonoBehaviour
 {
     Rigidbody rb;
-    [SerializeField]
     private Vector3 appliedMovement = Vector3.zero; //holds the movement vector that is eventually applied to the player
     public Vector3 AppliedMovmement => appliedMovement; //read only copy of the appliedMovement for other scripts to read
     private Quaternion appliedRotation { get; set; } = Quaternion.identity; //holds the rotation quaternion that is eventually applied to the player
 
-    [SerializeField]
     public float speed = 10f;
-    [SerializeField]
     public float gravityForce = 3f;
-    [SerializeField]
     public Vector2 minAndMaxVerticalMovementSpeed = new Vector2(-30f, 30f);
 
+    [HideInInspector]
     public bool isGrounded = false;
     Vector3 groundNormal = Vector3.zero; //used to calculate the slope the player is on
     float maxSlopeAngle = 45; //degrees
     float currentSlopeAngle = 0f;
+    [HideInInspector]
     public Vector3 externalMovement = Vector3.zero;
 
     public Collision actorCollision = new Collision();
-
+    [HideInInspector]
     public float airDrag = 0.15f;
+    [HideInInspector]
     public float groundDrag = 0.5f;
 
     [HideInInspector]

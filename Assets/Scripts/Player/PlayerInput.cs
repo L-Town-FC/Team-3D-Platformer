@@ -12,12 +12,19 @@ public class PlayerInput : MonoBehaviour
     private InputAction attackAction;
     private InputAction crouchAction;
 
+    [HideInInspector]
     public Vector3 movementInput = Vector3.zero;
+    [HideInInspector]
     public Vector2 cameraInput = Vector2.zero;
+    [HideInInspector]
     public bool isJump;
+    [HideInInspector]
     public bool wasJumpPressedThisFrame;
+    [HideInInspector]
     public bool isAttacking;
+    [HideInInspector]
     public bool isCrouching;
+    [HideInInspector]
     public bool lastLookWasGamepad { get; private set; }
 
 
