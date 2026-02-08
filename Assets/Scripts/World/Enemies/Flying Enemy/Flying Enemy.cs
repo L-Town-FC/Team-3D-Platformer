@@ -23,6 +23,7 @@ public class FlyingEnemy : MonoBehaviour, IDamageable
     #region Components
     [HideInInspector]
     public Transform player;
+    public Transform _player => player;
     [SerializeField]
     SphereCollider chaseCollider;
     MeshRenderer meshRenderer;
@@ -53,6 +54,7 @@ public class FlyingEnemy : MonoBehaviour, IDamageable
         //air drag is set to ground drag since to a flying enemy, the air is the ground
         //makes movement easier to handle
         actor.airDrag = actor.groundDrag;
+        actor.gravityForce = 0f;
         ChangeSpeed(circlingSpeed, circlingSpeed);
 
         maxHealth = health = _maxHealth;

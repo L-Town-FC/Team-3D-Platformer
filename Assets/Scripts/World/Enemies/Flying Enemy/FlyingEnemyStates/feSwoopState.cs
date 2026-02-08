@@ -6,7 +6,7 @@ public class feSwoopState : FlyingEnemyBaseState
     Vector3 finalSwoopPosition;
     float initialWaitTime = 1f;
     float bufferDst = 0.2f;
-    float verticalSpeedAdjustment = 2f;
+    float verticalSpeedAdjustment = 1f;
     public override void EnterState(FlyingEnemy enemy)
     {
         stateEnterTime = Time.time;
@@ -67,6 +67,8 @@ public class feSwoopState : FlyingEnemyBaseState
     {
         Vector3 movementInput = finalSwoopPosition - enemy.transform.position;
         Vector3 newForward = movementInput;
+
+        Debug.DrawLine(enemy.transform.position, finalSwoopPosition, Color.green);
 
         enemy.UpdateActorInputVectors(movementInput, newForward);
     }

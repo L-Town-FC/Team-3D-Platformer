@@ -23,7 +23,7 @@ public class feCirclingState : FlyingEnemyBaseState
     public override void UpdateState(FlyingEnemy enemy)
     {
         Vector3 enemyMovementInput = enemy.transform.right * circlingRandomizer;
-        Vector3 newEnemyForward = (enemy.player.position - enemy.transform.position).normalized;
+        Vector3 newEnemyForward = (enemy._player.transform.position - enemy.transform.position).normalized;
 
         enemyMovementInput += EnemyCirclingAdjustment(enemy);
 
@@ -42,7 +42,7 @@ public class feCirclingState : FlyingEnemyBaseState
 
         Vector3 horiztonalAdjustment = (enemyHorizontalPlayerDst - enemy.circlingRadius) * enemy.transform.forward;
 
-        float enemyVerticalPlayerDst = enemy.transform.position.y - enemy.player.position.y;
+        float enemyVerticalPlayerDst = enemy.transform.position.y - enemy._player.position.y;
 
         Vector3 verticalAdjustment = (enemyVerticalPlayerDst - enemy.defaultHeightAbovePlayer) * Vector3.down;
 
@@ -52,7 +52,7 @@ public class feCirclingState : FlyingEnemyBaseState
 
     float EnemyToPlayerHorizontalDst(FlyingEnemy enemy)
     {
-        return Vector3.ProjectOnPlane(enemy.player.position - enemy.transform.position, Vector3.up).magnitude;
+        return Vector3.ProjectOnPlane(enemy._player.position - enemy.transform.position, Vector3.up).magnitude;
     }
 
     bool SwoopCheck(FlyingEnemy enemy)
