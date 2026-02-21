@@ -87,17 +87,24 @@ public class MovingPlatform : MonoBehaviour
             return;
         }
 
-        //smoothly increases the speed from stop then decerases to a stop when it reaches the next waypoint
-        rb.MovePosition(Vector3.SmoothDamp(rb.position, PlatformWaypoints[nextWaypoint].position, ref velocity, timeBetweenWaypoints));
-        lastPosition = rb.position;
+        //calcultes what percentage time wise the platforms movement is between two waypoints
+        float progress = Mathf.InverseLerp(haltLength + haltStartTime, haltStartTime + haltLength + timeBetweenWaypoints, Time.time);
+        //smooths out start and end points
+        progress = Mathf.SmoothStep(0f, 1f, progress);
 
-        //0.001f value is arbitrary
-        //just needed a small value in order to check that the platform has reached the waypoint position and avoid floating point precision comparison issues
-        if ((rb.position - PlatformWaypoints[nextWaypoint].position).sqrMagnitude < 0.001f)
+        Vector3 moveDir = (PlatformWaypoints[nextWaypoint].position - lastPosition);
+
+        //smoothly increases the speed from stop then decerases to a stop when it reaches the next waypoint
+        rb.MovePosition(lastPosition + moveDir * progress);
+
+        //halts movement and sets next waypoint after time between waypoints has elapsed
+        if (progress >= 1f)
         {
             //halts the movement of the platform when it reaches a waypoint
+            //sets new waypoint and sets current position to last position
             isHalted = true;
             haltStartTime = Time.time;
+            lastPosition = PlatformWaypoints[nextWaypoint].position;
             SetWaypoints();
         }
     }
