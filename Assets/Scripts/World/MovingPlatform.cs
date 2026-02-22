@@ -10,9 +10,9 @@ public class MovingPlatform : MonoBehaviour
     //This is a list of transforms instead of just coords so you can move the points around in the editor
 
     [SerializeField]
+    int currentWaypoint = 0;
     int nextWaypoint = 1; //holds the next waypoint index
     int snakeDir = 1; //when snakeMode is enabled this holds whether the platform is incrementing or decrementing waypoints
-    Vector3 velocity = Vector3.zero; //reference velocity to be used by Smooth Damp
     [SerializeField]
     float timeBetweenWaypoints = 1f; //how much time it takes to get from one waypoint to another
     //currently a static value so different distances will have different speeds
@@ -35,6 +35,7 @@ public class MovingPlatform : MonoBehaviour
     LayerMask playerMask;
 
     protected bool isTouchingPlayer = false;
+    ActorController playerActorController;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected virtual void Start()
@@ -63,6 +64,7 @@ public class MovingPlatform : MonoBehaviour
             {
                 continue;
             }
+            playerActorController = hit.transform.GetComponent<ActorController>();
             hit.transform.GetComponent<ActorController>().externalMovement = rb.position - lastPosition;
         }
     }
@@ -87,15 +89,21 @@ public class MovingPlatform : MonoBehaviour
             return;
         }
 
+        //Moves player if they are touching plaftorm
+        MovePlayer();
+
         //calcultes what percentage time wise the platforms movement is between two waypoints
         float progress = Mathf.InverseLerp(haltLength + haltStartTime, haltStartTime + haltLength + timeBetweenWaypoints, Time.time);
         //smooths out start and end points
         progress = Mathf.SmoothStep(0f, 1f, progress);
 
-        Vector3 moveDir = (PlatformWaypoints[nextWaypoint].position - lastPosition);
+        Vector3 moveDir = (PlatformWaypoints[nextWaypoint].position - PlatformWaypoints[currentWaypoint].position);
 
         //smoothly increases the speed from stop then decerases to a stop when it reaches the next waypoint
-        rb.MovePosition(lastPosition + moveDir * progress);
+        rb.MovePosition(PlatformWaypoints[currentWaypoint].position + moveDir * progress);
+
+        //updates last position so player can be moved properly
+        lastPosition = rb.position;
 
         //halts movement and sets next waypoint after time between waypoints has elapsed
         if (progress >= 1f)
@@ -104,9 +112,25 @@ public class MovingPlatform : MonoBehaviour
             //sets new waypoint and sets current position to last position
             isHalted = true;
             haltStartTime = Time.time;
-            lastPosition = PlatformWaypoints[nextWaypoint].position;
+            currentWaypoint = nextWaypoint;
             SetWaypoints();
         }
+    }
+
+    void MovePlayer()
+    {
+        if (!isTouchingPlayer)
+        {
+            return;
+        }
+
+        //platform shouldnt move and therefore shouldnt apply movement if there are less than 2 waypoints
+        if (PlatformWaypoints.Count < 2)
+        {
+            return;
+        }
+
+        playerActorController.externalMovement = rb.position - lastPosition;
     }
 
     void SetWaypoints()

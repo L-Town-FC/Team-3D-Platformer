@@ -99,7 +99,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: d937eb276b038c844831a185b62451c0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -222,7 +222,7 @@ MonoBehaviour:
   - {fileID: 58194166251013931}
   - {fileID: 1244204476539342205}
   - {fileID: 2462463428882588588}
-  nextWaypoint: 1
+  currentWaypoint: 0
   timeBetweenWaypoints: 1
   snakeMovement: 0
   haltLength: 1

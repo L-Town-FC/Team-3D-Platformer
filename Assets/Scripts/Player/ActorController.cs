@@ -166,10 +166,11 @@ public class ActorController : MonoBehaviour
 
     Vector3 CheckAbovePlayer(Vector3 _inputVector)
     {
+        LayerMask layerMask = LayerMask.GetMask("IgnoreRaycast");
         //may want to switch to CheckSphere instead but this is fine for now
         //checks if the players head is current hitting anything
         //removes upward movement if this is the case
-        if (Physics.SphereCast(transform.position + Vector3.up * 0.5f, 0.5f, Vector3.up, out RaycastHit hitInfo))
+        if (Physics.SphereCast(transform.position + Vector3.up * 0.5f, 0.5f, Vector3.up, out RaycastHit hitInfo, 0.5f, ~layerMask))
         {
             _inputVector.y = Mathf.Clamp(_inputVector.y, -Mathf.Infinity, 0f);
         }

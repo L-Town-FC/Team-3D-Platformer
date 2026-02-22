@@ -6586,7 +6586,7 @@ MonoBehaviour:
   - {fileID: 520351372}
   - {fileID: 1550571521}
   - {fileID: 1927808835}
-  nextWaypoint: 1
+  currentWaypoint: 0
   timeBetweenWaypoints: 1
   snakeMovement: 0
   haltLength: 1
@@ -7262,7 +7262,7 @@ MonoBehaviour:
   - {fileID: 40325906}
   - {fileID: 1458056678}
   - {fileID: 2086393981}
-  nextWaypoint: 1
+  currentWaypoint: 0
   timeBetweenWaypoints: 1
   snakeMovement: 0
   haltLength: 1
@@ -8054,7 +8054,7 @@ MonoBehaviour:
   - {fileID: 754816618}
   - {fileID: 1581824238}
   - {fileID: 419795850}
-  nextWaypoint: 1
+  currentWaypoint: 0
   timeBetweenWaypoints: 1
   snakeMovement: 0
   haltLength: 1
@@ -8447,6 +8447,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1558931477}
     m_Modifications:
+    - target: {fileID: 413504671695638771, guid: 2a2478544ae23be4f891acd5790093c8, type: 3}
+      propertyPath: timeBetweenWaypoints
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4272771587018868993, guid: 2a2478544ae23be4f891acd5790093c8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 17.718971
