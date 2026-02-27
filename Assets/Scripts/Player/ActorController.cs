@@ -273,6 +273,7 @@ public class ActorController : MonoBehaviour
          */
 
         float bufferDst = 0.01f; //small distance to help false positive grounding
+        actorCollision = collision;
 
         foreach (ContactPoint contact in collision.contacts)
         {

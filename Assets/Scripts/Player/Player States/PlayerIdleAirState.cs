@@ -18,6 +18,12 @@ public class PlayerIdleAirState : PlayerBaseState
 
         player.UpdateActorInputVectors(newMovement, newForward);
 
+        if (player.OnWallCheck().Item1 && PlayerPrefs.HasKey(PowerUpList.WallCling))
+        {
+            player.ChangeState(player.pWallState);
+            return;
+        }
+
         //checks if player is on top of bounceable entity
         if (BounceCheck(player))
         {
@@ -31,11 +37,6 @@ public class PlayerIdleAirState : PlayerBaseState
             return;
         }
 
-        if (player.OnWallCheck().Item1 && PlayerPrefs.HasKey(PowerUpList.WallCling))
-        {
-            player.ChangeState(player.pWallState);
-            return;
-        }
         
         //1 is for if player has power up, 0 is default which is no power up
         if (player.input.wasJumpPressedThisFrame && 

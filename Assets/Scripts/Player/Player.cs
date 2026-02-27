@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.VFX;
+using System.Reflection;
 
 [RequireComponent(typeof(ActorController))]
 public class Player :MonoBehaviour, IDamageable
@@ -115,7 +116,11 @@ public class Player :MonoBehaviour, IDamageable
 
         foreach (ContactPoint contact in actor.actorCollision.contacts)
         {
-            if (contact.normal.y == 0)
+
+            //Having a dot product of 0 means two vectors are perpendicular
+            //to have a normal that is perpendicular to the "up" vector means the wall is vertical (not sloped)
+            //made comparison value slightly larger than 0 because floating point bullshit
+            if (Vector3.Dot(Vector3.up, contact.normal) <= 0.000001f)
             {
                 Debug.DrawRay(contact.point, contact.normal, Color.green);
                 //the direction exactly opposite the wall
@@ -126,6 +131,14 @@ public class Player :MonoBehaviour, IDamageable
 
         //if atleast two points on the player are touching a wall, the player is considered on the wall
         return (wallContacts > 1, wallJumpDir);
+    }
+
+    public void ClearLog()
+    {
+        var assembly = Assembly.GetAssembly(typeof(UnityEditor.Editor));
+        var type = assembly.GetType("UnityEditor.LogEntries");
+        var method = type.GetMethod("Clear");
+        method.Invoke(new object(), null);
     }
 
     public void TakeDamage(float damageAmount)
