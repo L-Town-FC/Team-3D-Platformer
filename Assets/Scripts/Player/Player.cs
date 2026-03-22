@@ -65,7 +65,8 @@ public class Player :MonoBehaviour, IDamageable
         GetAllPlayerStates();
 
         //TESTING PURPOSES ONLY
-        PlayerPrefs.DeleteAll();
+        DeletePowerUpKeys();
+        
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -168,5 +169,12 @@ public class Player :MonoBehaviour, IDamageable
         pCrouchState = new PlayerCrouchState();
         pSuperJumpState = new PlayerSuperJumpState();
         pBounceState = new PlayerBounceState();
+    }
+
+    void DeletePowerUpKeys()
+    {
+        PlayerPrefs.DeleteKey(PowerUpList.DoubleJump);
+        PlayerPrefs.DeleteKey(PowerUpList.WallCling);
+        PlayerPrefs.DeleteKey(PowerUpList.SuperJump);
     }
 }

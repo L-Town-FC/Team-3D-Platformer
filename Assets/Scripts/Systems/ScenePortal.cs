@@ -67,9 +67,9 @@ public class ScenePortal : MonoBehaviour
         {
             isLoading = true;
 
-            // Mark Level 2 unlocked the moment the player actually uses the portal.
             if (ProgressManager.Instance != null)
-                ProgressManager.Instance.UnlockLevel2();
+                //ProgressManager.Instance.UnlockLevel2();
+                PlayerPrefs.SetInt(targetSceneName, 0); //marks next level unlocked
 
             Time.timeScale = 1f; // safety if you paused
             SceneManager.LoadScene(targetSceneName);

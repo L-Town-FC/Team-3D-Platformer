@@ -6,11 +6,28 @@ public class LevelSelectMenuController : MenuControllerBase
     [Header("Scene names must match exactly (and be in Build Profiles)")]
     [SerializeField] private string[] scenes = { "SampleScene", "Level2" };
 
+    [Header("For Testing only")]
+    [SerializeField] private bool lockLevels = false;
+
     protected override void Start()
     {
         base.Start();
+
+        PlayerPrefs.SetInt("Level1", 0); //Player should always have level 1 unlocked
+
         Time.timeScale = 1f;
         Open(); // level select is the whole scene UI
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+
+        if (lockLevels)
+        {
+            PlayerPrefs.DeleteKey("Level2");
+            PlayerPrefs.DeleteKey("Level3");
+        }
     }
 
     protected override string GetLabelForIndex(int index)
@@ -20,11 +37,9 @@ public class LevelSelectMenuController : MenuControllerBase
 
         string label = scenes[index];
 
-        if (label == "Level2")
+        if (!PlayerPrefs.HasKey(label))
         {
-            bool unlocked = (ProgressManager.Instance != null) && ProgressManager.Instance.Level2Unlocked;
-            if (!unlocked)
-                return "Level2 (Locked)";
+            return label + " (Locked)";
         }
 
         return label;
@@ -39,16 +54,13 @@ public class LevelSelectMenuController : MenuControllerBase
         string sceneToLoad = scenes[index];
 
         // Gate Level2
-        if (sceneToLoad == "Level2")
-        {
-            bool unlocked = (ProgressManager.Instance != null) && ProgressManager.Instance.Level2Unlocked;
+            bool unlocked = (ProgressManager.Instance != null) && PlayerPrefs.HasKey(sceneToLoad);
             if (!unlocked)
             {
                 // Optional: add a UI beep / message later; for now we just ignore.
-                Debug.Log("Level 2 is locked. Reach it via the Level 1 portal first.");
+                Debug.Log(sceneToLoad + " is locked. Reach it via the previous Level portal first.");
                 return;
             }
-        }
 
         Time.timeScale = 1f;
         SceneManager.LoadScene(sceneToLoad);

@@ -169,11 +169,15 @@ public class ActorController : MonoBehaviour
         //creates layermask only for player and ignore raycast. may need to be expanded as enemies that use this script is expanded
         LayerMask layerMask = LayerMask.GetMask("IgnoreRaycast", "Player");
         layerMask = ~layerMask; //inverts mask so everything but player and ignore raycast are checked
-       
+
         //checks if the players head is current hitting anything
         //removes upward movement if this is the case
-        if(Physics.CheckSphere(transform.position + Vector3.up * 0.5f, 0.5f, layerMask))
+        Vector3 positionCheck = transform.position + Vector3.up * 0.5f; //position of the player's head
+        float sphereRadius = 0.35f; //slightly smaller than player radius because player slightly phases into walls when pushing against them 
+                                    //and this avoid triggering when nothing is above
+        if(Physics.CheckSphere(positionCheck, sphereRadius, layerMask, QueryTriggerInteraction.Ignore))
         {
+            //if the player is hitting their head, cancel any upward velocity
             _inputVector.y = Mathf.Clamp(_inputVector.y, -Mathf.Infinity, 0f);
         }
 

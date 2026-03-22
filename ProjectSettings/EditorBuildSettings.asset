@@ -12,14 +12,14 @@ EditorBuildSettings:
     path: Assets/Scenes/Menus/LevelSelect.unity
     guid: 94832e326d654a654980104d04cf95fd
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scenes/Level1.unity
+    guid: 62df73ad7719dcd428ce39f9cf42554c
   - enabled: 1
     path: Assets/Scenes/Level2.unity
-    guid: 07da3ffe06e6d20619490b2a3262ab7c
+    guid: 3faee20396d8a6345ae976f9f637d43b
   - enabled: 1
-    path: Assets/Scenes/HauntedForest.unity
-    guid: cc9d034f90731f1bbaba3ac8af6d6635
+    path: Assets/Scenes/Level3.unity
+    guid: 8a565274af3b6ee4fa948bbda3dba897
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 37bc8978691df68a59777657ceb1db26, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
