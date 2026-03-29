@@ -27,6 +27,7 @@ public class UIInput : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
+        //Should probably move this into Enable/Disable to avoid memory leaks
         Controls = new PlayerControls();
         Controls.Enable();
     }

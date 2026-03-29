@@ -171,6 +171,8 @@ public class Player :MonoBehaviour, IDamageable
         pBounceState = new PlayerBounceState();
     }
 
+    //for testing purposes only
+    //just deletes the power ups when the level loads
     void DeletePowerUpKeys()
     {
         PlayerPrefs.DeleteKey(PowerUpList.DoubleJump);
