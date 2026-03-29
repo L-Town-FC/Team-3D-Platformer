@@ -64,7 +64,7 @@ public class PauseMenuController : MenuControllerBase
 
     protected override void OnSelect(int index)
     {
-        // 0 = Resume, 1 = Main Menu
+        // 0 = Resume, 1 = Main Menu, 2 = Settings
         if (index == 0)
         {
             Close();
