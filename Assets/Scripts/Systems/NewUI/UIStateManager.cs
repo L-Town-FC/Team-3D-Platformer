@@ -10,6 +10,12 @@ public class UIStateManager : MonoBehaviour
 
     public UIBaseState currentUIState;
     public UIBaseState lastUIState; //need to keep track of last state so back button works more easily
+
+    Transform allMenus; //holds all possible UI menus in scene
+    Transform activeMenu; //the menu that the player is currently navigating
+    Transform currentlyHighlightedField; //the active menu's child that is currently being highlighted by the player
+    int currentMenuIndex; //the index of the highlighted field of the active menu
+
     private void Awake()
     {
         // Check if an instance already exists
@@ -43,5 +49,37 @@ public class UIStateManager : MonoBehaviour
         currentUIState.ExitState(this);
         currentUIState = _newState;
         currentUIState.EnterState(this);
+    }
+
+    //navigate a menu by cycling through the child object of the active menu
+    public void NavigateMenu()
+    {
+        int navigateDir = (int)UIInput.Controls.UI.Navigate.ReadValue<Vector2>().y;
+
+        int activeMenuChildCount = activeMenu.childCount;
+
+        currentMenuIndex += navigateDir;
+
+        if(currentMenuIndex > activeMenuChildCount - 1)
+        {
+            currentMenuIndex = 0;
+        }else if(currentMenuIndex < 0)
+        {
+            currentMenuIndex = activeMenuChildCount - 1;
+        }
+    }
+
+    public void EnableMenu()
+    {
+        //disables all child objects except the currently selected menu
+        for (int i = 0; i < activeMenu.childCount; i++)
+        {
+            activeMenu.GetChild(i).gameObject.SetActive(i == currentMenuIndex);
+        }
+    }
+
+    public void SelectOption()
+    {
+
     }
 }

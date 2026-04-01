@@ -1,15 +1,15 @@
 using UnityEngine;
 
-public class UISettingsState : MonoBehaviour
+public class LevelSelectMenu : BaseMenu
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    protected override void Start()
     {
         
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
         
     }
