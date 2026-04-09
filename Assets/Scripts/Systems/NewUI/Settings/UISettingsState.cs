@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class UISettingsState : UIBaseState
 {
+    protected override BaseMenu UIMenu { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+
     public override void EnterState(UIStateManager ui)
     {
         stateEnterTime = Time.time;
