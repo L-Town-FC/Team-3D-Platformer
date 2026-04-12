@@ -8,7 +8,13 @@ public class UILevelSelectState : UIBaseState
     {
         stateEnterTime = Time.time;
         UIMenu = ui.GetComponentInChildren<LevelSelectMenu>(true);
+        UIMenu.enabled = true;
         ui.GetMenu(UIMenu);
+
+        Debug.Log("Active Menu: " + ui.activeMenu.name);
+        Debug.Log("menuOptions: " + ui.menuOptions.name);
+        Debug.Log("highlighted: " + ui.currentlyHighlightedField.name);
+
     }
 
     public override void ExitState(UIStateManager ui)
@@ -21,6 +27,13 @@ public class UILevelSelectState : UIBaseState
         {
             ui.NavigateMenu((int)ui.uiInputActions.Navigate.ReadValue<Vector2>().y);
         }
-        Debug.Log(ui.currentMenuIndex);
+
+        if (ui.uiInputActions.Submit.WasPressedThisFrame())
+        {
+            if (UIMenu.Submit(ui.currentlyHighlightedField.name))
+            {
+                ui.ChangeState(ui.UIPauseState);
+            }
+        }
     }
 }

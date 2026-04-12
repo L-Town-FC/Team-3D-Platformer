@@ -14,10 +14,11 @@ public class UIStateManager : MonoBehaviour
     public UIBaseState currentUIState;
     public UIBaseState lastUIState; //need to keep track of last state so back button works more easily
 
-    Transform activeMenu; //the menu that the player is currently navigating
-    Transform currentlyHighlightedField; //the active menu's child that is currently being highlighted by the player
-    public int currentMenuIndex; //the index of the highlighted field of the active menu
-
+    public Transform activeMenu; //the top level menu that the player is currently navigating (i.e. Main menu, Level Select, etc)
+    public int currentMenuIndex; //the index of the current top level menu options (i.e. Main Menu = 0, Level Select = 0, etc)
+    public Transform menuOptions; //each ui menu has transform with the actual options, this is that transform
+    public Transform currentlyHighlightedField; //the Transform of the currently highlted menu (i.e. The transform that is named Level1, Level2, etc)
+    public int currentlyHighlightedFieldIndex; //index of transform of the currently highlighted field relative to its parent (i.e. Level1 = 0, Level2 = 1)
     enum startingState { Main, Pause }
     [SerializeField]
     startingState initialState = startingState.Main;
@@ -86,20 +87,20 @@ public class UIStateManager : MonoBehaviour
             return;
         }
 
-        int activeMenuChildCount = activeMenu.childCount;
-        Debug.Log("Active Menu: " + activeMenu.name);
-        Debug.Log("Navigate Dir: " + navigateDir);
+        int menuOptionsChildCount = menuOptions.childCount;
 
-        currentMenuIndex -= navigateDir;
+        currentlyHighlightedFieldIndex -= navigateDir;
 
-        if (currentMenuIndex > activeMenuChildCount - 1)
+        if (currentlyHighlightedFieldIndex > menuOptionsChildCount - 1)
         {
-            currentMenuIndex = 0;
+            currentlyHighlightedFieldIndex = 0;
         }
         else if (currentMenuIndex < 0)
         {
-            currentMenuIndex = activeMenuChildCount - 1;
+            currentlyHighlightedFieldIndex = menuOptionsChildCount - 1;
         }
+
+        currentlyHighlightedField = menuOptions.GetChild(currentlyHighlightedFieldIndex);
     }
 
 
@@ -121,7 +122,6 @@ public class UIStateManager : MonoBehaviour
     private UIBaseState GetInitialState(startingState _startingState)
     {
         UIBaseState currentState;
-        Debug.Log(_startingState == startingState.Main);
         if (_startingState == startingState.Main)
         {
             currentState = UIMainMenuState;
@@ -138,7 +138,13 @@ public class UIStateManager : MonoBehaviour
     {
         //sets the UI index tracker to the index of the specified menu
         currentMenuIndex = uiMenu.transform.GetSiblingIndex();
-        activeMenu = uiMenu.transform.GetChild(currentMenuIndex);
+        activeMenu = transform.GetChild(currentMenuIndex);
+        if(activeMenu.childCount > 1)
+        {
+            menuOptions = activeMenu.GetChild(1);
+            currentlyHighlightedFieldIndex = 0;
+            currentlyHighlightedField = menuOptions.GetChild(currentlyHighlightedFieldIndex);
+        }
         EnableMenu();
     }
     public void EnableMenu()

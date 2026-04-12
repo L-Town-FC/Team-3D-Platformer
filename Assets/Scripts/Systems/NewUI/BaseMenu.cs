@@ -13,4 +13,9 @@ public class BaseMenu : MonoBehaviour
     {
         
     }
+
+    public virtual bool Submit(string stringName)
+    {
+        throw new System.NotImplementedException();
+    }
 }

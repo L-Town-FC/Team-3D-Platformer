@@ -237,7 +237,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIStateManager
   uiInput: {fileID: 0}
+  activeMenu: {fileID: 0}
   currentMenuIndex: 0
+  menuOptions: {fileID: 0}
+  currentlyHighlightedField: {fileID: 0}
+  currentlyHighlightedFieldIndex: 0
   initialState: 0
 --- !u!114 &129546527
 MonoBehaviour:
@@ -819,6 +823,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f2044b38ed1a3641a97f417e44f578e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelSelectMenu
+  allLevels: {fileID: 1807525443}
 --- !u!1 &802196751
 GameObject:
   m_ObjectHideFlags: 0
