@@ -1,10 +1,9 @@
 using UnityEngine;
+using TMPro;
 
 [RequireComponent(typeof(UIInput))]
 public class UIStateManager : MonoBehaviour
 {
-    //TODO: Find way to change active menu to proper menu
-
     // A public static property to access the single instance of the class
     public static UIStateManager Instance { get; private set; }
     [HideInInspector]
@@ -95,11 +94,10 @@ public class UIStateManager : MonoBehaviour
         {
             currentlyHighlightedFieldIndex = 0;
         }
-        else if (currentMenuIndex < 0)
+        else if (currentlyHighlightedFieldIndex < 0)
         {
             currentlyHighlightedFieldIndex = menuOptionsChildCount - 1;
         }
-
         currentlyHighlightedField = menuOptions.GetChild(currentlyHighlightedFieldIndex);
     }
 
@@ -153,6 +151,20 @@ public class UIStateManager : MonoBehaviour
         for (int i = 0; i < transform.childCount; i++)
         {
             transform.GetChild(i).gameObject.SetActive(i == currentMenuIndex);
+        }
+    }
+
+    //makes fonts of all level name text normal by default
+    //if the level matches the currently specified level, then underline the text to show the user what option they are selecting
+    public void HighlightActiveField(UIStateManager ui, Transform highlightedLevel)
+    {
+        foreach (Transform levelTransform in ui.menuOptions)
+        {
+            levelTransform.GetComponent<TMP_Text>().fontStyle = FontStyles.Normal;
+            if (levelTransform == highlightedLevel)
+            {
+                levelTransform.GetComponent<TMP_Text>().fontStyle = FontStyles.Underline;
+            }
         }
     }
 }

@@ -17,7 +17,6 @@ public class UIMainMenuState : UIBaseState
 
     public override void UpdateState(UIStateManager ui)
     {
-        Debug.Log("In Main Menu");
         if (ui.uiInputActions.Submit.WasPressedThisFrame())
         {
             ui.ChangeState(ui.UILevelSelectState);
