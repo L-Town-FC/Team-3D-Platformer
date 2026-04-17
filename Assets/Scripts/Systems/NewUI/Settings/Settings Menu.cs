@@ -5,10 +5,7 @@ using TMPro;
 
 public class SettingsMenu : BaseMenu
 {
-    Transform xSensObject;
-    Transform ySensObject;
-    Transform volumeObject;
-
+    enum UISlider { xsens, ysens, volume}
     List<Transform> sliders = new List<Transform>();
 
     private void Awake()
@@ -17,17 +14,11 @@ public class SettingsMenu : BaseMenu
         SetPlayerPrefs("ysens", 5);
         SetPlayerPrefs("volume", 5);
 
-        Debug.Log(transform.GetChild(1).name);
-        Debug.Log(transform.GetChild(1).GetChild(0).name);
-        xSensObject = transform.GetChild(1).GetChild(0);
-        sliders.Add(xSensObject);
+        //sets the initial slider values to match the player prefs and also adds them to slider list
+        sliders.Add(SetInitialSlider(((int)UISlider.xsens), "xsens"));
+        sliders.Add(SetInitialSlider(((int)UISlider.ysens), "ysens"));
+        sliders.Add(SetInitialSlider(((int)UISlider.volume), "volume"));
 
-        ySensObject = transform.GetChild(1).GetChild(1).transform;
-        sliders.Add(ySensObject);
-
-        volumeObject = transform.GetChild(1).GetChild(2).transform;
-        sliders.Add(volumeObject);
-        
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -52,6 +43,19 @@ public class SettingsMenu : BaseMenu
         PlayerPrefs.SetInt(playerPrefName, playerPrefValue);
     }
 
+    Transform SetInitialSlider(int sliderIndex, string playerPrefName)
+    {
+        //grabs slider transform by index
+        //if the order of the children changes this will break
+        Transform sliderTransform = transform.GetChild(1).GetChild(sliderIndex);
+
+        //sets sliders values according to their player pref value
+        sliderTransform.GetChild(0).GetComponent<Slider>().value = PlayerPrefs.GetInt(playerPrefName);
+
+        UpdateSliderAndPlayerPrefValue(sliderTransform.GetChild(0).GetComponent<Slider>(), playerPrefName, PlayerPrefs.GetInt(playerPrefName));
+        return sliderTransform;
+    }
+
     public void UpdateSlider(int sliderIndex, bool isIncrease)
     {
         string playerPrefName;
@@ -74,10 +78,10 @@ public class SettingsMenu : BaseMenu
                 break;
         }
 
-
         playerPrefValue = PlayerPrefs.GetInt(playerPrefName);
         slider = sliders[sliderIndex].GetChild(0).GetComponent<Slider>();
 
+        //increase the slider value if right, decrease if left
         if (isIncrease)
         {
             playerPrefValue++;
@@ -87,9 +91,19 @@ public class SettingsMenu : BaseMenu
             playerPrefValue--;
         }
 
+        //make sure value is between 0 and 10
         playerPrefValue = Mathf.Clamp(playerPrefValue, 0, 10);
+
+        UpdateSliderAndPlayerPrefValue(slider, playerPrefName, playerPrefValue);
+    }
+
+    void UpdateSliderAndPlayerPrefValue(Slider slider, string playerPrefName, int playerPrefValue)
+    {
+        //set sliders value
         slider.value = playerPrefValue;
-        slider.transform.parent.GetChild(1).GetComponent<TMP_Text>().text = playerPrefValue.ToString();
-        
+        //update text next to slider to match slider value
+        slider.transform.parent.GetChild(1).GetComponent<TextMeshProUGUI>().text = playerPrefValue.ToString();
+        //update player pref value
+        PlayerPrefs.SetInt(playerPrefName, playerPrefValue);
     }
 }

@@ -8,7 +8,12 @@ public class UISettingsState : UIBaseState
     {
         stateEnterTime = Time.time;
         UIMenu = ui.GetComponentInChildren<SettingsMenu>(true);
+
+        //grabs menu transform associated with this script, enables it, while disabling all other menus
         ui.GetMenu(UIMenu);
+
+        //highlights top field in menu
+        ui.HighlightActiveField(ui, ui.currentlyHighlightedField);
     }
 
     public override void ExitState(UIStateManager ui)
@@ -22,7 +27,7 @@ public class UISettingsState : UIBaseState
         {
             Vector2 navigateVector = ui.uiInputActions.Navigate.ReadValue<Vector2>().normalized;
 
-            if(navigateVector.y >= 0.5f)
+            if(Mathf.Abs(navigateVector.y) >= 0.5f)
             {
                 ui.NavigateMenu((int)(navigateVector.y));
                 ui.HighlightActiveField(ui, ui.currentlyHighlightedField);
