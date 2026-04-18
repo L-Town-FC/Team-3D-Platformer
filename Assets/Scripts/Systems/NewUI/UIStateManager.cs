@@ -29,6 +29,7 @@ public class UIStateManager : MonoBehaviour
     public UIPauseState UIPauseState;
     public UISettingsState UISettingsState;
     public UIUnpausedState UIUnpausedState;
+    public UIDeathState UIDeathState;
     #endregion
 
     private void Awake()
@@ -114,6 +115,7 @@ public class UIStateManager : MonoBehaviour
         UILevelSelectState = new UILevelSelectState();
         UIPauseState = new UIPauseState();
         UIUnpausedState = new UIUnpausedState();
+        UIDeathState = new UIDeathState();
     }
 
     //Possible change this to "Get state" and have it be the function that is called whenever the UI state is changed

@@ -37,5 +37,10 @@ public class UISettingsState : UIBaseState
             UIMenu.GetComponent<SettingsMenu>().UpdateSlider(ui.currentlyHighlightedFieldIndex, navigateVector.x > 0f);
             return;
         }
+
+        if (ui.uiInputActions.Cancel.WasPressedThisFrame())
+        {
+            ui.ChangeState(ui.UIPauseState);
+        }
     }
 }
