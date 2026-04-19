@@ -8,16 +8,20 @@ public class SettingsMenu : BaseMenu
     enum UISlider { xsens, ysens, volume}
     List<Transform> sliders = new List<Transform>();
 
+    //Event that triggers when the player dies
+    public delegate void UpdateSettings();
+    public static UpdateSettings updateSettingsEvent;
+
     private void Awake()
     {
-        SetPlayerPrefs("xsens", 5);
-        SetPlayerPrefs("ysens", 5);
-        SetPlayerPrefs("volume", 5);
+        SetPlayerPrefs(SettingsParameters.xSens, 5);
+        SetPlayerPrefs(SettingsParameters.ySens, 5);
+        SetPlayerPrefs(SettingsParameters.masterVolume, 5);
 
         //sets the initial slider values to match the player prefs and also adds them to slider list
-        sliders.Add(SetInitialSlider(((int)UISlider.xsens), "xsens"));
-        sliders.Add(SetInitialSlider(((int)UISlider.ysens), "ysens"));
-        sliders.Add(SetInitialSlider(((int)UISlider.volume), "volume"));
+        sliders.Add(SetInitialSlider(((int)UISlider.xsens), SettingsParameters.xSens));
+        sliders.Add(SetInitialSlider(((int)UISlider.ysens), SettingsParameters.ySens));
+        sliders.Add(SetInitialSlider(((int)UISlider.volume), SettingsParameters.masterVolume));
 
     }
 
@@ -65,13 +69,13 @@ public class SettingsMenu : BaseMenu
         switch (sliderIndex)
         {
             case 0:
-                playerPrefName = "xsens";
+                playerPrefName = SettingsParameters.xSens;
                 break;
             case 1:
-                playerPrefName = "ysens";
+                playerPrefName = SettingsParameters.ySens;
                 break;
             case 2:
-                playerPrefName = "volume";
+                playerPrefName = SettingsParameters.masterVolume;
                 break;
             default:
                 playerPrefName = null;
@@ -105,5 +109,10 @@ public class SettingsMenu : BaseMenu
         slider.transform.parent.GetChild(1).GetComponent<TextMeshProUGUI>().text = playerPrefValue.ToString();
         //update player pref value
         PlayerPrefs.SetInt(playerPrefName, playerPrefValue);
+        //tells other scripts to update their player settings
+        if (updateSettingsEvent != null)
+        {
+            updateSettingsEvent.Invoke();
+        }
     }
 }

@@ -80,10 +80,20 @@ public class PlayerCamera : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        SettingsMenu.updateSettingsEvent += UpdateSensitivities;
+    }
+
+    private void OnDisable()
+    {
+        SettingsMenu.updateSettingsEvent += UpdateSensitivities;
+    }
+
     private void ApplyTuning()
     {
-        inputAxisController.GetController("Look Orbit X").Input.Gain = horizontalAndVerticalCameraSensitivity.x;
-        inputAxisController.GetController("Look Orbit Y").Input.Gain = horizontalAndVerticalCameraSensitivity.y * ConvertBoolToFloat(invertVerticalControls);
+        inputAxisController.GetController("Look Orbit X").Input.Gain = horizontalAndVerticalCameraSensitivity.x / 10f;
+        inputAxisController.GetController("Look Orbit Y").Input.Gain = horizontalAndVerticalCameraSensitivity.y * ConvertBoolToFloat(invertVerticalControls) / 10f;
 
         orbitFollow.VerticalAxis.Range = minAndMaxCameraTilt;
     }
@@ -101,5 +111,12 @@ public class PlayerCamera : MonoBehaviour
     float CameraDampingValueBasedOnPosition()
     {
         return 1f - Mathf.InverseLerp(verticalDampingTransitionCutOff, minAndMaxCameraTilt.x, orbitFollow.VerticalAxis.Value);
+    }
+
+    void UpdateSensitivities()
+    {
+        horizontalAndVerticalCameraSensitivity.x = PlayerPrefs.GetInt(SettingsParameters.xSens);
+        horizontalAndVerticalCameraSensitivity.y = PlayerPrefs.GetInt(SettingsParameters.ySens);
+        ApplyTuning();
     }
 }

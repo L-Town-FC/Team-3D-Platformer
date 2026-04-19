@@ -25,7 +25,7 @@ public class UIPauseState : UIBaseState
 
     public override void ExitState(UIStateManager ui)
     {
-        //throw new System.NotImplementedException();
+        Time.timeScale = 1f;
     }
 
     public override void UpdateState(UIStateManager ui)

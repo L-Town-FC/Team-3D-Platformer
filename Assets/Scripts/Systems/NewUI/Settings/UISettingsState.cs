@@ -7,6 +7,7 @@ public class UISettingsState : UIBaseState
     public override void EnterState(UIStateManager ui)
     {
         stateEnterTime = Time.time;
+        Time.timeScale = 0f;
         UIMenu = ui.GetComponentInChildren<SettingsMenu>(true);
 
         //grabs menu transform associated with this script, enables it, while disabling all other menus
@@ -18,6 +19,7 @@ public class UISettingsState : UIBaseState
 
     public override void ExitState(UIStateManager ui)
     {
+        
     }
 
     public override void UpdateState(UIStateManager ui)

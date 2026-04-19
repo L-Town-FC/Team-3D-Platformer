@@ -88,6 +88,17 @@ public class Player :MonoBehaviour, IDamageable
         actor.ApplyMovement();
     }
 
+    private void OnEnable()
+    {
+        SettingsMenu.updateSettingsEvent += UpdateSettings;
+    }
+
+    private void OnDisable()
+    {
+        SettingsMenu.updateSettingsEvent -= UpdateSettings;
+    }
+
+
     public void ChangeState(PlayerBaseState _newState)
     {
         currentPlayerState.ExitState(this);
@@ -142,6 +153,7 @@ public class Player :MonoBehaviour, IDamageable
         method.Invoke(new object(), null);
     }
 
+    #region IDamageable Stuff
     public void TakeDamage(float damageAmount)
     {
         health -= damageAmount;
@@ -158,6 +170,14 @@ public class Player :MonoBehaviour, IDamageable
             playerDeath.Invoke();
         }
         Destroy(this.gameObject);
+    }
+    #endregion
+
+    void UpdateSettings()
+    {
+        int masterVolume = PlayerPrefs.GetInt(SettingsParameters.masterVolume);
+        //the master volume player pref is stored as a value between 0 and 10, but audio source volume is a float between 0 and 1
+        audioSource.volume = masterVolume / 10f;
     }
 
     void GetAllPlayerStates()
