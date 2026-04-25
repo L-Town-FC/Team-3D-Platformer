@@ -3883,7 +3883,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: Power up Received
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4351,7 +4351,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3843951956028641973
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4392,6 +4392,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44f94780659f34d4aab5700b8b177e87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Unpaused
+  powerUpDisplay: {fileID: 7869063445887126323}
 --- !u!1 &8474492137664329353
 GameObject:
   m_ObjectHideFlags: 0
@@ -4884,7 +4885,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3172299729125539059
 RectTransform:
   m_ObjectHideFlags: 0

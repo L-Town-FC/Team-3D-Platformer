@@ -56,6 +56,7 @@ public class PlayerCamera : MonoBehaviour
             return;
         }
 
+        UpdateSensitivities();
         ApplyTuning();
     }
 

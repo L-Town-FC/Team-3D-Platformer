@@ -25,6 +25,7 @@ public class UIUnpausedState : UIBaseState
     public override void ExitState(UIStateManager ui)
     {
         Time.timeScale = 0f;
+        Player.playerDeath -= Die;
     }
 
     public override void UpdateState(UIStateManager ui)

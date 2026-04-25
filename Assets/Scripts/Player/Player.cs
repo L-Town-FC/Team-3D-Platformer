@@ -91,6 +91,7 @@ public class Player :MonoBehaviour, IDamageable
     private void OnEnable()
     {
         SettingsMenu.updateSettingsEvent += UpdateSettings;
+        UpdateSettings();
     }
 
     private void OnDisable()
