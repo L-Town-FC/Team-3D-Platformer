@@ -1,10 +1,6 @@
 using UnityEngine;
-
 public class UIPauseState : UIBaseState
 {
-    //TODO: Create Pause menu object
-    //TODO: Modify Pause menu
-    //TODO: Create Death menu
     protected override BaseMenu UIMenu { get; set; }
 
     public override void EnterState(UIStateManager ui)
@@ -73,7 +69,7 @@ public class UIPauseState : UIBaseState
                 break;
             case 4: //Exit game
                 Debug.Log("Exit Game");
-                UnityEditor.EditorApplication.isPlaying = false;
+                //UnityEditor.EditorApplication.isPlaying = false;
                 Application.Quit();
                 break;
         }

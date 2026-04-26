@@ -26,7 +26,7 @@ public class LevelSelectMenu : BaseMenu
     // Update is called once per frame
     protected override void Update()
     {
-        
+
     }
 
     private void OnEnable()
@@ -40,8 +40,11 @@ public class LevelSelectMenu : BaseMenu
 
         foreach(Transform levelTransform in allLevels)
         {
+            
             Color newColor;
-            if (!PlayerPrefs.HasKey(levelTransform.name))
+            //if levelTransform is the index 0 it should always be unlocked because its the first level
+            //otherwise if the level isnt in the player prefs, it should remain locked
+            if (!PlayerPrefs.HasKey(levelTransform.name) && levelTransform.GetSiblingIndex() != 0)
             {
                 newColor = lockedColor;
                 lockedLevels.Add(levelTransform.name);

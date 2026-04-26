@@ -20,6 +20,13 @@ public class UIMainMenuState : UIBaseState
         if (ui.uiInputActions.Submit.WasPressedThisFrame())
         {
             ui.ChangeState(ui.UILevelSelectState);
+            return;
+        }
+
+        if (ui.uiInputActions.Reset.WasPerformedThisFrame())
+        {
+            Debug.Log("Resetting");
+            PlayerPrefs.DeleteAll();
         }
     }
 }

@@ -56,7 +56,7 @@ public class UIDeathState : UIBaseState
                 break;
             case 2: //Exit game
                 Debug.Log("Exit Game");
-                UnityEditor.EditorApplication.isPlaying = false;
+                //UnityEditor.EditorApplication.isPlaying = false;
                 Application.Quit();
                 break;
         }

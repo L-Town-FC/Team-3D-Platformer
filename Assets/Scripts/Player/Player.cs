@@ -146,14 +146,6 @@ public class Player :MonoBehaviour, IDamageable
         return (wallContacts > 1, wallJumpDir);
     }
 
-    public void ClearLog()
-    {
-        var assembly = Assembly.GetAssembly(typeof(UnityEditor.Editor));
-        var type = assembly.GetType("UnityEditor.LogEntries");
-        var method = type.GetMethod("Clear");
-        method.Invoke(new object(), null);
-    }
-
     #region IDamageable Stuff
     public void TakeDamage(float damageAmount)
     {
